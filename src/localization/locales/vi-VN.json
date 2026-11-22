@@ -1,0 +1,1749 @@
+{
+  "app": {
+    "title": "Nhà sáng lập khởi nghiệp",
+    "subtitle": "Khởi nghiệp cùng bạn bè trong văn phòng nhỏ ấm áp",
+    "description": "Xây dựng sản phẩm đầu tiên, làm việc cùng đội ngũ và từng bước phát triển công ty.",
+    "primaryObjectiveLabel": "Mục tiêu chính",
+    "primaryObjectiveText": "Tạo sản phẩm tốt, tìm khách hàng và phát triển công ty.",
+    "defaultCompany": "Công ty mặc định",
+    "startingCapital": "Vốn ban đầu",
+    "foundingTeamOffice": "Đội ngũ & Văn phòng",
+    "teamOfficeSummary": "3 nhân viên · 2 phòng mở sẵn",
+    "controlsHint": "Nhấp chuột tương tác · WASD / Mũi tên · Space Tạm dừng · 1-3 Tốc độ"
+  },
+  "common": {
+    "close": "Đóng",
+    "cancel": "Hủy",
+    "confirm": "Xác nhận",
+    "back": "Quay lại",
+    "save": "Lưu",
+    "load": "Tải",
+    "delete": "Xóa",
+    "enabled": "Đang bật",
+    "disabled": "Đang tắt",
+    "muted": "Đã tắt tiếng",
+    "day": "Ngày",
+    "month": "Tháng",
+    "year": "Năm",
+    "perMonth": "/tháng",
+    "perDay": "/ngày",
+    "level": "Cấp",
+    "listen": "Nghe đọc",
+    "stopAudio": "Dừng đọc",
+    "yes": "Có",
+    "no": "Không"
+  },
+  "language": {
+    "label": "Ngôn ngữ giao diện",
+    "vi-VN": "Tiếng Việt (vi-VN)",
+    "en-US": "English (en-US)",
+    "hint": "Tùy chọn ngôn ngữ được lưu tự động cho những lần chơi sau."
+  },
+  "titleScreen": {
+    "welcomeHeadline": "Chào mừng đến với công ty của bạn!",
+    "welcomeSubline": "Mọi thứ bắt đầu từ đây.",
+    "startNew": "Bắt đầu trò chơi mới",
+    "continueSaved": "Tiếp tục",
+    "emptySaveTitle": "Chưa có bản lưu nào",
+    "emptySaveHint": "Hãy bắt đầu một công ty mới để viết nên câu chuyện của bạn.",
+    "continueMeta": "{company} · Năm {year}, Tháng {month}, Ngày {day}",
+    "customizeSetup": "Tùy chỉnh công ty",
+    "saveManagement": "Quản lý bản lưu",
+    "loadSave": "Quản lý bản lưu",
+    "watchIntro": "Xem Intro",
+    "listenIntro": "Nghe Intro",
+    "primaryActionsLabel": "Tác vụ chính",
+    "secondaryMenuLabel": "Tùy chọn khác",
+    "confirmNewTitle": "Bắt đầu công ty mới?",
+    "confirmNewBody": "Bạn đã có bản lưu ({company}). Bắt đầu mới sẽ thay thế ô lưu tự động; các ô lưu thủ công vẫn được giữ nguyên.",
+    "confirmNewAction": "Tạo công ty mới",
+    "companyName": "Tên công ty",
+    "founderName": "Tên của bạn",
+    "businessType": "Lĩnh vực",
+    "startingCapital": "Vốn ban đầu",
+    "gameMode": "Chế độ chơi",
+    "launchCompany": "Mở công ty",
+    "modeCampaign": "Chiến dịch (Có mục tiêu)",
+    "modeSandbox": "Tự do (Mở rộng không giới hạn)",
+    "difficulty": {
+      "BOOTSTRAPPED": "Tự lực khởi nghiệp",
+      "BALANCED": "Vốn hạt giống cân bằng",
+      "ANGEL_BACKED": "Có nhà đầu tư thiên thần"
+    },
+    "business": {
+      "SAAS": {
+        "label": "Phần mềm SaaS",
+        "hint": "Doanh thu thuê bao định kỳ cho doanh nghiệp và cá nhân"
+      },
+      "MOBILE_APP": {
+        "label": "Ứng dụng di động",
+        "hint": "Tăng trưởng người dùng nhanh với mô hình miễn phí nâng cao"
+      },
+      "GAME_STUDIO": {
+        "label": "Studio trò chơi độc lập",
+        "hint": "Bùng nổ doanh số khi ra mắt nhờ chất lượng và trau chuốt"
+      },
+      "AI_TOOLS": {
+        "label": "Công cụ tự động hóa AI",
+        "hint": "Nhu cầu thị trường cao, chi phí vận hành máy chủ lớn hơn"
+      },
+      "WEB_PLATFORM": {
+        "label": "Nền tảng Web doanh nghiệp",
+        "hint": "Hợp đồng B2B giá trị cao và giấy phép dài hạn"
+      }
+    }
+  },
+  "hud": {
+    "cashBalance": "Tiền hiện có",
+    "dayMonthTime": "Ngày {day} · Tháng {month} · {time}",
+    "dayShort": "Ngày {day}",
+    "employeesCount": "{count} nhân sự",
+    "notificationsBtn": "Thông báo",
+    "notificationsTitle": "Thông báo gần đây",
+    "noNotifications": "Chưa có thông báo mới.",
+    "dismiss": "Đóng",
+    "objectiveChip": "Mục tiêu",
+    "speedAria": "Điều khiển tốc độ",
+    "pauseTitle": "Tạm dừng (Space)",
+    "speed1Title": "Thường 1x (Phím 1)",
+    "speed2Title": "Nhanh 2x (Phím 2)",
+    "speed3Title": "Rất nhanh 3x (Phím 3)",
+    "endDay": "Hết ngày",
+    "endDayTitle": "Kết thúc ngày làm việc hôm nay",
+    "nav": {
+      "office": "Văn phòng",
+      "employees": "Nhân sự",
+      "products": "Sản phẩm",
+      "finance": "Tiền bạc",
+      "market": "Khách hàng",
+      "upgrades": "Mở rộng văn phòng",
+      "upgradesShort": "Mở rộng",
+      "milestones": "Thành tựu",
+      "saveLoad": "Lưu game",
+      "tutorial": "Hướng dẫn",
+      "settings": "Cài đặt"
+    },
+    "status": {
+      "WARNING": "Sắp hết tiền",
+      "PROFIT": "Đang có lãi",
+      "GROWING": "Đang phát triển",
+      "BOOTSTRAPPING": "Mới khởi đầu"
+    },
+    "placementMode": "Nhấp vào ô sàn trống để đặt đồ",
+    "achievementUnlocked": "Thành tựu mới",
+    "nextActionPrefix": "Việc tiếp theo:",
+    "quickAction": {
+      "endDay": "Kết thúc Ngày {day}",
+      "exploreOffice": "Xem văn phòng",
+      "findEmployee": "Xem nhân viên",
+      "goToEMPLOYEES": "Mở Nhân sự",
+      "goToPRODUCTS": "Mở Sản phẩm",
+      "goToFINANCE": "Mở Tiền bạc",
+      "goToMARKET": "Mở Khách hàng"
+    },
+    "welcomeBanner": {
+      "title": "Chào mừng đến với công ty của bạn!",
+      "subtitle": "Cùng bắt đầu nhé!"
+    }
+  },
+  "objectives": {
+    "panelTitle": "MỤC TIÊU KHỞI ĐẦU",
+    "completedCount": "Xong {done}/{total}",
+    "items": {
+      "obj_review_employees": "Làm quen đồng đội",
+      "obj_create_product": "Tạo sản phẩm đầu tiên",
+      "obj_assign_tasks": "Giao việc cho nhân viên",
+      "obj_launch_mvp": "Ra mắt bản thử nghiệm đầu tiên",
+      "obj_acquire_customer": "Tìm khách hàng đầu tiên",
+      "obj_first_revenue": "Có tiền kiếm được đầu tiên"
+    },
+    "actions": {
+      "obj_review_employees": "Nhấn vào một nhân viên để xem thông tin.",
+      "obj_create_product": "Mở Sản phẩm để tạo ý tưởng mới.",
+      "obj_assign_tasks": "Giao việc làm sản phẩm cho đội ngũ.",
+      "obj_launch_mvp": "Hoàn thành 100% rồi ra mắt bản thử nghiệm.",
+      "obj_acquire_customer": "Mở Khách hàng để chạy quảng bá.",
+      "obj_first_revenue": "Kết thúc ngày để nhận tiền từ khách hàng."
+    },
+    "objectivePrefix": "Mục tiêu: {title}",
+    "progressRatio": "{done}/{total} mục tiêu",
+    "stabilizeTitle": "Giữ an toàn tiền mặt",
+    "stabilizeAction": "Tiền đang thấp. Hãy xem tiền vào và tiền ra.",
+    "scaleTitle": "Phát triển công ty",
+    "scaleAction": "Cải thiện sản phẩm, tìm thêm khách hàng và mở rộng văn phòng."
+  },
+  "tutorial": {
+    "header": "Bước {step} / 8",
+    "progressLabel": "Bước {step}/8",
+    "hideDetails": "Thu gọn",
+    "showDetails": "Mẹo",
+    "listenStep": "Nghe đọc",
+    "clickHighlightedRooms": "Nhấn vào 2 phòng đang sáng.",
+    "skip": "Bỏ qua",
+    "skipConfirm": "Tạm bỏ qua hướng dẫn? Bạn có thể mở lại trong Cài đặt.",
+    "keepLearning": "Xem tiếp",
+    "confirmSkip": "Bỏ qua",
+    "endDayNow": "Kết thúc Ngày 1",
+    "openSection": "Mở {section}",
+    "collapseAria": "Thu gọn hướng dẫn",
+    "expandAria": "Mở hướng dẫn",
+    "backBtn": "Trước",
+    "nextStepBtn": "Tiếp",
+    "steps": {
+      "1": {
+        "title": "Làm quen đồng đội",
+        "actionPrompt": "Nhấn vào một nhân viên để trò chuyện.",
+        "explanation": "Đội ngũ ban đầu gồm 3 người sẵn sàng làm việc."
+      },
+      "2": {
+        "title": "Khám phá văn phòng",
+        "actionPrompt": "Nhấn vào Văn phòng CEO và Phòng kỹ thuật.",
+        "explanation": "Chạm từng phòng để xem nhanh các thao tác."
+      },
+      "3": {
+        "title": "Tạo sản phẩm đầu tiên",
+        "actionPrompt": "Bắt đầu phát triển sản phẩm đầu tiên.",
+        "explanation": "Đặt tên và khởi tạo ý tưởng sản phẩm mới."
+      },
+      "4": {
+        "title": "Giao việc cho đội ngũ",
+        "actionPrompt": "Giao nhiệm vụ cho đội ngũ của bạn.",
+        "explanation": "Chọn việc phù hợp giúp làm xong nhanh hơn."
+      },
+      "5": {
+        "title": "Ra mắt bản thử nghiệm",
+        "actionPrompt": "Đưa tiến độ lên 100% rồi ra mắt ngay!",
+        "explanation": "Bản thử nghiệm đầu tiên giúp đón khách hàng đầu tiên."
+      },
+      "6": {
+        "title": "Tìm khách hàng đầu tiên",
+        "actionPrompt": "Mở Khách hàng để bắt đầu quảng bá.",
+        "explanation": "Quảng bá giúp khách hàng biết đến sản phẩm của bạn."
+      },
+      "7": {
+        "title": "Xem tiền vào và tiền ra",
+        "actionPrompt": "Mở Tiền bạc để kiểm tra ngân quỹ.",
+        "explanation": "Theo dõi tiền tiêu mỗi tháng để luôn an toàn."
+      },
+      "8": {
+        "title": "Kết thúc ngày đầu tiên",
+        "actionPrompt": "Nhấn để kết thúc ngày làm việc.",
+        "explanation": "Xem tổng kết tiền kiếm được và tiến độ hôm nay."
+      }
+    }
+  },
+  "tutorialArrow": {
+    "clickToContinue": "Nhấn vào đây để tiếp tục.",
+    "interactHighlighted": "Hãy tương tác với vật thể được đánh dấu.",
+    "greatJob": "Tốt lắm! Hãy tiếp tục.",
+    "completedTutorial": "Bạn đã hoàn thành hướng dẫn.",
+    "step1Employee": "Nhấn vào nhân viên để xem thông tin.",
+    "step1Nav": "Nhấn vào đây gặp đồng đội.",
+    "step2CeoOffice": "Nhấn vào Văn phòng CEO.",
+    "step2Engineering": "Nhấn vào Phòng kỹ thuật.",
+    "step3OpenProducts": "Tạo sản phẩm đầu tiên.",
+    "step3NewIdea": "Nhấn tạo ý tưởng mới.",
+    "step3NameInput": "Đặt tên sản phẩm tại đây.",
+    "step3Submit": "Nhấn để bắt đầu làm.",
+    "step4OpenEmployees": "Giao nhiệm vụ cho đội ngũ.",
+    "step4RosterTab": "Xem danh sách nhân viên.",
+    "step4TaskSelect": "Chọn việc tại đây.",
+    "step5OpenProducts": "Mở Sản phẩm để ra mắt.",
+    "step5BuildSprint": "Nhấn tăng tốc lên 100%.",
+    "step5LaunchMvp": "Sẵn sàng? Ra mắt bản thử nghiệm!",
+    "step6OpenMarket": "Tìm khách hàng đầu tiên.",
+    "step6LaunchCampaign": "Nhấn chạy chiến dịch.",
+    "step7OpenFinance": "Xem tiền vào và tiền ra.",
+    "step8EndDay": "Nhấn để kết thúc ngày làm việc.",
+    "closeModalFirst": "Đóng bảng này để về văn phòng."
+  },
+  "rooms": {
+    "lockedSuffix": "Khóa",
+    "lockedLabel": "Phòng ban đang khóa",
+    "levelLabel": "Phòng cấp {level}",
+    "unlockRequirement": "Điều kiện mở khóa:",
+    "unlockEarly": "Mở khóa sớm ({cost})",
+    "upgradeRoom": "Nâng cấp {name} ({cost})",
+    "activeDept": "Phòng ban đang hoạt động",
+    "unlockedCount": "Phòng ban văn phòng ({unlocked}/{total} đã mở)",
+    "unlockHint": "Các phòng ban tự động mở khi công ty lớn mạnh hoặc có thể mở sớm bằng tiền mặt.",
+    "items": {
+      "CEO_OFFICE": {
+        "name": "Văn phòng CEO",
+        "description": "Tổng quan công ty, định hướng chiến lược và điều hành của nhà sáng lập.",
+        "unlockCondition": "Mở sẵn từ Ngày 1"
+      },
+      "HR_DEPT": {
+        "name": "Phòng nhân sự",
+        "description": "Tuyển dụng nhân tài, đào tạo kỹ năng và chăm lo tinh thần nhân viên.",
+        "unlockCondition": "Tự động mở ở Ngày 2, hoặc mở sớm với giá {cost}."
+      },
+      "FINANCE_DEPT": {
+        "name": "Phòng tài chính",
+        "description": "Sổ cái dòng tiền, bảng lương, hạn mức tín dụng và tối ưu thuế.",
+        "unlockCondition": "Tự động mở ở Ngày 2, hoặc mở sớm với giá {cost}."
+      },
+      "LEGAL_DEPT": {
+        "name": "Phòng pháp chế",
+        "description": "Thẩm định hợp đồng khách hàng, tuân thủ pháp lý và kiểm soát rủi ro.",
+        "unlockCondition": "Mở khi đạt 10+ khách hàng trả phí, hoặc mở sớm với giá {cost}."
+      },
+      "LOBBY": {
+        "name": "Sảnh đón khách",
+        "description": "Đón tiếp đối tác, nhà đầu tư và khách hàng doanh nghiệp ghé thăm.",
+        "unlockCondition": "Mở khi đạt 5+ khách hàng trả phí, hoặc mở sớm với giá {cost}."
+      },
+      "MEETING_ROOM": {
+        "name": "Phòng họp",
+        "description": "Trao đổi lộ trình sản phẩm, hoạch định chiến dịch tiếp thị và thuyết trình.",
+        "unlockCondition": "Mở khi ra mắt sản phẩm MVP đầu tiên, hoặc mở sớm với giá {cost}."
+      },
+      "ENGINEERING": {
+        "name": "Phòng kỹ thuật",
+        "description": "Phát triển sản phẩm, sửa lỗi phần mềm và vận hành hạ tầng máy chủ.",
+        "unlockCondition": "Mở sẵn từ Ngày 1"
+      },
+      "BREAK_ROOM": {
+        "name": "Phòng nghỉ",
+        "description": "Quầy cà phê, khu thư giãn giúp nhân viên hồi phục năng lượng và giảm căng thẳng.",
+        "unlockCondition": "Tự động mở ở Ngày 3, hoặc mở sớm với giá {cost}."
+      }
+    }
+  },
+  "drawer": {
+    "closeAria": "Đóng bảng",
+    "activityState": "Đang làm",
+    "currentActivity": "Hoạt động hiện tại",
+    "moodLabel": "Tâm trạng",
+    "moodHappy": "Vui vẻ",
+    "moodOkay": "Ổn định",
+    "moodStressed": "Hơi mệt",
+    "moreDetails": "Xem thêm chỉ số & kỹ năng",
+    "monthlySalary": "Lương tháng",
+    "productivity": "Hiệu suất làm việc",
+    "energy": "Năng lượng",
+    "morale": "Tinh thần",
+    "stress": "Căng thẳng",
+    "coreSkill": "Kỹ năng chính ({skill})",
+    "nextTrait": "Sắp mở: {name} ({skill} {req})",
+    "allTraitsMastered": "Đã thành thạo kỹ năng chính",
+    "assignedTask": "Việc đang làm",
+    "assignedProduct": "Sản phẩm phụ trách",
+    "founderActions": "Gắn kết đội ngũ",
+    "motivateBtn": "Động viên (+14 Tinh thần)",
+    "coachBtn": "Kèm cặp (+3 {skill})",
+    "checkInBtn": "Trò chuyện (-14 Căng thẳng)",
+    "speakLineBtn": "Nghe nói",
+    "dialogueLabel": "Chia sẻ",
+    "founderSalary": "Lương của bạn",
+    "personalCash": "Tiền cá nhân",
+    "investorTrust": "Niềm tin đối tác",
+    "strategySprintBtn": "Họp định hướng (-25 Năng lượng)",
+    "adjustFinanceBtn": "Xem tiền vào và tiền ra",
+    "viewMilestonesBtn": "Xem thành tựu",
+    "openHrBtn": "Quản lý đội ngũ",
+    "openFinanceBtn": "Mở Tiền bạc",
+    "openProductBtn": "Mở Sản phẩm",
+    "openLegalBtn": "Xem hợp đồng",
+    "openMarketBtn": "Mở Khách hàng",
+    "drinkEspressoBtn": "Pha cà phê (+35 Năng lượng)",
+    "installedPerks": "Tiện ích phòng ({count})",
+    "managePerks": "Quản lý",
+    "inUse": "Đang dùng",
+    "ready": "Sẵn sàng",
+    "lobbyVisitors": "Khách đang ở sảnh",
+    "empStates": {
+      "WORKING": "Đang làm việc",
+      "IDLE": "Đang nghỉ ngơi",
+      "WALKING": "Đang đi lại",
+      "RESTING": "Đang uống cà phê & nghỉ",
+      "MEETING": "Đang họp nhóm",
+      "CHATTING": "Đang trò chuyện",
+      "OFF_DUTY": "Đã tan làm"
+    }
+  },
+  "chatter": {
+    "title": "Nhịp sống văn phòng",
+    "expand": "Mở rộng trao đổi",
+    "minimize": "Thu gọn trao đổi",
+    "stressedTag": "Căng thẳng",
+    "eventTag": "Sự kiện",
+    "listenTooltip": "Nghe lời thoại nhân viên"
+  },
+  "employees": {
+    "title": "Nhân sự & Tuyển dụng",
+    "subtitle": "Đội ngũ: {count}/{max} chỗ ngồi · Quỹ lương tháng: {payroll}",
+    "currentTeam": "Đội ngũ hiện tại ({count})",
+    "hireCandidates": "Ứng viên tuyển dụng ({count})",
+    "refreshSearch": "Tìm ứng viên mới ({cost})",
+    "emptyRoster": "Chưa có nhân viên nào. Hãy chuyển sang mục Ứng viên tuyển dụng để chiêu mộ nhân sự đầu tiên.",
+    "burnoutRisk": "Nguy cơ nghỉ việc",
+    "salaryLabel": "Lương:",
+    "outputLabel": "Hiệu suất:",
+    "energyLabel": "Năng lượng:",
+    "moraleLabel": "Tinh thần:",
+    "stressLabel": "Căng thẳng:",
+    "masteryLabel": "Thông thạo {skill}:",
+    "allTraitsUnlocked": "Đã mở khóa toàn bộ đặc tính vai trò",
+    "nextTraitHint": "Đặc tính kế: {name} ({skill} {req})",
+    "trainTooltip": "Đào tạo (+6 kỹ năng chính, mở khóa đặc tính, {cost})",
+    "trainCooldownTooltip": "Có thể đào tạo lại sau {days} ngày",
+    "trainCooldown": "Chờ {days} ngày",
+    "trainBtn": "Đào tạo {cost}",
+    "promoteTooltip": "Thăng chức (+18% lương, +5 kỹ năng, +20 tinh thần)",
+    "promoteBtn": "Thăng chức",
+    "raiseTooltip": "Tăng lương +{amount}/tháng (+15 tinh thần)",
+    "raiseBtn": "Thưởng +{amount}",
+    "releaseTooltip": "Cho thôi việc {name}",
+    "releaseBtn": "Thôi việc",
+    "detailsBtn": "Chi tiết",
+    "hideDetailsBtn": "Ẩn chi tiết",
+    "detailsSkillsTitle": "Toàn bộ kỹ năng & hồ sơ",
+    "detailsHiredDay": "Gia nhập ngày {day}",
+    "detailsXp": "Kinh nghiệm: {xp} XP",
+    "assignmentGroupLabel": "Phân công công việc",
+    "developmentGroupLabel": "Phát triển & Đãi ngộ",
+    "rosterGroupLabel": "Hồ sơ & Quản lý",
+    "assignTaskLabel": "Nhiệm vụ",
+    "selectProductLabel": "Sản phẩm phụ trách",
+    "hireBtn": "Tuyển dụng (Phí hội nhập {fee})",
+    "candidateLevel": "Cấp {level}",
+    "levels": {
+      "1": "Sơ cấp",
+      "2": "Trung cấp",
+      "3": "Cao cấp",
+      "4": "Trưởng nhóm"
+    },
+    "roles": {
+      "SOFTWARE_ENGINEER": {
+        "label": "Kỹ sư phần mềm",
+        "short": "Kỹ thuật",
+        "description": "Xây dựng tính năng sản phẩm, phát hành bản cập nhật và sửa lỗi."
+      },
+      "DESIGNER": {
+        "label": "Nhà thiết kế sản phẩm",
+        "short": "Thiết kế",
+        "description": "Nâng cao chất lượng giao diện, trải nghiệm người dùng và tỷ lệ chuyển đổi."
+      },
+      "MARKETING_SPECIALIST": {
+        "label": "Chuyên viên tiếp thị",
+        "short": "Tiếp thị",
+        "description": "Tối ưu hiệu quả chiến dịch quảng bá, tăng trưởng tự nhiên và nhu cầu thị trường."
+      },
+      "SALES_REP": {
+        "label": "Chuyên viên kinh doanh B2B",
+        "short": "Kinh doanh",
+        "description": "Đàm phán hợp đồng doanh nghiệp và mở rộng tệp khách hàng tiềm năng."
+      },
+      "ACCOUNTANT": {
+        "label": "Kế toán tài chính",
+        "short": "Kế toán",
+        "description": "Tối ưu thuế doanh nghiệp, kiểm soát chi phí và bảo vệ hạn mức tín dụng."
+      },
+      "HR_MANAGER": {
+        "label": "Quản lý nhân sự",
+        "short": "Nhân sự",
+        "description": "Nâng cao tinh thần đội ngũ, giảm căng thẳng và thu hút ứng viên giỏi."
+      },
+      "PRODUCT_MANAGER": {
+        "label": "Quản lý sản phẩm",
+        "short": "Quản lý SP",
+        "description": "Định hướng lộ trình phát triển và nhân đôi tốc độ thực thi kỹ thuật."
+      },
+      "OPERATIONS_MANAGER": {
+        "label": "Quản lý vận hành",
+        "short": "Vận hành",
+        "description": "Giữ hạ tầng máy chủ ổn định, hỗ trợ pháp lý và cắt giảm chi phí cố định."
+      }
+    },
+    "skills": {
+      "engineering": "Kỹ thuật",
+      "design": "Thiết kế",
+      "marketing": "Tiếp thị",
+      "sales": "Bán hàng",
+      "finance": "Tài chính",
+      "operations": "Vận hành"
+    },
+    "personalities": {
+      "PRAGMATIC": {
+        "label": "Thực tế",
+        "summary": "Hiệu suất ổn định và vững vàng trước áp lực tiến độ."
+      },
+      "PERFECTIONIST": {
+        "label": "Cầu toàn",
+        "summary": "Sản phẩm chất lượng cao nhưng dễ tích tụ căng thẳng hơn."
+      },
+      "WORKAHOLIC": {
+        "label": "Tham công tiếc việc",
+        "summary": "Năng suất vượt trội, cần nghỉ ngơi ở Phòng nghỉ để tránh kiệt sức."
+      },
+      "CREATIVE": {
+        "label": "Sáng tạo",
+        "summary": "Xuất sắc trong thiết kế trải nghiệm và đổi mới sản phẩm."
+      },
+      "SOCIAL": {
+        "label": "Hòa đồng",
+        "summary": "Lan tỏa tinh thần tích cực và làm việc hiệu quả theo nhóm."
+      },
+      "ANALYTICAL": {
+        "label": "Phân tích",
+        "summary": "Giải quyết vấn đề nhất quán với tỷ lệ phát sinh lỗi thấp."
+      }
+    },
+    "traits": {
+      "EFFICIENT_CODER": {
+        "name": "Lập trình viên hiệu quả",
+        "summary": "+15% tốc độ phát triển sản phẩm và +1 năng lực sửa lỗi mỗi đợt."
+      },
+      "SYSTEMS_VIRTUOSO": {
+        "name": "Kiến trúc sư hệ thống",
+        "summary": "+15% năng suất chung và giảm một nửa lỗi phát sinh khi lập trình."
+      },
+      "PIXEL_PERFECTIONIST": {
+        "name": "Nghệ nhân trải nghiệm UX",
+        "summary": "+12% tốc độ thiết kế và +0,25 điểm chất lượng sản phẩm mỗi ngày."
+      },
+      "VIRAL_STRATEGIST": {
+        "name": "Chiến lược gia lan tỏa",
+        "summary": "+25% hiệu quả chiến dịch tiếp thị và tăng trưởng người dùng tự nhiên."
+      },
+      "PERSUASIVE_NEGOTIATOR": {
+        "name": "Chuyên gia đàm phán",
+        "summary": "+25% tiền thưởng ký hợp đồng B2B và đẩy nhanh luồng khách hàng mới."
+      },
+      "FISCAL_ARCHITECT": {
+        "name": "Chuyên gia tối ưu dòng tiền",
+        "summary": "+10% hiệu suất và giảm thêm 2% thuế thu nhập doanh nghiệp cuối tháng."
+      },
+      "CULTURE_CATALYST": {
+        "name": "Nhân tố gắn kết văn hóa",
+        "summary": "Giảm căng thẳng toàn đội mỗi ngày và tiết kiệm chi phí bảo trì, pháp chế."
+      }
+    },
+    "tasks": {
+      "BUILD_PRODUCT": "Phát triển sản phẩm",
+      "FIX_BUGS": "Sửa lỗi & Kiểm thử QA",
+      "MARKET_GROWTH": "Chạy chiến dịch tiếp thị",
+      "CLOSE_SALES": "Chốt hợp đồng B2B",
+      "MANAGE_FINANCE": "Quản lý sổ sách tài chính",
+      "RECRUIT_TALENT": "Tuyển dụng & Chăm lo nhân sự",
+      "PLAN_ROADMAP": "Hoạch định chiến lược SP",
+      "OPERATIONS_SUPPORT": "Hỗ trợ pháp chế & vận hành",
+      "REST_BREAK": "Nghỉ uống cà phê"
+    },
+    "moraleAlert": {
+      "title": "Tinh thần giảm: {name} ({morale}%)",
+      "suggestion": "Hãy giao nhiệm vụ Nghỉ uống cà phê để phục hồi tinh thần.",
+      "actionBtn": "Nghỉ uống cà phê"
+    }
+  },
+  "products": {
+    "title": "Sản phẩm của công ty",
+    "subtitle": "Làm sản phẩm, ra mắt bản thử nghiệm đầu tiên và cải tiến thêm.",
+    "portfolioCount": "{count} sản phẩm",
+    "newIdeaBtn": "Thêm sản phẩm mới",
+    "productName": "Tên sản phẩm",
+    "productPlaceholder": "VD: Ứng dụng ghi chú nhóm",
+    "category": "Loại sản phẩm",
+    "revenueModel": "Cách thu tiền",
+    "startRd": "Bắt đầu làm ({cost})",
+    "maintPerMonth": "Chi phí duy trì {cost}/tháng",
+    "buildSprintBtn": "Làm nhanh (+35% · {cost})",
+    "launchMvpBtn": "Ra mắt bản thử nghiệm đầu tiên",
+    "shipUpdateBtn": "Nâng cấp sản phẩm ({cost})",
+    "fixBugsBtn": "Sửa {count} lỗi ({cost})",
+    "mvpReadiness": "Tiến độ bản thử nghiệm đầu tiên",
+    "mvpProgress": "Tiến độ hoàn thiện",
+    "quality": "Chất lượng",
+    "openBugs": "Lỗi cần sửa",
+    "satisfaction": "Khách hài lòng",
+    "payingUsers": "Khách trả tiền",
+    "estMonthlyRev": "Tiền kiếm được/tháng",
+    "detailsToggle": "Xem tính năng & giá bán chi tiết",
+    "featuresRoadmap": "Tính năng ({done}/{total})",
+    "shipped": "Đã xong",
+    "pricePerCustomer": "Giá mỗi khách",
+    "addFeatureTitle": "Thêm tính năng mới",
+    "qualityBoost": "+{boost} Chất lượng",
+    "stages": {
+      "CONCEPT": "Ý tưởng",
+      "IN_DEV": "Đang làm",
+      "MVP_LIVE": "Bản thử nghiệm đang chạy",
+      "MATURE": "Hoàn thiện tốt",
+      "SUNSET": "Ngừng hỗ trợ"
+    },
+    "models": {
+      "SUBSCRIPTION": "Thuê bao định kỳ",
+      "FREEMIUM": "Miễn phí nâng cao",
+      "ONE_TIME": "Mua một lần",
+      "ENTERPRISE_LICENSE": "Giấy phép doanh nghiệp"
+    },
+    "categories": {
+      "SAAS": {
+        "label": "Ứng dụng SaaS",
+        "description": "Doanh thu định kỳ ổn định với dư địa mở rộng sang doanh nghiệp lớn."
+      },
+      "MOBILE_APP": {
+        "label": "Ứng dụng di động",
+        "description": "Tiếp cận đại chúng và lan tỏa người dùng tự nhiên nhanh chóng."
+      },
+      "GAME": {
+        "label": "Trò chơi độc lập",
+        "description": "Doanh thu tăng vọt lúc ra mắt nhờ độ hoàn thiện và cộng đồng."
+      },
+      "AI_TOOL": {
+        "label": "Công cụ AI",
+        "description": "Phần mềm tự động hóa nhu cầu cao kèm chi phí hạ tầng lớn hơn."
+      },
+      "WEB_PLATFORM": {
+        "label": "Nền tảng Web",
+        "description": "Nền tảng B2B giá trị cao phù hợp với các hợp đồng dài hạn."
+      }
+    },
+    "features": {
+      "Core Workflow Engine": {
+        "name": "Lõi xử lý quy trình chính",
+        "description": "Tối ưu thao tác cốt lõi của người dùng với tốc độ phản hồi mượt mà."
+      },
+      "Polished Onboarding UX": {
+        "name": "Trải nghiệm hướng dẫn người mới",
+        "description": "Giảm tỷ lệ rời bỏ bằng cách giúp khách hàng làm quen chỉ trong 2 phút."
+      },
+      "Team Collaboration & Roles": {
+        "name": "Cộng tác nhóm & Phân quyền",
+        "description": "Mở khóa khả năng bán theo nhiều tài khoản cho doanh nghiệp vừa và lớn."
+      },
+      "Analytics & Reporting Suite": {
+        "name": "Bộ phân tích & Báo cáo chuyên sâu",
+        "description": "Cung cấp bảng thống kê hiệu quả rõ ràng và xuất báo cáo cho khách hàng."
+      },
+      "Smart Automation Workflows": {
+        "name": "Quy trình tự động hóa thông minh",
+        "description": "Tự động hóa tác vụ lặp lại giúp giữ chân khách hàng dài lâu."
+      },
+      "Mobile Companion View": {
+        "name": "Giao diện tương thích di động",
+        "description": "Trải nghiệm linh hoạt cho khách hàng sử dụng mọi lúc mọi nơi."
+      }
+    }
+  },
+  "market": {
+    "title": "Khách hàng & Hợp đồng",
+    "subtitle": "Quảng bá sản phẩm và đón những khách hàng đầu tiên.",
+    "channelsTitle": "Cách tìm khách hàng",
+    "productStatusLive": "Đang mở bán",
+    "productStatusNotLive": "Chưa ra mắt",
+    "segmentConsumers": "Người dùng cá nhân",
+    "segmentSmb": "Công ty nhỏ",
+    "segmentEnterprise": "Doanh nghiệp lớn",
+    "dailyBudget": "Chi mỗi ngày: {budget}",
+    "launchMvpWarning": "Hãy ra mắt bản thử nghiệm đầu tiên trước để khách hàng có thể dùng thử và trả tiền.",
+    "cacLabel": "~{cac} / khách",
+    "activeCampSummary": "Đang chạy: {budget}/ngày · Có thêm {count} khách",
+    "pauseCampaign": "Tạm dừng",
+    "launchCampaign": "Bắt đầu quảng bá",
+    "b2bTitle": "Hợp đồng khách hàng lớn",
+    "noContracts": "Chưa có hợp đồng nào. Hãy duy trì sản phẩm hoạt động hoặc giao việc bán hàng.",
+    "contractTerm": "{value}/tháng × {months} tháng · Trả trước {upfront} · Cần chất lượng {quality}+",
+    "legalCleared": "Đã kiểm tra",
+    "legalReview": "Kiểm tra hợp đồng",
+    "pitchAndSign": "Gặp & Ký hợp đồng",
+    "detailsToggle": "Xem các công ty đối thủ",
+    "competitorsTitle": "Đối thủ trên thị trường",
+    "shareLabel": "Thị phần: {share}%",
+    "qualityLabel": "Chất lượng: {qual}",
+    "contractStatuses": {
+      "PIPELINE": "Đang trao đổi",
+      "ACTIVE": "Đang hợp tác",
+      "COMPLETED": "Đã xong",
+      "EXPIRED": "Hết hạn"
+    },
+    "channels": {
+      "SOCIAL_MEDIA": {
+        "label": "Mạng xã hội",
+        "speedLabel": "Nhanh",
+        "description": "Tăng nhận diện thương hiệu đều đặn và có cơ hội lan tỏa mạnh."
+      },
+      "PAID_ADS": {
+        "label": "Quảng cáo trả phí",
+        "speedLabel": "Tức thì",
+        "description": "Mở rộng lượt đăng ký hằng ngày miễn là ngân sách còn đủ."
+      },
+      "SEO": {
+        "label": "Tối ưu tìm kiếm (SEO)",
+        "speedLabel": "Tích lũy",
+        "description": "Chi phí thu hút khách hàng thấp và tăng hiệu quả cộng dồn theo tháng."
+      },
+      "CONTENT_MARKETING": {
+        "label": "Tiếp thị nội dung",
+        "speedLabel": "Ổn định",
+        "description": "Xây dựng uy tín nhà sáng lập và thu hút khách hàng doanh nghiệp nhỏ."
+      },
+      "DIRECT_SALES": {
+        "label": "Bán hàng trực tiếp",
+        "speedLabel": "Giá trị cao",
+        "description": "Tạo ra các hợp đồng B2B giá trị lớn và khách hàng dài hạn."
+      },
+      "PARTNERSHIPS": {
+        "label": "Hợp tác đối tác",
+        "speedLabel": "Chiến lược",
+        "description": "Đồng tiếp thị cùng các nền tảng công nghệ bổ trợ lẫn nhau."
+      }
+    }
+  },
+  "finance": {
+    "title": "Tiền vào và tiền ra",
+    "subtitle": "Giá trị công ty: {valuation} · Cổ phần: {ownership}% · Niềm tin: {trust}/100",
+    "companyCash": "Tiền hiện có",
+    "projectedMonthlyNet": "Tiền vào và tiền ra dự kiến",
+    "burnRateLabel": "Tiền tiêu mỗi tháng: {amount}",
+    "personalCash": "Tiền riêng của bạn",
+    "creditDebt": "Tiền đang vay",
+    "detailsToggle": "Xem sổ thu chi chi tiết, vay vốn & lịch sử",
+    "founderSalaryTitle": "Lương hằng tháng của bạn",
+    "founderSalaryDesc": "Trích từ quỹ công ty sang tiền riêng vào cuối mỗi tháng (Ngày 30).",
+    "activeTrust": "Hiện tại: {salary}/tháng · Niềm tin {trust}/100",
+    "applySalary": "Lưu mức lương",
+    "investPersonal": "Góp thêm {amount} tiền riêng",
+    "investTooltip": "Đưa {amount} tiền cá nhân vào quỹ công ty (+2 Niềm tin)",
+    "moraleImpact": "Tinh thần {val}/ngày",
+    "trustImpact": "Niềm tin {val}/ngày",
+    "respectImpact": "Uy tín {val}/ngày",
+    "runningLedgerTitle": "Thu chi trong Tháng {month}",
+    "revMtd": "Tiền kiếm được tháng này",
+    "mktMtd": "Tiền quảng bá đã chi",
+    "rdMtd": "Tiền làm sản phẩm & tuyển người",
+    "eomPayroll": "Lương nhân viên cuối tháng",
+    "eomFounder": "Lương của bạn cuối tháng",
+    "eomRent": "Tiền thuê văn phòng",
+    "eomMaint": "Chi phí vận hành máy chủ",
+    "taxRate": "Thuế (trên tiền lãi)",
+    "creditLineTitle": "Hạn mức vay hỗ trợ",
+    "creditLineDesc": "Tối đa: {limit} · Còn vay được: {available} · Lãi 1,5%/tháng.",
+    "borrowBtn": "Vay {amount}",
+    "repayBtn": "Trả {amount}",
+    "historyTitle": "Lịch sử các tháng trước",
+    "noHistory": "Kết thúc Tháng 1 (Ngày 30) để xem tổng kết tháng đầu tiên.",
+    "colPeriod": "Tháng",
+    "colRevenue": "Tiền kiếm được",
+    "colExpenses": "Tiền chi",
+    "colTaxes": "Thuế",
+    "colNetProfit": "Tiền còn lại",
+    "colEndingCash": "Tiền cuối tháng",
+    "presetLean": "{amount} Tiết kiệm",
+    "salaryTiers": {
+      "SWEAT_EQUITY": {
+        "label": "Không nhận lương (0 đ)",
+        "summary": "Không nhận lương giúp truyền cảm hứng mạnh mẽ cho nhân viên và củng cố niềm tin nhà đầu tư."
+      },
+      "LEAN": {
+        "label": "Mức tối giản",
+        "summary": "Mức lương khiêm tốn xây dựng thiện cảm đội ngũ và thể hiện kỷ luật dòng tiền."
+      },
+      "STANDARD": {
+        "label": "Mức thị trường",
+        "summary": "Thu nhập tiêu chuẩn, giữ tinh thần nhân viên và niềm tin nhà đầu tư cân bằng."
+      },
+      "HIGH": {
+        "label": "Lương điều hành cao",
+        "summaryNormal": "Lương nhà sáng lập cao sẽ dần làm giảm tinh thần đội ngũ và niềm tin nhà đầu tư.",
+        "summaryCrunch": "Nhận lương cao khi tiền mặt công ty eo hẹp làm giảm mạnh tinh thần và niềm tin NĐT."
+      },
+      "LAVISH": {
+        "label": "Lương quá cao",
+        "summaryNormal": "Mức chi trả quá cao bào mòn văn hóa công ty, sự tôn trọng và niềm tin nhà đầu tư.",
+        "summaryCrunch": "Lương quá cao giữa khủng hoảng tiền mặt gây tổn hại nghiêm trọng tinh thần và niềm tin NĐT."
+      }
+    }
+  },
+  "office": {
+    "title": "Nâng cấp văn phòng, Phòng ban & Tiện ích",
+    "subtitle": "{name} · Tiện nghi {comfort}/100 · Công nghệ Cấp {tech}/4",
+    "hqExpansion": "Mở rộng trụ sở (Cấp {level}/4)",
+    "nextLabel": "Kế tiếp:",
+    "hqNextDesc": "{name} — {desc} Nâng sức chứa lên {maxEmp} nhân viên (Thuê {rent}/tháng).",
+    "hqMaxed": "Đã đạt cấp trụ sở công nghệ cao nhất.",
+    "expandHqBtn": "Mở rộng trụ sở ({cost})",
+    "workstationTech": "Thiết bị làm việc (Cấp {tier}/4)",
+    "workstationDesc": "Nâng cấp toàn bộ màn hình và máy trạm, giúp tăng +10% năng suất cả đội mỗi cấp.",
+    "hardwareMaxed": "Thiết bị đã đạt cấp tối đa",
+    "upgradeHardwareBtn": "Nâng cấp máy trạm ({cost})",
+    "perksTitle": "Tiện ích & Phúc lợi văn phòng ({owned}/{total} đang dùng)",
+    "perksDailyBuff": "Hiệu ứng mỗi ngày: +{morale} Tinh thần · +{energy} Năng lượng · -{stress} Căng thẳng",
+    "perkStats": "+{morale} Tinh thần/ngày · +{energy} Năng lượng/ngày · -{stress} Căng thẳng/ngày",
+    "perkComfort": "+{comfort} Tiện nghi",
+    "perkReqHq": " · Cần trụ sở Cấp {lvl}",
+    "activeBadge": "Đang bật",
+    "installedBtn": "Đã lắp đặt",
+    "reqHqBtn": "Cần trụ sở Cấp {lvl}",
+    "purchasePerkBtn": "Mua tiện ích ({cost})",
+    "buyFurnitureTitle": "Mua & Sắp xếp nội thất (Chọn Mua rồi nhấp lên ô sàn)",
+    "furnStats": "+{comfort} Tiện nghi · +{prod}% Năng suất",
+    "buyPlaceBtn": "Mua & Đặt",
+    "relocateTitle": "Di chuyển nội thất hiện có ({count})",
+    "moveBtn": "Di chuyển",
+    "levels": {
+      "1": {
+        "name": "Văn phòng khởi nghiệp",
+        "description": "Không gian gọn nhẹ vừa đủ cho nhóm sáng lập đầu tiên."
+      },
+      "2": {
+        "name": "Studio sản phẩm",
+        "description": "Mở rộng bàn làm việc, mạng tốc độ cao và khu vực phát triển chuyên biệt."
+      },
+      "3": {
+        "name": "Văn phòng đón khách hàng",
+        "description": "Khu tiếp đón đối tác cao cấp, phòng họp nâng cấp sẵn sàng cho doanh nghiệp lớn."
+      },
+      "4": {
+        "name": "Tập đoàn công nghệ lớn",
+        "description": "Trụ sở công nghệ hiện đại nguyên sàn với độ tiện nghi và sức chứa tối đa."
+      }
+    },
+    "perks": {
+      "perk_coffee_machine": {
+        "name": "Máy pha cà phê đặc sản",
+        "description": "Quầy espresso & cold brew giúp đội ngũ giữ tỉnh táo suốt ngày dài."
+      },
+      "perk_ergonomic_chairs": {
+        "name": "Ghế công thái học",
+        "description": "Ghế tựa lưng chuẩn công thái học giúp giảm mỏi mệt và căng cơ khi làm việc."
+      },
+      "perk_ping_pong": {
+        "name": "Bàn bóng bàn giải trí",
+        "description": "Những trận giao hữu nhẹ nhàng nâng cao tinh thần và giải tỏa áp lực chạy tiến độ."
+      },
+      "perk_snack_pantry": {
+        "name": "Quầy đồ ăn nhẹ dinh dưỡng",
+        "description": "Đồ ăn vặt lành mạnh và nước uống tiếp sức qua những đợt nước rút dài ngày."
+      },
+      "perk_quiet_pods": {
+        "name": "Buồng tập trung cách âm",
+        "description": "Không gian cách âm yên tĩnh giảm tiếng ồn họp hành và căng thẳng chuyên sâu."
+      },
+      "perk_wellness_suite": {
+        "name": "Phòng thư giãn & Phục hồi sức khỏe",
+        "description": "Khu nghỉ trưa yên tĩnh với ghế thư giãn giúp hồi phục thể lực tối ưu."
+      }
+    },
+    "furniture": {
+      "WORKSTATION": {
+        "name": "Bàn làm việc lập trình",
+        "description": "Bổ sung vị trí ngồi làm việc và +4% hiệu suất máy trạm."
+      },
+      "ESPRESSO_BAR": {
+        "name": "Quầy máy pha cà phê",
+        "description": "Đẩy nhanh tốc độ hồi phục năng lượng của nhân viên khi nghỉ giải lao."
+      },
+      "PLANT_FIDDLE": {
+        "name": "Cây xanh văn phòng",
+        "description": "Mảng xanh dễ chịu giúp làm dịu căng thẳng cho toàn đội ngũ."
+      },
+      "SERVER_RACK": {
+        "name": "Tủ máy chủ kỹ thuật",
+        "description": "Tăng tốc độ phát triển phần mềm và giảm rủi ro sự cố hạ tầng."
+      },
+      "LOUNGE_SOFA": {
+        "name": "Ghế sofa tiếp khách",
+        "description": "Nâng cao độ tiện nghi văn phòng và ấn tượng với khách đến thăm."
+      },
+      "WHITEBOARD": {
+        "name": "Bảng trắng hoạch định chiến lược",
+        "description": "Hỗ trợ thống nhất lộ trình sản phẩm và nâng cao chất lượng tính năng."
+      },
+      "ARCADE_CABINET": {
+        "name": "Máy chơi game cổ điển",
+        "description": "Tăng mạnh tinh thần gắn kết và giảm căng thẳng mỗi ngày."
+      },
+      "CEO_DESK": { "name": "Bàn giám đốc điều hành", "description": "" },
+      "HR_BOARD": { "name": "Bảng thông tin tuyển dụng", "description": "" },
+      "FINANCE_TERMINAL": { "name": "Trạm sổ sách tài chính", "description": "" },
+      "SAFE_VAULT": { "name": "Két sắt doanh nghiệp", "description": "" },
+      "LEGAL_DESK": { "name": "Bàn hồ sơ hợp đồng", "description": "" },
+      "BOOKSHELF": { "name": "Tủ tài liệu pháp chế", "description": "" },
+      "RECEPTION_DESK": { "name": "Quầy lễ tân đón khách", "description": "" },
+      "MEETING_TABLE": { "name": "Bàn họp chiến lược", "description": "" }
+    }
+  },
+  "milestones": {
+    "title": "Cột mốc, Thành tựu & Thống kê",
+    "subtitle": "{mode} · {msUnlocked}/{msTotal} Cột mốc · {achUnlocked}/{achTotal} Thành tựu",
+    "modeCampaign": "Chế độ Chiến dịch",
+    "modeSandbox": "Chế độ Tự do",
+    "founderLevel": "Cấp nhà sáng lập",
+    "levelValue": "Cấp {level} (Lãnh đạo {lead})",
+    "reputation": "Uy tín",
+    "investorTrust": "Niềm tin nhà đầu tư",
+    "personalCash": "Tiền cá nhân",
+    "payingCustomers": "Khách trả phí",
+    "daysOperated": "Số ngày vận hành",
+    "daysUnit": "{days} ngày",
+    "tabMilestones": "Cột mốc ({unlocked}/{total})",
+    "tabTimeline": "Dòng thời gian cột mốc",
+    "tabAchievements": "Thành tựu ({unlocked}/{total})",
+    "progressionTitle": "Cột mốc phát triển công ty",
+    "achievementsTitle": "Thành tựu doanh nghiệp",
+    "unlockedRatio": "{unlocked} / {total} Đã mở khóa",
+    "unlockedOnDay": "Mở khóa vào Ngày {day}",
+    "progressPrefix": "Tiến độ: {text}",
+    "activityLog": "Nhật ký hoạt động gần đây",
+    "alertTag": "[Cảnh báo] ",
+    "timeline": {
+      "title": "Dòng thời gian cột mốc công ty",
+      "summaryLine": "{completed} đã đạt · {current} đang thực hiện · {upcoming} sắp tới",
+      "filterAll": "Tất cả ({count})",
+      "filterCompleted": "Đã đạt ({count})",
+      "filterUpcoming": "Đang & sắp tới ({count})",
+      "statusCompleted": "Đã hoàn thành",
+      "statusCurrent": "Mục tiêu hiện tại",
+      "statusUpcoming": "Sắp tới",
+      "completedDate": "Ngày {day} · Tháng {month}, {year}",
+      "rewardSummary": "+{cash} · +{rep} Uy tín",
+      "emptyCompleted": "Chưa có cột mốc nào hoàn thành — hãy cùng đội ngũ chạm mục tiêu hiện tại để lưu kỷ niệm đầu tiên.",
+      "emptyFiltered": "Chưa có cột mốc nào trong mục lọc này.",
+      "teamMemoryLabel": "Ghi chú đội ngũ",
+      "currentNote": "{teammate} cùng tập thể {company} đang dồn sức cho cột mốc tiếp theo này.",
+      "details": {
+        "d1": "bên những ly cà phê ấm",
+        "d2": "cạnh bảng trắng đầy giấy ghi chú",
+        "d3": "giữa ánh đèn màn hình lập trình",
+        "d4": "trong tiếng cười nhẹ nhõm khắp văn phòng"
+      },
+      "flavors": {
+        "ms_first_product": {
+          "v1": "{teammate} nhấn nút phát hành {product} {detail}, cả đội {company} reo vui khi bản đầu tiên chính thức chạy.",
+          "v2": "Sau những buổi tối trau chuốt cùng {teammate} và {teammate2}, {product} đã ra mắt trọn vẹn vào Ngày {day}.",
+          "v3": "Giấy ghi chú dần nhường chỗ cho bản phát hành thật — {founder} và {teammate} đón những người dùng đầu tiên của {product}."
+        },
+        "ms_first_customer": {
+          "v1": "Cả studio dừng tay một nhịp {detail} khi {company} nhận được khoản thanh toán đầu tiên từ khách hàng.",
+          "v2": "{teammate} ghim hóa đơn đầu tiên bên góc màn hình — đã có người thực sự tin dùng {product}.",
+          "v3": "Ngày {day} chứng minh {company} không còn chỉ là ý tưởng trên giấy; {teammate} và {teammate2} cùng ăn mừng cột mốc."
+        },
+        "ms_profitable_month": {
+          "v1": "Sổ sách khép tháng với sắc xanh {detail} — {teammate} nâng ly chúc mừng tháng có lãi đầu tiên của {company}.",
+          "v2": "Khi doanh thu tháng đủ trang trải lương và tiền thuê, {founder} và {teammate} thở phào nhẹ nhõm đầy tự hào.",
+          "v3": "Lần đầu tiên {company} tự đứng vững bằng dòng tiền bền vững nhờ nỗ lực bền bỉ của {teammate2}."
+        },
+        "ms_ten_employees": {
+          "v1": "Mười bàn làm việc rộn ràng nhịp gõ phím {detail} — {teammate} đùa rằng cà phê văn phòng hết nhanh gấp đôi.",
+          "v2": "Từ ba chiếc ghế ban đầu tới đội ngũ 10 người, {teammate} và {teammate2} hân hoan chào đón các đồng đội mới.",
+          "v3": "Buổi họp sáng tại {company} nay rộn rã tiếng trao đổi, ý tưởng mới và đủ mười sắc thái cá tính."
+        },
+        "ms_major_contract": {
+          "v1": "Chữ ký đã chốt vào Ngày {day}! {teammate} mang bánh ngọt tới {detail} mừng hợp đồng lớn đầu tiên của {company}.",
+          "v2": "Khách hàng doanh nghiệp đã chú ý tới {product} — {teammate2} và {founder} cùng ăn mừng thương vụ bước ngoặt.",
+          "v3": "Hợp đồng chủ lực mới mang lại điểm tựa tài chính vững vàng và niềm vui âm ỉ nơi từng góc bàn."
+        },
+        "ms_office_expansion": {
+          "v1": "Những thùng carton chuyển văn phòng hóa thành {office} {detail}, mở thêm không gian sáng tạo cho {teammate} và cả đội.",
+          "v2": "Bàn mới, cửa sổ sáng hơn và phòng ốc rộng rãi đánh dấu bước chuyển mình của {company} vào Ngày {day}.",
+          "v3": "{teammate} treo tấm biển chào mừng nơi cửa mới khi mọi người ổn định chỗ ngồi tại {office}."
+        },
+        "ms_one_million": {
+          "v1": "Cột mốc doanh thu bảy chữ số! {teammate} và {teammate2} cụng ly {detail} tri ân từng sprint đã qua.",
+          "v2": "Chạm mốc doanh thu 1.000.000 là khoảnh khắc khó quên với một studio khởi đầu từ ba chiếc bàn nhỏ.",
+          "v3": "{founder} gửi lời cảm ơn {teammate} cùng toàn thể {company} vì đã biến sự kiên trì thành dấu ấn lớn."
+        },
+        "ms_tech_leader": {
+          "v1": "Từ căn phòng nhỏ ngày đầu tới tên tuổi công nghệ vững vàng — {teammate} và {teammate2} cùng nâng ly cho chặng đường của {company} {detail}.",
+          "v2": "Vào Ngày {day}, {company} tự hào đứng vững với sản phẩm chất lượng, dự trữ dồi dào và đội ngũ gắn bó.",
+          "v3": "Mọi góc hành lang tại {office} đều lan tỏa niềm tự hào: {company} đã thực sự tạo dựng dấu ấn riêng."
+        }
+      },
+      "currentFocus": {
+        "ms_first_product": "{teammate} đang hoàn thiện các hạng mục cốt lõi tại Phòng kỹ thuật để đưa {product} ra mắt.",
+        "ms_first_customer": "{teammate} và {founder} đang tinh chỉnh trải nghiệm để thuyết phục khách hàng trả phí đầu tiên.",
+        "ms_profitable_month": "Đội ngũ {company} đang cân đối doanh thu và chi phí hướng tới tháng kinh doanh có lãi.",
+        "ms_ten_employees": "Văn phòng đang chuẩn bị thêm chỗ ngồi khi {company} tiến gần tới quy mô 10 nhân sự.",
+        "ms_major_contract": "{teammate} đang nâng chất lượng sản phẩm và hồ sơ pháp lý để chốt hợp đồng B2B lớn.",
+        "ms_office_expansion": "Cả đội đang tích lũy ngân sách để nâng cấp {office} lên trụ sở rộng rãi hơn.",
+        "ms_one_million": "Các bản cập nhật đều đặn và khách hàng trung thành đang đưa {company} tiến sát mốc doanh thu 1.000.000.",
+        "ms_tech_leader": "{company} đang hướng tới Trụ sở Cấp 4, uy tín cao trên thị trường và quỹ dự trữ vững mạnh."
+      }
+    },
+    "categories": {
+      "FINANCE": "Tài chính",
+      "TEAM": "Đội ngũ",
+      "PRODUCT": "Sản phẩm",
+      "GROWTH": "Tăng trưởng"
+    },
+    "ms": {
+      "ms_first_product": {
+        "title": "Ra mắt sản phẩm MVP đầu tiên",
+        "description": "Phát hành sản phẩm đầu tiên ra thị trường cho khách hàng sử dụng."
+      },
+      "ms_first_customer": {
+        "title": "Khách hàng trả phí đầu tiên",
+        "description": "Có khách hàng trả phí hoặc ký được hợp đồng B2B đầu tiên."
+      },
+      "ms_profitable_month": {
+        "title": "Tháng có lãi đầu tiên",
+        "description": "Khép lại một tháng với lợi nhuận ròng dương sau khi trừ lương và thuê mặt bằng."
+      },
+      "ms_ten_employees": {
+        "title": "Studio mở rộng (10 nhân sự)",
+        "description": "Xây dựng đội ngũ tối thiểu 10 nhân viên đang làm việc."
+      },
+      "ms_major_contract": {
+        "title": "Hợp đồng lớn đầu tiên",
+        "description": "Ký hợp đồng doanh nghiệp giá trị từ 2.000/tháng trở lên."
+      },
+      "ms_office_expansion": {
+        "title": "Mở rộng văn phòng",
+        "description": "Nâng cấp trụ sở lên quy mô lớn hơn văn phòng khởi nghiệp ban đầu."
+      },
+      "ms_one_million": {
+        "title": "Cột mốc doanh thu 1.000.000",
+        "description": "Đạt tổng doanh thu tích lũy 1.000.000."
+      },
+      "ms_tech_leader": {
+        "title": "Công ty công nghệ dẫn đầu",
+        "description": "Đạt Trụ sở Cấp 4, Uy tín 75+ và dự trữ tiền mặt từ 250.000 trở lên."
+      }
+    },
+    "ach": {
+      "ach_100k_revenue": {
+        "title": "Doanh thu 100.000 đầu tiên",
+        "description": "Tạo ra tổng doanh thu tích lũy đạt 100.000."
+      },
+      "ach_1m_revenue": {
+        "title": "Câu lạc bộ triệu phú doanh thu",
+        "description": "Đạt tổng doanh thu tích lũy 1.000.000."
+      },
+      "ach_burned_1m": {
+        "title": "Đã chi tiêu 1.000.000 vốn",
+        "description": "Chi tiêu tổng cộng 1.000.000 cho lương, thuê văn phòng, R&D và tiếp thị."
+      },
+      "ach_all_roles": {
+        "title": "Đầy đủ 8 vai trò chuyên môn",
+        "description": "Tuyển dụng nhân sự cho cả 8 vị trí chuyên môn khởi nghiệp."
+      },
+      "ach_lead_veteran": {
+        "title": "Đội ngũ lãnh đạo kỳ cựu",
+        "description": "Thăng chức bất kỳ nhân viên nào lên Cấp 4 (Trưởng nhóm)."
+      },
+      "ach_zero_bugs_mature": {
+        "title": "Sản phẩm chủ lực hoàn mỹ",
+        "description": "Vận hành sản phẩm Trưởng thành (v3+) với 85+ chất lượng và 0 lỗi tồn đọng."
+      },
+      "ach_multi_product": {
+        "title": "Hệ sinh thái đa sản phẩm",
+        "description": "Vận hành đồng thời ít nhất 3 sản phẩm đang kinh doanh trên thị trường."
+      },
+      "ach_1k_customers": {
+        "title": "Một nghìn khách hàng trung thành",
+        "description": "Đạt 1.000 khách hàng trả phí trên toàn bộ danh mục sản phẩm."
+      },
+      "ach_enterprise_whale": {
+        "title": "Hợp đồng doanh nghiệp khủng",
+        "description": "Ký thành công hợp đồng B2B trị giá từ 4.000/tháng trở lên."
+      },
+      "ach_debt_free_hq": {
+        "title": "Bảng cân đối tài chính vững vàng",
+        "description": "Đạt Trụ sở Cấp 3+ với 0 đồng dư nợ và dự trữ tiền mặt 100.000+."
+      }
+    }
+  },
+  "reports": {
+    "dailyTitle": "Báo cáo tiến độ Ngày {day}",
+    "dailySubtitle": "Tháng {month}, Năm {year} · Tổng kết cuối ngày",
+    "dayRevenue": "Doanh thu trong ngày",
+    "totalPaying": "Tổng khách hàng trả phí",
+    "avgMorale": "Tinh thần trung bình",
+    "operatingSpend": "Chi phí phát sinh hôm nay",
+    "dailyHighlights": "Điểm nhấn trong ngày",
+    "startNextDay": "Bắt đầu Ngày {day}",
+    "listenReport": "Nghe đọc báo cáo",
+    "monthlyTitle": "Báo cáo tài chính Tháng {month}, Năm {year}",
+    "monthlySubtitle": "Báo cáo kết quả tài chính & vận hành cuối tháng",
+    "netProfitLoss": "Lợi nhuận ròng / Lỗ tháng",
+    "endingCash": "Tiền mặt cuối kỳ",
+    "totalRevenue": "Tổng doanh thu",
+    "productSalesSub": "Doanh thu sản phẩm & thuê bao",
+    "b2bContracts": "Hợp đồng doanh nghiệp B2B",
+    "totalExpenses": "Tổng chi phí",
+    "employeePayroll": "Lương nhân viên ({count} người)",
+    "founderSalaryLine": "Lương nhà sáng lập (vào tiền cá nhân)",
+    "officeRent": "Tiền thuê văn phòng",
+    "serverMaint": "Bảo trì máy chủ",
+    "marketingSpend": "Chiến dịch tiếp thị",
+    "rdOpsHiring": "R&D / Vận hành / Tuyển dụng",
+    "taxesInterest": "Thuế & Lãi vay",
+    "activeCustomers": "Khách đang hoạt động",
+    "teamMorale": "Tinh thần đội ngũ",
+    "headcount": "Nhân sự",
+    "startNextMonth": "Bắt đầu tháng tiếp theo"
+  },
+  "events": {
+    "subtitle": "Quyết định {category} · Ngày {day}",
+    "outcomeLabel": "Kết quả: {text}",
+    "categories": {
+      "MARKET": "Thị trường",
+      "PRODUCT": "Sản phẩm",
+      "HR": "Nhân sự",
+      "FINANCE": "Tài chính",
+      "OPERATIONS": "Vận hành",
+      "INVESTOR": "Nhà đầu tư"
+    },
+    "templates": {
+      "CRITICAL_BUG": {
+        "title": "Phát hiện lỗi nghiêm trọng trên hệ thống",
+        "description": "Khách hàng đầu tiên phản ánh sự cố thanh toán và đồng bộ dữ liệu ở bản phát hành chính. Lượng yêu cầu hỗ trợ đang tăng nhanh.",
+        "choices": {
+          "HOTFIX_NOW": {
+            "label": "Triển khai bản vá khẩn cấp ngay",
+            "description": "Chi {cost} cho hạ tầng và tăng ca để khắc phục lập tức.",
+            "effects": "Xóa sạch lỗi, +4 Hài lòng, -10 Năng lượng đội ngũ"
+          },
+          "QUEUE_PATCH": {
+            "label": "Đưa vào kế hoạch sửa ở đợt tới",
+            "description": "Tránh chi phát sinh và để kỹ sư xử lý trong giờ hành chính.",
+            "effects": "+4 Lỗi, -5 Mức hài lòng khách hàng"
+          }
+        }
+      },
+      "VIRAL_POST": {
+        "title": "Sản phẩm được chia sẻ lan tỏa mạnh",
+        "description": "Một chuyên gia công nghệ uy tín đã đăng bài khen ngợi công ty của bạn, kéo theo lượng truy cập quan tâm tăng vọt.",
+        "choices": {
+          "AMPLIFY_CAMPAIGN": {
+            "label": "Đẩy mạnh truyền thông tiếp nối",
+            "description": "Đầu tư {cost} để tối ưu trang đích và mở rộng quảng bá.",
+            "effects": "+25–45 Khách hàng mới, +6 Uy tín"
+          },
+          "ORGANIC_RIDE": {
+            "label": "Cảm ơn cộng đồng tự nhiên",
+            "description": "Tương tác trực tiếp trong bình luận mà không tốn phí quảng cáo.",
+            "effects": "+12–18 Khách hàng mới, +3 Uy tín"
+          }
+        }
+      },
+      "MAJOR_CLIENT_OPP": {
+        "title": "Lời mời thử nghiệm từ doanh nghiệp lớn",
+        "description": "Một công ty tầm trung muốn thử nghiệm sản phẩm cho 40 tài khoản nếu bạn chuẩn bị quy trình tích hợp riêng trong tuần này.",
+        "choices": {
+          "PITCH_CUSTOM": {
+            "label": "Chuẩn bị hồ sơ thử nghiệm riêng",
+            "description": "Chi {cost} cho thẩm định pháp lý và buổi trình bày sản phẩm.",
+            "effects": "Thêm 1 hợp đồng B2B giá trị cao vào danh sách chờ ký"
+          },
+          "STANDARD_OFFER": {
+            "label": "Gửi liên kết tự đăng ký tiêu chuẩn",
+            "description": "Giữ đội ngũ tập trung vào lộ trình tính năng cốt lõi.",
+            "effects": "+600 đ phí thử nghiệm ngay, +2 Uy tín"
+          }
+        }
+      },
+      "EMPLOYEE_RESIGN_RISK": {
+        "title": "Cảnh báo kiệt sức ở nhân sự chủ chốt",
+        "description": "Một thành viên trong đội đang quá tải và vừa nhận được lời mời tuyển dụng từ công ty lớn hơn.",
+        "choices": {
+          "RETENTION_BONUS": {
+            "label": "Thưởng giữ chân & cho {name} nghỉ phép",
+            "description": "Thưởng {cost} và giảm tải khối lượng công việc.",
+            "effects": "+25 Tinh thần, -25 Căng thẳng, gắn bó lâu dài"
+          },
+          "PEP_TALK": {
+            "label": "Trao đổi định hướng 1-1",
+            "description": "Dùng năng lực lãnh đạo để lắng nghe và sắp xếp lại mục tiêu không tốn phí.",
+            "effects": "+10 Tinh thần, vẫn còn rủi ro nếu căng thẳng tiếp tục cao"
+          }
+        }
+      },
+      "INVESTOR_OFFER": {
+        "title": "Đề nghị đầu tư vòng hạt giống",
+        "description": "Một nhóm nhà đầu tư thiên thần đã ghé Sảnh đón khách và ấn tượng với tốc độ thực thi của bạn. Họ đề nghị rót vốn tăng trưởng.",
+        "choices": {
+          "ACCEPT_FUNDING": {
+            "label": "Nhận {amount} đổi lấy {eq}% cổ phần",
+            "description": "Bơm ngay dòng tiền mặt để tăng tốc tuyển dụng và tiếp thị.",
+            "effects": "+{amount} Tiền mặt, +{eq}% Pha loãng cổ phần, +5 Uy tín"
+          },
+          "STAY_BOOTSTRAPPED": {
+            "label": "Từ chối lịch sự để giữ quyền tự chủ",
+            "description": "Giữ trọn cổ phần và tăng trưởng bằng doanh thu từ khách hàng.",
+            "effects": "+4 Uy tín nhà sáng lập, 0% pha loãng cổ phần"
+          }
+        }
+      },
+      "SERVER_OUTAGE": {
+        "title": "Sự cố gián đoạn hạ tầng đám mây",
+        "description": "Lưu lượng truy cập tăng đột biến khiến cụm cơ sở dữ liệu bị nghẽn ở nhiều khu vực khách hàng.",
+        "choices": {
+          "UPGRADE_CLUSTER": {
+            "label": "Chuyển dự phòng & nâng cấp cụm máy chủ",
+            "description": "Chi {cost} để mở rộng năng lực tự cân bằng tải khẩn cấp.",
+            "effects": "Không mất dữ liệu, +3 Hài lòng, +4 Chất lượng"
+          },
+          "RESTART_MANUAL": {
+            "label": "Khởi động lại thủ công & gửi thư xin lỗi",
+            "description": "Tiết kiệm tiền mặt trong khi bộ phận vận hành xử lý thủ công.",
+            "effects": "-7 Mức hài lòng khách hàng, -3 Uy tín"
+          }
+        }
+      },
+      "COMPETITOR_LAUNCH": {
+        "title": "Đối thủ ra mắt phiên bản cạnh tranh",
+        "description": "Một đối thủ cùng ngành vừa tung sản phẩm tương tự với mức giá ưu đãi rất mạnh.",
+        "choices": {
+          "FEATURE_SPRINT": {
+            "label": "Đẩy mạnh chiến dịch tạo khác biệt",
+            "description": "Đầu tư {cost} để chăm sóc khách hàng và hoàn thiện điểm mạnh riêng.",
+            "effects": "+6 Nhu cầu thị trường, +4 Chất lượng sản phẩm"
+          },
+          "HOLD_COURSE": {
+            "label": "Giữ vững lộ trình cho người dùng cốt lõi",
+            "description": "Tránh chi tiêu phản ứng theo đối thủ và bảo toàn dòng tiền.",
+            "effects": "-4 Nhu cầu thị trường"
+          }
+        }
+      },
+      "EMPLOYEE_CONFLICT": {
+        "title": "Bất đồng giữa Sản phẩm và Kỹ thuật",
+        "description": "Hai thành viên tranh luận gay gắt giữa việc ra mắt thật nhanh hay tái cấu trúc mã nguồn cho sạch sẽ.",
+        "choices": {
+          "MEDIATE_COMPROMISE": {
+            "label": "Chủ trì hòa giải tìm giải pháp cân bằng",
+            "description": "Dùng năng lượng nhà sáng lập để thống nhất hai bên tại Phòng họp.",
+            "effects": "+8 Tinh thần đội ngũ, +3 Kinh nghiệm lãnh đạo"
+          },
+          "PUSH_DEADLINE": {
+            "label": "Ưu tiên giao hàng đúng hạn ngay",
+            "description": "Ép tiến độ tính năng ra sớm mà không tái cấu trúc mã.",
+            "effects": "+8 Tiến độ phát triển, -6 Tinh thần, +2 Lỗi"
+          }
+        }
+      },
+      "UNEXPECTED_EXPENSE": {
+        "title": "Chi phí bản quyền & kiểm toán tuân thủ",
+        "description": "Phí API bên thứ ba và kiểm định bảo mật thường niên cao hơn một chút so với dự toán ban đầu.",
+        "choices": {
+          "PAY_AUDIT": {
+            "label": "Thanh toán toàn bộ phí kiểm định",
+            "description": "Chi {cost} ngay để giữ vững uy tín với khách hàng doanh nghiệp.",
+            "effects": "-{cost} Tiền mặt, +3 Uy tín"
+          },
+          "RENEGOTIATE": {
+            "label": "Chuyển sang trả chậm theo quý",
+            "description": "Tránh hụt tiền mặt tức thời nhờ thương lượng tài chính - pháp chế.",
+            "effects": "0 đ trả trước, +950 đ nợ ngắn hạn"
+          }
+        }
+      },
+      "NEGATIVE_FEEDBACK": {
+        "title": "Đánh giá khắt khe từ khách hàng trả phí",
+        "description": "Một khách hàng đang trả phí vừa đăng bài góp ý chi tiết về luồng sử dụng còn thiếu mượt mà.",
+        "choices": {
+          "FOUNDER_REPLY": {
+            "label": "Trực tiếp phản hồi & tung bản sửa nhanh",
+            "description": "Chi {cost} cùng thời gian CEO để biến người góp ý thành khách hàng trung thành.",
+            "effects": "+6 Mức hài lòng khách hàng, +4 Uy tín"
+          },
+          "IGNORE_THREAD": {
+            "label": "Ghi nhận phản hồi để xử lý sau",
+            "description": "Tiết kiệm nguồn lực cho cột mốc phát triển tiếp theo.",
+            "effects": "-5 Mức hài lòng khách hàng"
+          }
+        }
+      }
+    }
+  },
+  "saveLoad": {
+    "title": "Lưu & Tải tiến trình",
+    "subtitle": "Các bản lưu được bảo quản cục bộ ngay trên trình duyệt của bạn.",
+    "autosaveTitle": "Ô lưu tự động",
+    "slotTitle": "Ô lưu số {num}",
+    "metaSummary": "{company} · Nhà sáng lập {founder}",
+    "metaDetails": "Năm {year} Tháng {month} Ngày {day} · {cash} · {count} nhân sự · {time}",
+    "emptySlot": "Ô lưu trống",
+    "deleteTitle": "Xóa bản lưu",
+    "confirmOverwriteTitle": "Ghi đè {slot}?",
+    "confirmOverwriteBody": "Thao tác này sẽ thay thế bản lưu {company} (Ngày {day}) bằng tiến trình hiện tại.",
+    "confirmOverwriteBtn": "Xác nhận ghi đè"
+  },
+  "settings": {
+    "title": "Cài đặt trò chơi, Ngôn ngữ & Giọng nói",
+    "menuBtn": "Cài đặt",
+    "soundEffects": "Hiệu ứng âm thanh",
+    "soundEffectsDesc": "Âm thanh phản hồi thao tác và giao dịch tài chính",
+    "controlsTitle": "Phím tắt & Điều khiển",
+    "controlsDesc": "Xem danh sách đầy đủ phím tắt di chuyển, tốc độ mô phỏng và thao tác chuột.",
+    "openShortcutsBtn": "Phím tắt bàn phím",
+    "ctrlMove": "WASD / Phím mũi tên: Di chuyển nhà sáng lập quanh văn phòng",
+    "ctrlWalk": "Nhấp chuột trái lên sàn: Đi tới ô đã chọn",
+    "ctrlInspect": "Nhấp vào phòng / nhân viên: Mở bảng thao tác ngữ cảnh",
+    "ctrlCamera": "Kéo chuột / Con lăn: Di chuyển & thu phóng góc nhìn văn phòng",
+    "ctrlSpeed": "Phím Space: Tạm dừng / Tiếp tục · Phím 1 / 2 / 3: Tốc độ mô phỏng",
+    "reviewTutorial": "Mở lại hướng dẫn tân thủ",
+    "returnTitle": "Quay về màn hình chính",
+    "resetFresh": "Chơi lại từ đầu",
+    "resetConfirm": "Đặt lại sẽ xóa tiến trình chưa lưu của {company}. Bạn chắc chắn chứ?",
+    "confirmReset": "Xác nhận chơi lại"
+  },
+  "voice": {
+    "panelTitle": "Thuyết minh & Giọng đọc (Web Speech API)",
+    "enableLabel": "Bật thuyết minh bằng giọng nói",
+    "enableDesc": "Đọc hướng dẫn, báo cáo tài chính và lời thoại nhân viên cùng phụ đề đồng bộ.",
+    "selectVoice": "Giọng đọc trên thiết bị",
+    "autoVoiceOption": "Tự động chọn giọng phù hợp nhất ({lang})",
+    "noViVoiceWarning": "Thiết bị hoặc trình duyệt hiện tại chưa cài giọng đọc tiếng Việt (vi-VN). Trò chơi vẫn hiển thị đầy đủ phụ đề văn bản và tuyệt đối không dùng giọng tiếng Anh để đọc tiếng Việt.",
+    "noViVoiceBadge": "Chưa có giọng vi-VN trên thiết bị",
+    "viVoiceReadyBadge": "Sẵn sàng giọng tiếng Việt ({count})",
+    "enVoiceReadyBadge": "Sẵn sàng giọng tiếng Anh ({count})",
+    "unsupportedWarning": "Trình duyệt này không hỗ trợ Web Speech API. Toàn bộ nội dung phụ đề vẫn hiển thị bình thường.",
+    "mutedNote": "Âm thanh hệ thống đang tắt tiếng nên giọng nói tạm thời im lặng, phụ đề vẫn hiển thị.",
+    "rateLabel": "Tốc độ đọc",
+    "volumeLabel": "Âm lượng giọng đọc",
+    "autoReadTitle": "Tự động đọc khi xuất hiện",
+    "autoReadTutorial": "Bước hướng dẫn tân thủ",
+    "autoReadNotifications": "Thông báo & Thành tựu mới",
+    "autoReadDialogue": "Lời thoại nhân viên văn phòng",
+    "autoReadObjectives": "Hoàn thành mục tiêu khởi đầu",
+    "autoReadReports": "Báo cáo ngày / tháng & Sự kiện",
+    "testVoiceBtn": "Nghe thử giọng đọc",
+    "stopVoiceBtn": "Dừng phát",
+    "subtitleBarLabel": "Phụ đề thuyết minh",
+    "speakingNow": "Đang đọc",
+    "subtitleHide": "Ẩn phụ đề",
+    "speakerNarrator": "Người dẫn chuyện",
+    "speakerAdvisor": "Cố vấn khởi nghiệp",
+    "testPhrase": "Xin chào nhà sáng lập. Hệ thống thuyết minh tiếng Việt đã sẵn sàng đồng hành cùng công ty của bạn."
+  },
+  "endgame": {
+    "victoryTitle": "Đạt cột mốc Tập đoàn công nghệ",
+    "victorySubtitle": "{company} đã trở thành một doanh nghiệp công nghệ thịnh vượng",
+    "victoryBody": "Bạn đã phát triển {company} lên Trụ sở Cấp 4 với {count} nhân sự, tổng doanh thu tích lũy {revenue} và {rep} điểm uy tín.",
+    "continueSandbox": "Tiếp tục chơi tự do",
+    "playAgain": "Chơi ván mới",
+    "gameOverTitle": "Công ty phải đóng cửa",
+    "gameOverSubtitle": "{company} · Năm {year}, Tháng {month}",
+    "gameOverFallback": "Công ty khởi nghiệp đã cạn kiệt dòng tiền hoạt động.",
+    "daysOperated": "Số ngày đã hoạt động",
+    "cumulativeRevenue": "Tổng doanh thu tích lũy",
+    "endingCash": "Tiền mặt cuối cùng",
+    "titleScreenBtn": "Màn hình chính"
+  },
+  "shortcutsModal": {
+    "title": "Phím tắt bàn phím",
+    "subtitle": "Hướng dẫn nhanh các phím tắt và thao tác điều khiển trong trò chơi",
+    "movementSection": "Di chuyển Nhà sáng lập",
+    "speedSection": "Tốc độ mô phỏng & Tạm dừng",
+    "interfaceSection": "Giao diện & Đặt nội thất",
+    "mouseSection": "Thao tác chuột & Camera",
+    "keySpace": "Space",
+    "keyArrows": "Mũi tên (↑ ↓ ← →)",
+    "keyEsc": "Esc",
+    "keyM": "M",
+    "keyLeftClick": "Nhấp chuột trái",
+    "keyDragWheel": "Kéo chuột / Con lăn",
+    "moveWasdDesc": "Di chuyển Nhà sáng lập từng ô theo 4 hướng (Lên, Trái, Xuống, Phải)",
+    "moveArrowsDesc": "Di chuyển Nhà sáng lập bằng các phím mũi tên",
+    "pauseResumeDesc": "Tạm dừng hoặc tiếp tục chạy thời gian mô phỏng (1x)",
+    "speed1Desc": "Chuyển sang tốc độ bình thường (1x)",
+    "speed2Desc": "Chuyển sang tốc độ nhanh (2x)",
+    "speed3Desc": "Chuyển sang tốc độ rất nhanh (3x)",
+    "muteAudioDesc": "Tắt hoặc bật toàn bộ âm thanh trò chơi (Âm lượng tổng)",
+    "escDesc": "Hủy đặt nội thất, đóng bảng đang mở hoặc mở menu Cài đặt",
+    "mouseWalkDesc": "Nhấp lên sàn để Nhà sáng lập tự động đi tới ô đó",
+    "mouseInspectDesc": "Nhấp vào phòng, nhân viên hoặc đồ nội thất để xem chi tiết & thao tác",
+    "mouseCameraDesc": "Kéo nền văn phòng để di chuyển góc nhìn; cuộn con lăn để thu phóng",
+    "noteText": "Lưu ý: Phím tắt sẽ tạm khóa khi bạn đang nhập liệu trong ô văn bản hoặc khi có báo cáo / sự kiện cần xử lý."
+  },
+  "shortcutFeedback": {
+    "PAUSE": "Đã tạm dừng",
+    "RESUME": "Tiếp tục (1x)",
+    "SPEED_1": "Tốc độ 1x",
+    "SPEED_2": "Tốc độ 2x",
+    "SPEED_3": "Tốc độ 3x",
+    "MOVE_UP": "Đi lên",
+    "MOVE_DOWN": "Đi xuống",
+    "MOVE_LEFT": "Sang trái",
+    "MOVE_RIGHT": "Sang phải",
+    "CANCEL_PLACEMENT": "Đã hủy đặt nội thất",
+    "CLOSE_PANEL": "Đã đóng bảng",
+    "OPEN_SETTINGS": "Mở cài đặt",
+    "MUTE_AUDIO": "Đã tắt âm thanh tổng",
+    "UNMUTE_AUDIO": "Đã bật âm thanh tổng"
+  },
+  "canvasSpeed": {
+    "label": "Tốc độ",
+    "s0": "Tạm dừng",
+    "s1": "Bình thường",
+    "s2": "Nhanh",
+    "s3": "Rất nhanh"
+  },
+  "tooltips": {
+    "cashBalance": "Tiền mặt công ty hiện có. Dùng để trả lương, thuê văn phòng, R&D và tiếp thị. Hết tiền vượt hạn mức tín dụng sẽ phá sản.",
+    "companyStatus": "Đánh giá nhanh sức khỏe tài chính và tăng trưởng hiện tại của công ty.",
+    "speedPause": "Tạm dừng dòng thời gian mô phỏng để sắp xếp công việc thoải mái (Phím Space).",
+    "speed1x": "Chạy thời gian mô phỏng ở tốc độ chuẩn hằng ngày (Phím 1).",
+    "speed2x": "Tăng tốc mô phỏng lên gấp 2 lần (Phím 2).",
+    "speed3x": "Tăng tốc mô phỏng tối đa 3 lần (Phím 3).",
+    "endDay": "Kết thúc ngay ngày làm việc hôm nay, tổng hợp tiến độ sản phẩm, doanh thu và thể lực đội ngũ.",
+    "navOffice": "Quay lại bản đồ văn phòng để quan sát nhân viên, phòng ban và tương tác trực tiếp.",
+    "navEmployees": "Quản lý đội ngũ hiện tại, phân công nhiệm vụ, đào tạo kỹ năng và tuyển dụng nhân sự mới.",
+    "navProducts": "Khởi tạo ý tưởng sản phẩm, chạy R&D, sửa lỗi, ra mắt MVP và cải tiến chất lượng.",
+    "navFinance": "Theo dõi dòng tiền, chi phí hằng tháng, hạn mức tín dụng và điều chỉnh lương Nhà sáng lập.",
+    "navMarket": "Chạy chiến dịch tiếp thị thu hút người dùng và đàm phán các hợp đồng B2B.",
+    "navUpgrades": "Mở rộng quy mô trụ sở văn phòng, mở khóa phòng ban mới và lắp đặt tiện ích giảm căng thẳng.",
+    "navMilestones": "Xem các cột mốc tăng trưởng của công ty và danh sách thành tựu đã mở khóa.",
+    "navSaveLoad": "Lưu tiến trình hiện tại vào các ô lưu hoặc khôi phục lại bản lưu trước đó.",
+    "navTutorial": "Mở lại hướng dẫn tương tác từng bước để làm quen lại các hệ thống chính.",
+    "navSettings": "Đổi ngôn ngữ giao diện, tùy chỉnh giọng đọc TTS, âm lượng và xem danh sách phím tắt.",
+    "empSkill": "Kỹ năng chuyên môn chính quyết định tốc độ hoàn thành và chất lượng sản phẩm của vai trò này.",
+    "empOutput": "Hiệu suất làm việc thực tế hằng ngày, chịu ảnh hưởng bởi kỹ năng, tinh thần, năng lượng và độ hợp việc.",
+    "empMorale": "Tinh thần đội ngũ. Tinh thần cao giúp tăng năng suất; tinh thần thấp dễ dẫn tới nghỉ việc.",
+    "empEnergy": "Thể lực còn lại trong ngày. Nhân viên mệt mỏi sẽ làm việc chậm hơn nếu thiếu nghỉ ngơi hoặc tiện ích.",
+    "empStress": "Mức độ căng thẳng tích lũy. Căng thẳng kéo dài làm giảm tinh thần và tăng nguy cơ nghỉ việc.",
+    "empTaskSelect": "Chọn nhiệm vụ hằng ngày phù hợp với kỹ năng thế mạnh để tối đa hóa hiệu suất.",
+    "empProductSelect": "Chọn sản phẩm cụ thể mà nhân viên này sẽ tập trung đóng góp mỗi ngày.",
+    "financeCompanyCash": "Quỹ tiền mặt dùng cho vận hành, R&D, tiếp thị và thanh toán lương vào Ngày 30 hằng tháng.",
+    "financeProjectedNet": "Ước tính lãi hoặc lỗ ròng hằng tháng dựa trên doanh thu định kỳ trừ đi quỹ lương, tiền thuê và bảo trì.",
+    "financePersonalCash": "Tài sản cá nhân tích lũy từ lương Nhà sáng lập bạn tự chi trả mỗi tháng.",
+    "financeCreditDebt": "Tổng dư nợ đang vay từ hạn mức tín dụng. Vượt quá hạn mức tín dụng khi cuối tháng sẽ gây phá sản.",
+    "financeApplySalary": "Áp dụng mức lương Nhà sáng lập mới. Lương thấp tăng tôn trọng và niềm tin nhà đầu tư; lương cao tăng tiền cá nhân nhưng giảm uy tín."
+  },
+  "audio": {
+    "sectionTitle": "Âm thanh",
+    "masterLabel": "Âm lượng tổng",
+    "bgmLabel": "Nhạc nền",
+    "sfxLabel": "Hiệu ứng âm thanh",
+    "muteBtn": "Tắt tiếng",
+    "unmuteBtn": "Bật tiếng",
+    "testSoundBtn": "Nghe thử hiệu ứng",
+    "masterMutedHint": "Âm lượng tổng đang tắt tiếng.",
+    "sfxMutedHint": "Hiệu ứng âm thanh đang tắt tiếng.",
+    "sfxZeroHint": "Âm lượng hiệu ứng đang ở mức 0%.",
+    "testPlayedHint": "Đã phát âm thanh thử.",
+    "bgmMuteAria": "Bật hoặc tắt nhạc nền"
+  },
+  "auth": {
+    "sectionTitle": "Tài khoản người chơi",
+    "guestTitle": "Người chơi khách",
+    "guestDesc": "Tiến trình luôn được lưu trên máy của bạn, chơi ngay không cần đăng nhập.",
+    "signedInStatus": "Đã đăng nhập",
+    "localSavesIntact": "Bản lưu trên máy được giữ nguyên vẹn.",
+    "loginBtn": "Đăng nhập",
+    "createAccountBtn": "Tạo tài khoản",
+    "logoutBtn": "Đăng xuất",
+    "continueGuestBtn": "Tiếp tục chế độ Khách",
+    "backToLoginBtn": "Quay lại Đăng nhập",
+    "loginTitle": "Đăng nhập tài khoản",
+    "registerTitle": "Tạo tài khoản mới",
+    "loginSubtitle": "Tùy chọn — bạn vẫn có thể chơi và lưu ngay ở chế độ Khách.",
+    "registerSubtitle": "Đăng ký bằng email và mật khẩu để quản lý tài khoản của bạn.",
+    "emailLabel": "Email",
+    "emailPlaceholder": "ban@congty.com",
+    "passwordLabel": "Mật khẩu",
+    "confirmPasswordLabel": "Nhập lại mật khẩu",
+    "passwordRule": "Ít nhất 8 ký tự, gồm cả chữ và số.",
+    "showPassword": "Hiện mật khẩu",
+    "hidePassword": "Ẩn mật khẩu",
+    "rememberMe": "Ghi nhớ đăng nhập",
+    "submitting": "Đang xử lý...",
+    "sessionExpiredNotice": "Phiên đăng nhập đã hết hạn. Bạn đang tiếp tục ở chế độ Khách và toàn bộ bản lưu trên máy vẫn an toàn.",
+    "errors": {
+      "INVALID_EMAIL": "Vui lòng nhập địa chỉ email hợp lệ.",
+      "WEAK_PASSWORD": "Mật khẩu cần ít nhất 8 ký tự và bao gồm cả chữ lẫn số.",
+      "PASSWORD_MISMATCH": "Mật khẩu xác nhận không khớp.",
+      "EMAIL_IN_USE": "Email này đã được đăng ký.",
+      "INVALID_CREDENTIALS": "Email hoặc mật khẩu chưa đúng.",
+      "SESSION_EXPIRED": "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.",
+      "UNAUTHORIZED": "Vui lòng đăng nhập để thực hiện thao tác này.",
+      "RATE_LIMITED": "Bạn đã thử quá nhiều lần. Vui lòng đợi một lát rồi thử lại.",
+      "NETWORK_ERROR": "Không thể kết nối máy chủ tài khoản. Bạn vẫn có thể tiếp tục ở chế độ Khách.",
+      "SERVER_ERROR": "Có lỗi máy chủ xảy ra. Vui lòng thử lại."
+    }
+  },
+  "story": {
+    "chapterPrefix": "Chương {n}",
+    "speakers": {
+      "narrator": "Người dẫn chuyện",
+      "founder": "Nhà sáng lập",
+      "teamLead": "Đồng đội sáng lập"
+    },
+    "controls": {
+      "musicVolume": "Âm lượng nhạc",
+      "voiceVolume": "Âm lượng giọng đọc",
+      "voiceMuteAria": "Bật hoặc tắt giọng thuyết minh",
+      "speed_SLOW": "0.7x",
+      "speed_NORMAL": "1x",
+      "speed_FAST": "1.5x",
+      "autoBtn": "Tự chuyển",
+      "subtitlesBtn": "Phụ đề",
+      "skip": "Bỏ qua",
+      "next": "Tiếp tục",
+      "finish": "Bắt đầu",
+      "reveal": "Hiện hết",
+      "autoOnHint": "Đang bật tự chuyển cảnh · Nhấn để đi tiếp",
+      "clickContinue": "Nhấn bất kỳ đâu để tiếp tục"
+    },
+    "intro": {
+      "badge": "Mở đầu · Một Khởi Đầu Nhỏ",
+      "s1Scene": "Cảnh 1 · Buổi Sáng Mới",
+      "s1Text": "Mọi công ty lớn đều từng bắt đầu từ một nơi rất nhỏ...",
+      "s2Scene": "Cảnh 2 · Văn Phòng Nhỏ",
+      "s2Text": "Bạn có một văn phòng nhỏ, một số tiền tiết kiệm và một ý tưởng.",
+      "s3Scene": "Cảnh 3 · Đội Ngũ Đầu Tiên",
+      "s3Text": "Bạn không thể xây dựng mọi thứ một mình.",
+      "s4Scene": "Cảnh 4 · Quyết Định Đầu Tiên",
+      "s4Text": "Vậy... chúng ta bắt đầu thôi.",
+      "s5Title": "STARTUP FOUNDER SIMULATOR",
+      "s5Subtitle": "Một Khởi Đầu Nhỏ",
+      "readyDay1": "{company} chính thức mở cửa Ngày 1. Hành trình của bạn bắt đầu từ đây."
+    },
+    "chapters": {
+      "c1": {
+        "title": "Ngày đầu tiên",
+        "theme": "Một khởi đầu nhỏ — làm quen văn phòng, đồng đội và định hình bản sắc công ty.",
+        "milestone": "Chính thức bắt đầu vận hành công ty."
+      },
+      "c2": {
+        "title": "Sản phẩm đầu tiên",
+        "theme": "Biến ý tưởng trên giấy thành sản phẩm thực sự hoạt động.",
+        "milestone": "Hoàn thành và ra mắt bản thử nghiệm sản phẩm đầu tiên."
+      },
+      "c3": {
+        "title": "Khách hàng đầu tiên",
+        "theme": "Tìm thấy những người đầu tiên tin tưởng sản phẩm và lắng nghe góp ý.",
+        "milestone": "Có khách hàng trả phí đầu tiên."
+      },
+      "c4": {
+        "title": "Thử thách tăng trưởng",
+        "theme": "Phát triển kéo theo bài toán chi phí, khối lượng công việc, chất lượng và văn hóa.",
+        "milestone": "Vượt qua thử thách tăng trưởng đáng kể đầu tiên."
+      },
+      "c5": {
+        "title": "Cơ hội lớn",
+        "theme": "Nhà đầu tư, đối thủ và lời đề nghị mua lại đặt ra bước ngoặt chiến lược.",
+        "milestone": "Lựa chọn hướng đi chiến lược cho tương lai công ty."
+      },
+      "c6": {
+        "title": "Tương lai của công ty",
+        "theme": "Nhìn lại chặng đường đã qua — bạn đã xây dựng một công ty như thế nào?",
+        "milestone": "Tổng kết hành trình và đánh giá kết cục."
+      }
+    },
+    "milestones": {
+      "c1Line1": "Máy pha cà phê ấm dần lên khi tiếng bàn phím bắt đầu vang khắp căn phòng nhỏ.",
+      "c1Line2": "Chúng ta đã có định hướng rõ ràng. Hãy cùng tạo ra một sản phẩm đáng tự hào.",
+      "c2Line1": "Bản thử nghiệm đầu tiên đã lên sóng! Người dùng thật đã có thể trải nghiệm ngay hôm nay.",
+      "c2Line2": "Những nét phác thảo đêm khuya nay đã trở thành sản phẩm sống động ngoài đời thực.",
+      "c3Line1": "Hóa đơn đầu tiên vừa được thanh toán — đã có người tin tưởng trả tiền cho đội ngũ nhỏ này.",
+      "c3Line2": "Một khách hàng đầu tiên biến ý tưởng thành doanh nghiệp thật sự. Hãy giữ trọn niềm tin ấy.",
+      "c4Line1": "Thêm bàn làm việc, thêm hoài bão, và những đánh đổi khó khăn thử thách người dẫn dắt.",
+      "c4Line2": "Mơ về tăng trưởng nhanh thì dễ; giữ cho công ty lớn mạnh mà vẫn lành mạnh mới cần bản lĩnh.",
+      "c5Line1": "Tên tuổi công ty đã lan tỏa trong ngành. Những cánh cửa lớn hơn đang mở ra phía trước.",
+      "c5Line2": "Từ khoảnh khắc này, từng quyết định sẽ khắc họa điều công ty thực sự theo đuổi.",
+      "c6Line1": "Ngắm nhìn văn phòng hôm nay, từng tách cà phê và cột mốc đều kể lại câu chuyện của bạn.",
+      "c6Line2": "Đây là công ty chúng ta cùng dựng xây — và tương lai đang chờ đón phía trước."
+    },
+    "events": {
+      "ch1Identity": {
+        "title": "Chương 1 · Bản sắc công ty",
+        "desc": "Trong tuần khai trương {company}, ba thành viên đầu tiên muốn biết giá trị cốt lõi nào sẽ dẫn đường cho công ty non trẻ.",
+        "c1Label": "Chất lượng & Chỉnh chu",
+        "c1Desc": "Đặt chuẩn mực kỹ thuật cao ngay từ đầu, dù cần thêm kiên nhẫn.",
+        "c1Effects": "+6 Chất lượng SP · +6 Văn hóa · +4 Uy tín",
+        "c2Label": "Tăng tốc chiếm thị trường",
+        "c2Desc": "Ưu tiên tốc độ ra mắt và thử nghiệm nhanh hơn sự thoải mái.",
+        "c2Effects": "+12% Tiến độ MVP · +6 Căng thẳng · -4 Văn hóa",
+        "c3Label": "Con người & Văn hóa ấm áp",
+        "c3Desc": "Xây dựng môi trường gắn bó, bền vững để đồng đội phát triển lâu dài.",
+        "c3Effects": "+10 Tinh thần đội · -6 Căng thẳng · +12 Văn hóa"
+      },
+      "ch2Direction": {
+        "title": "Chương 2 · Hướng đi sản phẩm",
+        "desc": "{product} đang dần thành hình ở phòng Kỹ thuật. Trước khi chốt bản đầu tiên, bạn muốn đội ngũ tập trung vào đâu?",
+        "c1Label": "Nền tảng kỹ thuật vững chắc",
+        "c1Desc": "Đầu tư kiến trúc ổn định và chất lượng bền bỉ dài lâu.",
+        "c1Effects": "+10 Chất lượng · +10% Tiến độ · +4 Văn hóa",
+        "c2Label": "Trải nghiệm thân thiện, dễ dùng",
+        "c2Desc": "Chăm chút màn hình làm quen để khách hàng đầu tiên yêu thích ngay.",
+        "c2Effects": "+8 Hài lòng khách · +8 Nhu cầu · +14% Tiến độ"
+      },
+      "ch3Feedback": {
+        "title": "Chương 3 · Góp ý từ khách hàng đầu tiên",
+        "desc": "Những người dùng trả phí đầu tiên gửi phản hồi thẳng thắn về điểm chưa mượt của {product}. Bạn xử lý thế nào?",
+        "c1Label": "Lắng nghe & nâng cấp chất lượng",
+        "c1Desc": "Sửa lỗi kỹ lưỡng và hoàn thiện trải nghiệm cho khách hàng tin cậy.",
+        "c1Effects": "+8 Chất lượng · +10 Hài lòng · -3 Lỗi · +5 Uy tín · +8 Văn hóa",
+        "c2Label": "Ra bản cập nhật thật nhanh",
+        "c2Desc": "Đẩy nhanh tính năng mới để tăng doanh số trước khi tối ưu lại sau.",
+        "c2Effects": "+8 Khách hàng · +3 Lỗi · -6 Tinh thần · -6 Văn hóa",
+        "c3Label": "Đẩy mạnh truyền thông tiếp thị",
+        "c3Desc": "Tăng cường quảng bá để mở rộng tập người dùng song song với việc sửa lỗi.",
+        "c3Effects": "+10 Khách hàng · +22 Người dùng · +7 Nhu cầu"
+      },
+      "ch4Workload": {
+        "title": "Chương 4 · Áp lực tăng trưởng",
+        "desc": "Khối lượng công việc tăng vọt và {employee} có dấu hiệu quá tải vì chạy đua tiến độ. Bạn quyết định ra sao?",
+        "c1Label": "Giảm tải công việc",
+        "c1Desc": "Cắt bớt đầu việc chưa gấp để cả đội kịp lấy lại nhịp cân bằng.",
+        "c1Effects": "+14 Tinh thần đội · -18 Căng thẳng · +12 Văn hóa",
+        "c2Label": "Tuyển thêm người hỗ trợ",
+        "c2Desc": "Bổ sung nhân sự ngay để chia sẻ áp lực cho đội ngũ hiện tại.",
+        "c2Effects": "+1 Nhân viên (nếu còn chỗ) · +12 Tinh thần · -15 Căng thẳng · +8 Văn hóa",
+        "c3Label": "Đề nghị cả đội cố gắng thêm",
+        "c3Desc": "Ép tiến độ để kịp giao hàng và thu tiền mặt ngắn hạn.",
+        "c3Effects": "+$2,500 Tiền mặt · +12% Tiến độ · -18 Tinh thần · +20 Căng thẳng · -16 Văn hóa"
+      },
+      "ch4Expansion": {
+        "title": "Chương 4 · Mở rộng không gian",
+        "desc": "Không gian làm việc ngày càng chật chội khi {company} lớn mạnh. Bạn sẽ dùng nguồn lực hiện có thế nào?",
+        "c1Label": "Mở rộng văn phòng ngay",
+        "c1Desc": "Tăng sức chứa chỗ ngồi, tiện nghi và vị thế thương hiệu.",
+        "c1Effects": "+2 Sức chứa nhân sự · +10 Tiện nghi · +6 Uy tín",
+        "c2Label": "Giữ tiền dự phòng trước",
+        "c2Desc": "Duy trì bộ máy tinh gọn để bảo toàn dòng tiền an toàn.",
+        "c2Effects": "+$1,500 Dự phòng · +5 Niềm tin nhà đầu tư",
+        "c3Label": "Đầu tư vào nhân sự trước",
+        "c3Desc": "Chăm lo phúc lợi, nghỉ ngơi và gắn kết đội ngũ thay vì diện tích.",
+        "c3Effects": "+14 Tinh thần đội · -10 Căng thẳng · +14 Văn hóa"
+      },
+      "ch5Investment": {
+        "title": "Chương 5 · Lời mời gọi vốn",
+        "desc": "Một quỹ đầu tư uy tín đề nghị rót vốn để đưa {company} bước sang giai đoạn bứt phá quy mô.",
+        "c1Label": "Chấp nhận gói đầu tư",
+        "c1Desc": "Nhận vốn ngay để tăng tốc tuyển dụng và chiếm lĩnh thị phần.",
+        "c1Effects": "+$45,000 Tiền mặt · +12% Cổ phần pha loãng · +8 Niềm tin NĐT",
+        "c2Label": "Đàm phán điều khoản tốt hơn",
+        "c2Desc": "Thương lượng khéo léo để giữ cổ phần sáng lập và sự tự chủ văn hóa.",
+        "c2Effects": "+$35,000 Tiền mặt · +7% Cổ phần pha loãng · +6 Uy tín · +4 Văn hóa",
+        "c3Label": "Từ chối để giữ quyền tự chủ",
+        "c3Desc": "Giữ 100% định hướng độc lập, phát triển bằng doanh thu từ khách hàng.",
+        "c3Effects": "0% Pha loãng · +8 Uy tín · +6 Tinh thần · +10 Văn hóa"
+      },
+      "ch5Acquisition": {
+        "title": "Chương 5 · Đề nghị mua lại công ty",
+        "desc": "Một tập đoàn lớn ngỏ ý mua lại {company} ở mức định giá {amount}. Bạn sẽ bán công ty hay tiếp tục tự bước đi?",
+        "c1Label": "Chấp nhận đề nghị mua lại",
+        "c1Desc": "Khép lại hành trình bằng một thương vụ thành công rực rỡ (Kích hoạt Kết cục C).",
+        "c1Effects": "Thương vụ trị giá {amount} · Mở khóa Kết cục C",
+        "c2Label": "Từ chối để tự viết tiếp tương lai",
+        "c2Desc": "Giữ vững ngọn lửa độc lập và dẫn dắt đội ngũ tiến vào Chương 6.",
+        "c2Effects": "+10 Uy tín · +10 Tinh thần đội · +10 Văn hóa"
+      },
+      "ch6Horizon": {
+        "title": "Chương 6 · Tương lai của công ty",
+        "desc": "{founder}, hãy nhìn lại những đêm muộn, những cột mốc và từng đồng đội bên cạnh bạn. Chương cuối sẽ đưa {company} về đâu?",
+        "c1Label": "Gìn giữ văn hóa & di sản lâu dài",
+        "c1Desc": "Trao quyền cho thế hệ kế cận và củng cố những giá trị bền vững nhất.",
+        "c1Effects": "+12 Văn hóa · +10 Tinh thần · +6 Uy tín",
+        "c2Label": "Bứt phá mở rộng thị trường",
+        "c2Desc": "Đẩy mạnh doanh thu và độ phủ khách hàng trước giờ tổng kết cuối cùng.",
+        "c2Effects": "+$15,000 Tiền mặt · +18 Khách hàng · +6 Uy tín"
+      }
+    },
+    "endings": {
+      "DREAM_COMPANY": {
+        "title": "Kết cục A: Công ty trong mơ",
+        "tagline": "Sản phẩm thành công, tài chính vững mạnh và đồng đội hạnh phúc.",
+        "message": "Bạn đã xây dựng được điều mà ngày đầu tiên chỉ dám mơ tới.",
+        "hint": "Đạt định giá hoặc tiền mặt cao, sản phẩm vận hành tốt, uy tín cao và nhân sự hài lòng.",
+        "s1": "Văn phòng mở rộng rộn ràng tiếng cười, ánh màn hình sáng ấm và những cột mốc đáng tự hào.",
+        "s2": "Từ ba chiếc bàn nhỏ và mấy thùng các-tông ngày đầu — chúng ta đã thực sự làm được."
+      },
+      "SMALL_BUT_HAPPY": {
+        "title": "Kết cục B: Nhỏ nhưng hạnh phúc",
+        "tagline": "Tinh gọn, bền vững và đậm tình đồng đội.",
+        "message": "Không cần trở thành công ty lớn nhất để có một hành trình đáng tự hào.",
+        "hint": "Giữ tài chính ổn định cùng đội ngũ gọn gàng, tinh thần cao và văn hóa ấm áp.",
+        "s1": "Nắng mai ấm áp tràn qua khung cửa sổ khi cả đội cùng nâng ly cà phê buổi sáng.",
+        "s2": "Khách hàng nhớ tên từng thành viên, và chẳng ai muốn đánh đổi mái nhà chung này."
+      },
+      "ACQUISITION": {
+        "title": "Kết cục C: Thương vụ mua lại",
+        "tagline": "Một cái kết trọn vẹn mở ra chân trời mới.",
+        "message": "Đôi khi, kết thúc một hành trình cũng là mở đầu cho một hành trình khác.",
+        "hint": "Chấp nhận đề nghị mua lại công ty ở Chương 5.",
+        "s1": "Thông cáo mua lại xuất hiện trên mặt báo công nghệ trong tiếng chúc mừng của cả văn phòng.",
+        "s2": "Cảm ơn vì đã đồng hành từ Ngày 1. Dù bước tiếp về đâu, nơi đây mãi là điểm khởi đầu."
+      },
+      "BURNOUT": {
+        "title": "Kết cục D: Kiệt sức",
+        "tagline": "Những con số hào nhoáng trên giấy, và sự trống vắng sau giờ làm.",
+        "message": "Bạn xây dựng được một công ty. Nhưng liệu bạn có còn muốn làm việc ở đó?",
+        "hint": "Đạt giá trị tài chính cao nhưng tinh thần nhân sự, giữ chân người và văn hóa suy kiệt.",
+        "s1": "Đêm khuya trùm xuống những dãy bàn trống, chỉ còn một màn hình lẻ loi hắt sáng.",
+        "s2": "Doanh thu tăng mỗi quý, nhưng những người từng gắn bó nhất đã lặng lẽ rời đi."
+      },
+      "LAST_DAY": {
+        "title": "Kết cục E: Ngày cuối cùng",
+        "tagline": "Ánh đèn khép lại, nhưng bài học còn ở lại.",
+        "message": "Không phải mọi ý tưởng đều thành công. Nhưng mọi hành trình đều để lại điều gì đó.",
+        "hint": "Xảy ra khi công ty mất khả năng thanh toán và không còn lối phục hồi khả thi.",
+        "s1": "Những chiếc thùng giấy lại nằm trên bàn — nơi giấc mơ khởi nghiệp từng mở ra một sáng sớm.",
+        "s2": "Chúng ta đã cố gắng hết sức. Hẹn gặp lại ở một khởi đầu mới, nhà sáng lập."
+      },
+      "LEGACY": {
+        "title": "Kết cục F: Di sản",
+        "tagline": "Một văn hóa trường tồn vượt lên trên chính người sáng lập.",
+        "message": "Điều bạn để lại không chỉ là một công ty, mà là những con người và những điều họ sẽ tiếp tục xây dựng.",
+        "hint": "Duy trì hiệu quả dài hạn xuất sắc, sản phẩm chất lượng cao, tinh thần & văn hóa vững mạnh và hầu như không mất người.",
+        "s1": "Nhiều năm sau, thế hệ kỹ sư và thiết kế mới quây quần bên bảng trắng dưới ánh nắng chiều vàng.",
+        "s2": "Những đồng đội đầu tiên nay dẫn dắt lớp kế cận, tiếp nối tinh thần thuở ban đầu."
+      }
+    },
+    "endingCard": {
+      "badge": "Tổng kết hành trình",
+      "reachedDate": "Ngày {day}, Tháng {month}, {year}",
+      "valuation": "Định giá",
+      "revenue": "Tổng doanh thu",
+      "moraleCulture": "Tinh thần / Văn hóa",
+      "chapterTeam": "Chương / Nhân sự",
+      "majorChoicesTitle": "Các quyết định dấu ấn",
+      "newCompanyBtn": "Công ty mới",
+      "confirmNewGameBody": "Bạn muốn khởi nghiệp công ty mới? Thư viện Kết cục vẫn được giữ nguyên, và bản lưu hiện tại sẽ không tự động bị xóa.",
+      "confirmNewGameAction": "Bắt đầu công ty mới"
+    },
+    "gallery": {
+      "openBtn": "Cốt truyện & Kết cục",
+      "title": "6 Chương Truyện & Thư Viện Kết Cục",
+      "subtitle": "Đã mở khóa {unlocked} / {total} kết cục",
+      "overviewSubtitle": "Hoàn thành {chapters}/{totalChapters} chương · Mở khóa {unlocked}/{totalEndings} kết cục",
+      "tabEndings": "Kết cục ({unlocked}/{total})",
+      "tabChapters": "6 Chương cốt truyện",
+      "unlockedBadge": "Đã mở",
+      "lockedBadge": "Chưa mở",
+      "lockedTitle": "??? (Kết cục ẩn)",
+      "hintLabel": "Gợi ý",
+      "viewDetails": "Chi tiết",
+      "hideDetails": "Thu gọn",
+      "replayEnding": "Xem lại kết cục",
+      "replayScene": "Xem lại cảnh",
+      "founderLabel": "Nhà sáng lập: {name}",
+      "statusCompleted": "Đã hoàn thành",
+      "statusActive": "Chương hiện tại",
+      "statusLocked": "Chưa mở khóa",
+      "milestoneGoal": "Cột mốc"
+    },
+    "celebration": {
+      "badge": "Khoảnh Khắc Cột Mốc",
+      "watchTeam": "Xem đội ngũ",
+      "focusRoom": "Tới phòng",
+      "dismiss": "Đóng",
+      "kinds": {
+        "PRODUCT_MVP_LAUNCH": {
+          "title": "{subject} đã chính thức ra mắt!",
+          "line": "Tiếng reo vui vang khắp phòng Kỹ thuật — {count} khách hàng trả phí đầu tiên đã tham gia!"
+        },
+        "PRODUCT_MATURE_RELEASE": {
+          "title": "{subject} đạt bản v{version}.0!",
+          "line": "Sản phẩm chủ lực đã bước vào giai đoạn Chín muồi. Cả đội cùng ăn mừng thành quả!"
+        },
+        "HQ_EXPANSION": {
+          "title": "Chào mừng đến {subject}!",
+          "line": "Không gian rộng mở và nguồn năng lượng mới khi {company} vươn lên tầm vóc lớn hơn."
+        },
+        "DEPARTMENT_EXPANSION": {
+          "title": "Đã mở khóa {subject}!",
+          "line": "Một phân khu mới chính thức mở cửa — cả văn phòng cùng nâng ly chúc mừng bước tiến mới."
+        }
+      }
+    }
+  }
+}
+
+

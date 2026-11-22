@@ -1,0 +1,321 @@
+@import "tailwindcss";
+
+:root {
+  --bg-cream: #F3F0E7;
+  --bg-cream-alt: #FAF8F2;
+  --bg-sand: #EAE5D8;
+  --ink-charcoal: #303B38;
+  --accent-sage: #78978A;
+  --accent-sage-hover: #6A897C;
+  --accent-wood: #D9A66C;
+  --accent-rose: #D68B7B;
+  --accent-blue: #A8B8CE;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--bg-cream);
+  color: var(--ink-charcoal);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+.font-pixel {
+  font-family: Arial, Helvetica, sans-serif;
+  letter-spacing: 0.01em;
+}
+
+.font-mono-num {
+  font-family: Arial, Helvetica, sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+
+.pixel-canvas {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+@keyframes speedOverlayPulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(120, 151, 138, 0.72);
+  }
+  45% {
+    transform: scale(1.09);
+    box-shadow: 0 0 0 7px rgba(120, 151, 138, 0.25);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 11px rgba(120, 151, 138, 0);
+  }
+}
+
+.animate-speed-pulse {
+  animation: speedOverlayPulse 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes tutorialTargetPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(217, 166, 108, 0.78);
+  }
+  70% {
+    box-shadow: 0 0 0 8px rgba(217, 166, 108, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(217, 166, 108, 0);
+  }
+}
+
+.tutorial-target-highlight {
+  position: relative;
+  z-index: 60 !important;
+  outline: 2.5px solid #D9A66C !important;
+  outline-offset: 2px;
+  animation: tutorialTargetPulse 1.5s ease-out infinite;
+}
+
+@keyframes tutorialBounceDown {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, 5px, 0);
+  }
+}
+
+.animate-tutorial-bounce-down {
+  animation: tutorialBounceDown 1.15s ease-in-out infinite;
+}
+
+@keyframes tutorialArrowBounce {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -5px, 0);
+  }
+}
+
+.animate-tutorial-arrow-bounce,
+.animate-tutorial-bounce-up {
+  animation: tutorialArrowBounce 1.15s ease-in-out infinite;
+}
+
+@keyframes tutorialBounceLeft {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(-5px, 0, 0);
+  }
+}
+
+.animate-tutorial-bounce-left {
+  animation: tutorialBounceLeft 1.15s ease-in-out infinite;
+}
+
+@keyframes tutorialArrowSlide {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(5px, 0, 0);
+  }
+}
+
+.animate-tutorial-arrow-slide,
+.animate-tutorial-bounce-right {
+  animation: tutorialArrowSlide 1.15s ease-in-out infinite;
+}
+
+@keyframes tutorialPulseSoft {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.03);
+    opacity: 0.92;
+  }
+}
+
+.animate-tutorial-pulse {
+  animation: tutorialPulseSoft 1.3s ease-in-out infinite;
+}
+
+@keyframes shortcutPopIn {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, -6px, 0) scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+.animate-shortcut-pop {
+  animation: shortcutPopIn 0.18s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes celebrationSlideUp {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+.animate-celebration-in {
+  animation: celebrationSlideUp 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes celebrationTimerDrain {
+  0% {
+    transform: scaleX(1);
+  }
+  100% {
+    transform: scaleX(0);
+  }
+}
+
+.animate-celebration-bar {
+  transform-origin: left center;
+  animation: celebrationTimerDrain 5.6s linear forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-celebration-in {
+    animation: none;
+  }
+}
+
+/* Employee portrait status animations */
+@keyframes portraitIdleBreathe {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(0, -1px, 0) scale(1.025);
+  }
+}
+
+.animate-portrait-idle {
+  transform-origin: center bottom;
+  animation: portraitIdleBreathe 3.2s ease-in-out infinite;
+}
+
+@keyframes portraitWorkingPulse {
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(120, 151, 138, 0.48);
+  }
+  50% {
+    transform: scale(1.03);
+    box-shadow: 0 0 0 4px rgba(120, 151, 138, 0.14);
+  }
+}
+
+.animate-portrait-working {
+  animation: portraitWorkingPulse 2.1s ease-in-out infinite;
+}
+
+@keyframes portraitWalkingBob {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -2px, 0);
+  }
+}
+
+.animate-portrait-walking {
+  animation: portraitWalkingBob 0.85s ease-in-out infinite;
+}
+
+@keyframes portraitRestingDrift {
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(217, 166, 108, 0.36);
+  }
+  50% {
+    transform: scale(0.985);
+    box-shadow: 0 0 0 3px rgba(217, 166, 108, 0.12);
+  }
+}
+
+.animate-portrait-resting {
+  animation: portraitRestingDrift 3.6s ease-in-out infinite;
+}
+
+@keyframes portraitSocialPulse {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    box-shadow: 0 0 0 0 rgba(168, 184, 206, 0.5);
+  }
+  50% {
+    transform: translate3d(0, -0.5px, 0) scale(1.02);
+    box-shadow: 0 0 0 4px rgba(168, 184, 206, 0.15);
+  }
+}
+
+.animate-portrait-social {
+  animation: portraitSocialPulse 2.4s ease-in-out infinite;
+}
+
+.animate-portrait-offduty {
+  opacity: 0.82;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-portrait-idle,
+  .animate-portrait-working,
+  .animate-portrait-walking,
+  .animate-portrait-resting,
+  .animate-portrait-social {
+    animation: none;
+  }
+}
+
+/* Custom subtle scrollbars matching Warm Cream & Dark Charcoal */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #EAE5D8;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #78978A;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #303B38;
+}

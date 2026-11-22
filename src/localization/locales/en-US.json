@@ -1,0 +1,1749 @@
+{
+  "app": {
+    "title": "Startup Founder Simulator",
+    "subtitle": "Build a cozy tech company with your friends",
+    "description": "Build your first product, work with your team, meet customers, and grow step by step.",
+    "primaryObjectiveLabel": "Main Goal",
+    "primaryObjectiveText": "Build great products, win customers, and grow together.",
+    "defaultCompany": "Default Company",
+    "startingCapital": "Starting Money",
+    "foundingTeamOffice": "Team & Office",
+    "teamOfficeSummary": "3 Teammates · 2 Open Rooms",
+    "controlsHint": "Click to interact · WASD / Arrows · Space Pause · 1-3 Speed"
+  },
+  "common": {
+    "close": "Close",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "back": "Back",
+    "save": "Save",
+    "load": "Load",
+    "delete": "Delete",
+    "enabled": "Enabled",
+    "disabled": "Disabled",
+    "muted": "Muted",
+    "day": "Day",
+    "month": "Month",
+    "year": "Year",
+    "perMonth": "/mo",
+    "perDay": "/d",
+    "level": "Level",
+    "listen": "Listen",
+    "stopAudio": "Stop",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "language": {
+    "label": "Display Language",
+    "vi-VN": "Tiếng Việt (vi-VN)",
+    "en-US": "English (en-US)",
+    "hint": "Language selection is saved automatically across sessions."
+  },
+  "titleScreen": {
+    "welcomeHeadline": "Welcome to your company!",
+    "welcomeSubline": "Everything starts right here.",
+    "startNew": "Start New Game",
+    "continueSaved": "Continue Game",
+    "emptySaveTitle": "No saved game yet",
+    "emptySaveHint": "Start a new company to begin your story.",
+    "continueMeta": "{company} · Year {year}, Month {month}, Day {day}",
+    "customizeSetup": "Customize Company",
+    "saveManagement": "Save Management",
+    "loadSave": "Save Management",
+    "watchIntro": "Watch Intro",
+    "listenIntro": "Listen to Intro",
+    "primaryActionsLabel": "Main Actions",
+    "secondaryMenuLabel": "More Options",
+    "confirmNewTitle": "Start a new company?",
+    "confirmNewBody": "You already have a saved game ({company}). Starting fresh will replace your Autosave slot; manual slots stay safe.",
+    "confirmNewAction": "Start New Game",
+    "companyName": "Company Name",
+    "founderName": "Your Name",
+    "businessType": "Business Type",
+    "startingCapital": "Starting Money",
+    "gameMode": "Game Mode",
+    "launchCompany": "Open Company",
+    "modeCampaign": "Campaign (Goals)",
+    "modeSandbox": "Sandbox (Open Play)",
+    "difficulty": {
+      "BOOTSTRAPPED": "Bootstrapped",
+      "BALANCED": "Balanced Seed",
+      "ANGEL_BACKED": "Angel-Backed"
+    },
+    "business": {
+      "SAAS": {
+        "label": "SaaS Application",
+        "hint": "Recurring B2B/B2C subscriptions"
+      },
+      "MOBILE_APP": {
+        "label": "Mobile App",
+        "hint": "Fast consumer growth & freemium"
+      },
+      "GAME_STUDIO": {
+        "label": "Indie Game Studio",
+        "hint": "Hit-driven launches & polish"
+      },
+      "AI_TOOLS": {
+        "label": "AI Automation Tools",
+        "hint": "High demand, higher compute costs"
+      },
+      "WEB_PLATFORM": {
+        "label": "Web Platform",
+        "hint": "Enterprise licenses & contracts"
+      }
+    }
+  },
+  "hud": {
+    "cashBalance": "Money",
+    "dayMonthTime": "Day {day} · Month {month} · {time}",
+    "dayShort": "Day {day}",
+    "employeesCount": "{count} staff",
+    "notificationsBtn": "Alerts",
+    "notificationsTitle": "Recent Updates",
+    "noNotifications": "No recent updates yet.",
+    "dismiss": "Dismiss",
+    "objectiveChip": "Goal",
+    "speedAria": "Simulation speed",
+    "pauseTitle": "Pause (Space)",
+    "speed1Title": "Normal 1x (1)",
+    "speed2Title": "Fast 2x (2)",
+    "speed3Title": "Ultra 3x (3)",
+    "endDay": "End Day",
+    "endDayTitle": "Finish today's workday",
+    "nav": {
+      "office": "Office",
+      "employees": "Team",
+      "products": "Products",
+      "finance": "Money",
+      "market": "Customers",
+      "upgrades": "Expand Office",
+      "upgradesShort": "Expand",
+      "milestones": "Awards",
+      "saveLoad": "Save",
+      "tutorial": "Guide",
+      "settings": "Settings"
+    },
+    "status": {
+      "WARNING": "Low Money",
+      "PROFIT": "Profitable",
+      "GROWING": "Growing",
+      "BOOTSTRAPPING": "Starting Out"
+    },
+    "placementMode": "Click an empty floor tile to place",
+    "achievementUnlocked": "New Achievement",
+    "nextActionPrefix": "Next:",
+    "quickAction": {
+      "endDay": "End Day {day}",
+      "exploreOffice": "Explore Office",
+      "findEmployee": "Find Teammate",
+      "goToEMPLOYEES": "Open Team",
+      "goToPRODUCTS": "Open Products",
+      "goToFINANCE": "Open Money",
+      "goToMARKET": "Open Customers"
+    },
+    "welcomeBanner": {
+      "title": "Welcome to your company!",
+      "subtitle": "Let's get started!"
+    }
+  },
+  "objectives": {
+    "panelTitle": "FIRST GOALS",
+    "completedCount": "{done}/{total} done",
+    "items": {
+      "obj_review_employees": "Meet your teammates",
+      "obj_create_product": "Create first product",
+      "obj_assign_tasks": "Assign team tasks",
+      "obj_launch_mvp": "Launch first prototype",
+      "obj_acquire_customer": "Find first customer",
+      "obj_first_revenue": "Earn first money"
+    },
+    "actions": {
+      "obj_review_employees": "Click a teammate in the office to view details.",
+      "obj_create_product": "Open Products to create your first idea.",
+      "obj_assign_tasks": "Assign your team to build the product.",
+      "obj_launch_mvp": "Reach 100% and launch your first prototype.",
+      "obj_acquire_customer": "Open Customers to run a promotion.",
+      "obj_first_revenue": "End the day to earn money from customers."
+    },
+    "objectivePrefix": "Goal: {title}",
+    "progressRatio": "{done}/{total} Goals",
+    "stabilizeTitle": "Protect Cash",
+    "stabilizeAction": "Cash is low. Check money in & out.",
+    "scaleTitle": "Grow Company",
+    "scaleAction": "Improve products, find customers, and expand."
+  },
+  "tutorial": {
+    "header": "Step {step} / 8",
+    "progressLabel": "Step {step}/8",
+    "hideDetails": "Hide",
+    "showDetails": "Tip",
+    "listenStep": "Listen",
+    "clickHighlightedRooms": "Click both highlighted rooms.",
+    "skip": "Skip",
+    "skipConfirm": "Skip the guide? You can reopen it anytime in Settings.",
+    "keepLearning": "Keep Guide",
+    "confirmSkip": "Skip",
+    "endDayNow": "End Day 1",
+    "openSection": "Open {section}",
+    "collapseAria": "Collapse guide",
+    "expandAria": "Expand guide",
+    "backBtn": "Back",
+    "nextStepBtn": "Next",
+    "steps": {
+      "1": {
+        "title": "Meet your team",
+        "actionPrompt": "Click a teammate to say hello.",
+        "explanation": "Your 3 founding teammates are ready to help."
+      },
+      "2": {
+        "title": "Explore the office",
+        "actionPrompt": "Click the CEO Office and Engineering Room.",
+        "explanation": "Click rooms anytime for quick actions."
+      },
+      "3": {
+        "title": "Create your first product",
+        "actionPrompt": "Start developing your first product.",
+        "explanation": "Pick a name and start building your idea."
+      },
+      "4": {
+        "title": "Assign team tasks",
+        "actionPrompt": "Give a task to your teammate.",
+        "explanation": "Matching skills helps finish work faster."
+      },
+      "5": {
+        "title": "Launch your prototype",
+        "actionPrompt": "Finish to 100% and launch now!",
+        "explanation": "Your first prototype brings early customers."
+      },
+      "6": {
+        "title": "Find your first customer",
+        "actionPrompt": "Open Customers and start promoting.",
+        "explanation": "Promotions help people discover your product."
+      },
+      "7": {
+        "title": "Check money in & out",
+        "actionPrompt": "Open Money to check your balance.",
+        "explanation": "Keep track of monthly spending so you stay safe."
+      },
+      "8": {
+        "title": "Finish your first day",
+        "actionPrompt": "Click to finish today's workday.",
+        "explanation": "See how much money and progress you made."
+      }
+    }
+  },
+  "tutorialArrow": {
+    "clickToContinue": "Click here to continue.",
+    "interactHighlighted": "Interact with the highlighted object.",
+    "greatJob": "Great job! Keep going.",
+    "completedTutorial": "You have completed the tutorial.",
+    "step1Employee": "Click an employee to view info.",
+    "step1Nav": "Click here to meet your team.",
+    "step2CeoOffice": "Click the CEO Office.",
+    "step2Engineering": "Click the Engineering Room.",
+    "step3OpenProducts": "Create your first product.",
+    "step3NewIdea": "Click to add a new product.",
+    "step3NameInput": "Name your first product here.",
+    "step3Submit": "Click to start building.",
+    "step4OpenEmployees": "Assign tasks to your team.",
+    "step4RosterTab": "Switch to your team list.",
+    "step4TaskSelect": "Pick a task here.",
+    "step5OpenProducts": "Open Products to launch.",
+    "step5BuildSprint": "Click to boost progress to 100%.",
+    "step5LaunchMvp": "Ready? Launch your prototype!",
+    "step6OpenMarket": "Find your first customer.",
+    "step6LaunchCampaign": "Click to start promotion.",
+    "step7OpenFinance": "Check money in and out.",
+    "step8EndDay": "Click to end the workday.",
+    "closeModalFirst": "Close this panel to see the office."
+  },
+  "rooms": {
+    "lockedSuffix": "Locked",
+    "lockedLabel": "Locked Department",
+    "levelLabel": "Room Level {level}",
+    "unlockRequirement": "Unlock Requirement:",
+    "unlockEarly": "Unlock Early ({cost})",
+    "upgradeRoom": "Upgrade {name} ({cost})",
+    "activeDept": "Active Department",
+    "unlockedCount": "Office Departments ({unlocked}/{total} Unlocked)",
+    "unlockHint": "Rooms unlock automatically as you grow, or unlock early with capital.",
+    "items": {
+      "CEO_OFFICE": {
+        "name": "CEO Office",
+        "description": "Company overview, founder strategy, and executive decisions.",
+        "unlockCondition": "Available from Day 1"
+      },
+      "HR_DEPT": {
+        "name": "HR Department",
+        "description": "Talent recruitment, training, and team morale.",
+        "unlockCondition": "Unlocks automatically on Day 2, or unlock early for {cost}."
+      },
+      "FINANCE_DEPT": {
+        "name": "Finance Department",
+        "description": "Cash flow ledger, payroll, credit, and tax planning.",
+        "unlockCondition": "Unlocks automatically on Day 2, or unlock early for {cost}."
+      },
+      "LEGAL_DEPT": {
+        "name": "Legal Department",
+        "description": "Client contract reviews, compliance, and risk shields.",
+        "unlockCondition": "Unlocks at 10+ paying customers, or unlock early for {cost}."
+      },
+      "LOBBY": {
+        "name": "Lobby",
+        "description": "Visitors, investors, partners, and reception.",
+        "unlockCondition": "Unlocks at 5+ paying customers, or unlock early for {cost}."
+      },
+      "MEETING_ROOM": {
+        "name": "Meeting Room",
+        "description": "Client pitches, internal syncs, and campaign planning.",
+        "unlockCondition": "Unlocks when you launch your first MVP, or unlock early for {cost}."
+      },
+      "ENGINEERING": {
+        "name": "Engineering Room",
+        "description": "Product development, bug fixing, and server infrastructure.",
+        "unlockCondition": "Available from Day 1"
+      },
+      "BREAK_ROOM": {
+        "name": "Break Room",
+        "description": "Espresso bar, lounge rest, and employee energy recovery.",
+        "unlockCondition": "Unlocks automatically on Day 3, or unlock early for {cost}."
+      }
+    }
+  },
+  "drawer": {
+    "closeAria": "Close panel",
+    "activityState": "Activity",
+    "currentActivity": "Current Activity",
+    "moodLabel": "Mood",
+    "moodHappy": "Happy",
+    "moodOkay": "Steady",
+    "moodStressed": "Stressed",
+    "moreDetails": "More stats & skills",
+    "monthlySalary": "Monthly Salary",
+    "productivity": "Productivity",
+    "energy": "Energy",
+    "morale": "Morale",
+    "stress": "Stress",
+    "coreSkill": "Core Skill ({skill})",
+    "nextTrait": "Next trait: {name} at {skill} {req}",
+    "allTraitsMastered": "Core skill mastered",
+    "assignedTask": "Assigned Task",
+    "assignedProduct": "Assigned Product",
+    "founderActions": "Team Care",
+    "motivateBtn": "Motivate (+14 Morale)",
+    "coachBtn": "Coach (+3 {skill})",
+    "checkInBtn": "Chat 1-on-1 (-14 Stress)",
+    "speakLineBtn": "Speak",
+    "dialogueLabel": "Quote",
+    "founderSalary": "Your Salary",
+    "personalCash": "Personal Money",
+    "investorTrust": "Trust",
+    "strategySprintBtn": "Plan Strategy (-25 Energy)",
+    "adjustFinanceBtn": "Check Money In & Out",
+    "viewMilestonesBtn": "View Awards",
+    "openHrBtn": "Manage Team",
+    "openFinanceBtn": "Open Money",
+    "openProductBtn": "Open Products",
+    "openLegalBtn": "Review Contracts",
+    "openMarketBtn": "Open Customers",
+    "drinkEspressoBtn": "Drink Coffee (+35 Energy)",
+    "installedPerks": "Room Perks ({count})",
+    "managePerks": "Manage",
+    "inUse": "In Use",
+    "ready": "Ready",
+    "lobbyVisitors": "Lobby Visitors",
+    "empStates": {
+      "WORKING": "Working",
+      "IDLE": "Relaxing",
+      "WALKING": "Walking",
+      "RESTING": "Coffee Break",
+      "MEETING": "In a Meeting",
+      "CHATTING": "Chatting",
+      "OFF_DUTY": "Off Duty"
+    }
+  },
+  "chatter": {
+    "title": "Team Chatter",
+    "expand": "Expand chatter",
+    "minimize": "Minimize chatter",
+    "stressedTag": "Stressed",
+    "eventTag": "Event",
+    "listenTooltip": "Play employee voice line"
+  },
+  "employees": {
+    "title": "Team & Recruitment",
+    "subtitle": "Active Team: {count}/{max} seats · Monthly Payroll: {payroll}",
+    "currentTeam": "Current Team ({count})",
+    "hireCandidates": "Hire Candidates ({count})",
+    "refreshSearch": "Refresh Search ({cost})",
+    "emptyRoster": "No employees hired yet. Switch to Hire Candidates to recruit your first team member.",
+    "burnoutRisk": "Burnout Risk",
+    "salaryLabel": "Salary:",
+    "outputLabel": "Output:",
+    "energyLabel": "Energy:",
+    "moraleLabel": "Morale:",
+    "stressLabel": "Stress:",
+    "masteryLabel": "{skill} Mastery:",
+    "allTraitsUnlocked": "All role traits unlocked",
+    "nextTraitHint": "Next trait: {name} ({skill} {req})",
+    "trainTooltip": "Train (+6 primary skill, unlocks traits, {cost})",
+    "trainCooldownTooltip": "Training available in {days} day(s)",
+    "trainCooldown": "Cooldown {days}d",
+    "trainBtn": "Train {cost}",
+    "promoteTooltip": "Promote (+18% salary, +5 skill, +20 morale)",
+    "promoteBtn": "Promote",
+    "raiseTooltip": "Give +{amount}/mo raise (+15 morale)",
+    "raiseBtn": "Bonus +{amount}",
+    "releaseTooltip": "Release {name}",
+    "releaseBtn": "Release",
+    "detailsBtn": "Details",
+    "hideDetailsBtn": "Hide Details",
+    "detailsSkillsTitle": "Full Skills & Profile",
+    "detailsHiredDay": "Hired on Day {day}",
+    "detailsXp": "Experience: {xp} XP",
+    "assignmentGroupLabel": "Work Assignment",
+    "developmentGroupLabel": "Development & Pay",
+    "rosterGroupLabel": "Profile & Roster",
+    "assignTaskLabel": "Assigned Task",
+    "selectProductLabel": "Assigned Product",
+    "hireBtn": "Hire ({fee} onboarding fee)",
+    "candidateLevel": "Level {level}",
+    "levels": {
+      "1": "Junior",
+      "2": "Mid",
+      "3": "Senior",
+      "4": "Lead"
+    },
+    "roles": {
+      "SOFTWARE_ENGINEER": {
+        "label": "Software Engineer",
+        "short": "Engineer",
+        "description": "Builds product features, ships updates, and fixes production bugs."
+      },
+      "DESIGNER": {
+        "label": "Product Designer",
+        "short": "Designer",
+        "description": "Raises product quality, user satisfaction, and UX conversion."
+      },
+      "MARKETING_SPECIALIST": {
+        "label": "Marketing Specialist",
+        "short": "Marketing",
+        "description": "Amplifies campaign ROI, organic growth, and brand demand."
+      },
+      "SALES_REP": {
+        "label": "Sales Representative",
+        "short": "Sales",
+        "description": "Closes B2B client contracts and expands enterprise pipeline."
+      },
+      "ACCOUNTANT": {
+        "label": "Accountant",
+        "short": "Finance",
+        "description": "Optimizes tax efficiency, lowers burn, and protects credit terms."
+      },
+      "HR_MANAGER": {
+        "label": "HR Manager",
+        "short": "HR",
+        "description": "Boosts team morale, lowers stress, and attracts stronger talent."
+      },
+      "PRODUCT_MANAGER": {
+        "label": "Product Manager",
+        "short": "PM",
+        "description": "Aligns roadmap velocity and multiplies team engineering output."
+      },
+      "OPERATIONS_MANAGER": {
+        "label": "Operations Manager",
+        "short": "Ops",
+        "description": "Keeps servers reliable, speeds legal compliance, and cuts overhead."
+      }
+    },
+    "skills": {
+      "engineering": "Engineering",
+      "design": "Design",
+      "marketing": "Marketing",
+      "sales": "Sales",
+      "finance": "Finance",
+      "operations": "Operations"
+    },
+    "personalities": {
+      "PRAGMATIC": {
+        "label": "Pragmatic",
+        "summary": "Steady output and resilient under deadlines."
+      },
+      "PERFECTIONIST": {
+        "label": "Perfectionist",
+        "summary": "Higher quality work, but accumulates stress faster."
+      },
+      "WORKAHOLIC": {
+        "label": "Workaholic",
+        "summary": "High output, needs Break Room recovery or burns out."
+      },
+      "CREATIVE": {
+        "label": "Creative",
+        "summary": "Excels in design and product innovation."
+      },
+      "SOCIAL": {
+        "label": "Social",
+        "summary": "Lifts office morale and thrives in collaborative rooms."
+      },
+      "ANALYTICAL": {
+        "label": "Analytical",
+        "summary": "Consistent problem-solver with low bug rate."
+      }
+    },
+    "traits": {
+      "EFFICIENT_CODER": {
+        "name": "Efficient Coder",
+        "summary": "+15% build velocity and +1 extra bug fix power per sprint."
+      },
+      "SYSTEMS_VIRTUOSO": {
+        "name": "Systems Virtuoso",
+        "summary": "+15% productivity and halves build-time bug regressions."
+      },
+      "PIXEL_PERFECTIONIST": {
+        "name": "UX Craftsperson",
+        "summary": "+12% product design velocity and +0.25 daily product quality."
+      },
+      "VIRAL_STRATEGIST": {
+        "name": "Viral Strategist",
+        "summary": "+25% marketing campaign and organic acquisition power."
+      },
+      "PERSUASIVE_NEGOTIATOR": {
+        "name": "Persuasive Negotiator",
+        "summary": "+25% B2B contract upfront bonuses and faster sales pipeline."
+      },
+      "FISCAL_ARCHITECT": {
+        "name": "Fiscal Architect",
+        "summary": "+10% productivity and extra 2% monthly tax optimization."
+      },
+      "CULTURE_CATALYST": {
+        "name": "Culture Catalyst",
+        "summary": "Eases daily team stress (+1.5) and cuts maintenance & legal overhead."
+      }
+    },
+    "tasks": {
+      "BUILD_PRODUCT": "Build Product",
+      "FIX_BUGS": "Fix Bugs & QA",
+      "MARKET_GROWTH": "Run Marketing",
+      "CLOSE_SALES": "Close B2B Sales",
+      "MANAGE_FINANCE": "Manage Finances",
+      "RECRUIT_TALENT": "Recruit & Morale",
+      "PLAN_ROADMAP": "Product Strategy",
+      "OPERATIONS_SUPPORT": "Legal & Ops",
+      "REST_BREAK": "Coffee Break"
+    },
+    "moraleAlert": {
+      "title": "Low Morale: {name} ({morale}%)",
+      "suggestion": "Assign a Coffee Break task to restore happiness.",
+      "actionBtn": "Coffee Break"
+    }
+  },
+  "products": {
+    "title": "Products",
+    "subtitle": "Build ideas, launch your first prototype, and improve quality.",
+    "portfolioCount": "{count} product(s)",
+    "newIdeaBtn": "New Product",
+    "productName": "Product Name",
+    "productPlaceholder": "e.g. TeamNotes App",
+    "category": "Type",
+    "revenueModel": "Pricing Model",
+    "startRd": "Start Building ({cost})",
+    "maintPerMonth": "Upkeep {cost}/mo",
+    "buildSprintBtn": "Build Sprint (+35% · {cost})",
+    "launchMvpBtn": "Launch First Prototype",
+    "shipUpdateBtn": "Ship Update ({cost})",
+    "fixBugsBtn": "Fix {count} Bugs ({cost})",
+    "mvpReadiness": "Prototype Progress",
+    "mvpProgress": "Progress",
+    "quality": "Quality",
+    "openBugs": "Bugs",
+    "satisfaction": "Happiness",
+    "payingUsers": "Customers",
+    "estMonthlyRev": "Earned / Month",
+    "detailsToggle": "Features & Pricing Details",
+    "featuresRoadmap": "Features ({done}/{total})",
+    "shipped": "Done",
+    "pricePerCustomer": "Price per Customer",
+    "addFeatureTitle": "Add New Feature",
+    "qualityBoost": "+{boost} Quality",
+    "stages": {
+      "CONCEPT": "Idea",
+      "IN_DEV": "Building",
+      "MVP_LIVE": "Prototype Live",
+      "MATURE": "Polished",
+      "SUNSET": "Retired"
+    },
+    "models": {
+      "SUBSCRIPTION": "Subscription",
+      "FREEMIUM": "Freemium",
+      "ONE_TIME": "One-Time Purchase",
+      "ENTERPRISE_LICENSE": "Enterprise License"
+    },
+    "categories": {
+      "SAAS": {
+        "label": "SaaS Application",
+        "description": "Steady monthly recurring revenue with enterprise expansion upside."
+      },
+      "MOBILE_APP": {
+        "label": "Mobile App",
+        "description": "Broad consumer reach with fast organic viral adoption."
+      },
+      "GAME": {
+        "label": "Indie Game",
+        "description": "High launch spikes driven by quality, polish, and streamers."
+      },
+      "AI_TOOL": {
+        "label": "AI Tool",
+        "description": "High-demand automation software with higher compute maintenance."
+      },
+      "WEB_PLATFORM": {
+        "label": "Web Platform",
+        "description": "High-ticket B2B platform suited for long-term contracts."
+      }
+    },
+    "features": {
+      "Core Workflow Engine": {
+        "name": "Core Workflow Engine",
+        "description": "Streamlines primary user tasks with crisp responsiveness."
+      },
+      "Polished Onboarding UX": {
+        "name": "Polished Onboarding UX",
+        "description": "Reduces churn by helping new signups succeed in 2 minutes."
+      },
+      "Team Collaboration & Roles": {
+        "name": "Team Collaboration & Roles",
+        "description": "Unlocks multi-seat SMB and Enterprise team adoption."
+      },
+      "Analytics & Reporting Suite": {
+        "name": "Analytics & Reporting Suite",
+        "description": "Gives customers clear ROI dashboards and exportable metrics."
+      },
+      "Smart Automation Workflows": {
+        "name": "Smart Automation Workflows",
+        "description": "Automates repetitive customer routines for high retention."
+      },
+      "Mobile Companion View": {
+        "name": "Mobile Companion View",
+        "description": "Responsive mobile experience for users on the move."
+      }
+    }
+  },
+  "market": {
+    "title": "Customers & Deals",
+    "subtitle": "Promote your products and welcome your first customers.",
+    "channelsTitle": "Customer Channels",
+    "productStatusLive": "Live",
+    "productStatusNotLive": "Not Live",
+    "segmentConsumers": "Everyday Users",
+    "segmentSmb": "Small Teams",
+    "segmentEnterprise": "Big Companies",
+    "dailyBudget": "Daily: {budget}",
+    "launchMvpWarning": "Launch your first prototype before running promotions so visitors become paying customers.",
+    "cacLabel": "~{cac} / user",
+    "activeCampSummary": "Active: {budget}/d · {count} joined",
+    "pauseCampaign": "Pause",
+    "launchCampaign": "Start Promotion",
+    "b2bTitle": "Client Contracts",
+    "noContracts": "No active deals yet. Keep a live product running or assign sales work.",
+    "contractTerm": "{value}/mo × {months}m · Upfront {upfront} · Req Quality {quality}+",
+    "legalCleared": "Reviewed",
+    "legalReview": "Review Contract",
+    "pitchAndSign": "Pitch & Sign",
+    "detailsToggle": "View Competing Studios",
+    "competitorsTitle": "Market Competitors",
+    "shareLabel": "Share: {share}%",
+    "qualityLabel": "Quality: {qual}",
+    "contractStatuses": {
+      "PIPELINE": "Available",
+      "ACTIVE": "Active",
+      "COMPLETED": "Done",
+      "EXPIRED": "Expired"
+    },
+    "channels": {
+      "SOCIAL_MEDIA": {
+        "label": "Social Media",
+        "speedLabel": "Fast",
+        "description": "Steady consumer awareness and occasional viral spikes."
+      },
+      "PAID_ADS": {
+        "label": "Paid Advertising",
+        "speedLabel": "Immediate",
+        "description": "Scalable daily signups as long as budget stays funded."
+      },
+      "SEO": {
+        "label": "Search & SEO",
+        "speedLabel": "Compounding",
+        "description": "Lower customer acquisition cost that compounds over months."
+      },
+      "CONTENT_MARKETING": {
+        "label": "Content Marketing",
+        "speedLabel": "Steady",
+        "description": "Builds founder reputation and inbound SMB leads."
+      },
+      "DIRECT_SALES": {
+        "label": "Direct Sales",
+        "speedLabel": "High Ticket",
+        "description": "Generates higher-value B2B contracts and pipeline deals."
+      },
+      "PARTNERSHIPS": {
+        "label": "Partnerships",
+        "speedLabel": "Strategic",
+        "description": "Co-marketing distribution with complementary platforms."
+      }
+    }
+  },
+  "finance": {
+    "title": "Money In & Out",
+    "subtitle": "Value: {valuation} · Ownership: {ownership}% · Trust: {trust}/100",
+    "companyCash": "Company Money",
+    "projectedMonthlyNet": "Monthly Net",
+    "burnRateLabel": "Monthly Spending: {amount}",
+    "personalCash": "Personal Money",
+    "creditDebt": "Borrowed",
+    "detailsToggle": "Detailed Ledger, Credit & Monthly History",
+    "founderSalaryTitle": "Your Monthly Salary",
+    "founderSalaryDesc": "Transferred from company funds to personal money on Day 30.",
+    "activeTrust": "Current: {salary}/mo · Trust {trust}/100",
+    "applySalary": "Save Salary",
+    "investPersonal": "Add {amount} Personal Money",
+    "investTooltip": "Invest {amount} of personal savings back into company cash (+2 Trust)",
+    "moraleImpact": "Morale {val}/d",
+    "trustImpact": "Trust {val}/d",
+    "respectImpact": "Respect {val}/d",
+    "runningLedgerTitle": "Month {month} Money Breakdown",
+    "revMtd": "Money Earned MTD",
+    "mktMtd": "Promotion Spent MTD",
+    "rdMtd": "Building & Hiring MTD",
+    "eomPayroll": "Staff Payroll (Day 30)",
+    "eomFounder": "Your Salary (Day 30)",
+    "eomRent": "Office Rent",
+    "eomMaint": "Server Upkeep",
+    "taxRate": "Tax Rate (on profit)",
+    "creditLineTitle": "Support Credit Line",
+    "creditLineDesc": "Limit: {limit} · Available: {available} · 1.5%/mo interest.",
+    "borrowBtn": "Borrow {amount}",
+    "repayBtn": "Repay {amount}",
+    "historyTitle": "Past Months History",
+    "noHistory": "Finish Month 1 (Day 30) to see your first monthly summary.",
+    "colPeriod": "Month",
+    "colRevenue": "Earned",
+    "colExpenses": "Spent",
+    "colTaxes": "Tax",
+    "colNetProfit": "Net",
+    "colEndingCash": "Ending",
+    "presetLean": "{amount} Lean",
+    "salaryTiers": {
+      "SWEAT_EQUITY": {
+        "label": "Sweat Equity (0 VND)",
+        "summary": "Taking no salary inspires strong employee respect, morale, and investor confidence."
+      },
+      "LEAN": {
+        "label": "Lean Founder",
+        "summary": "Modest founder pay builds employee goodwill and signals capital discipline."
+      },
+      "STANDARD": {
+        "label": "Market Draw",
+        "summary": "Standard compensation with neutral team morale and investor impact."
+      },
+      "HIGH": {
+        "label": "Executive Draw",
+        "summaryNormal": "High founder salary gradually weighs on team morale and investor trust.",
+        "summaryCrunch": "High salary during low cash runway sharply lowers morale and investor trust."
+      },
+      "LAVISH": {
+        "label": "Lavish Compensation",
+        "summaryNormal": "Excessive executive pay erodes company morale, respect, and investor trust.",
+        "summaryCrunch": "Lavish pay during a cash crunch severely damages morale, respect, and investor trust."
+      }
+    }
+  },
+  "office": {
+    "title": "Office Upgrades, Rooms & Perks",
+    "subtitle": "{name} · Comfort {comfort}/100 · Tech Tier {tech}/4",
+    "hqExpansion": "Headquarters Expansion (Level {level}/4)",
+    "nextLabel": "Next:",
+    "hqNextDesc": "{name} — {desc} Raises capacity to {maxEmp} employees (Rent {rent}/mo).",
+    "hqMaxed": "Maximum headquarters tier reached.",
+    "expandHqBtn": "Expand HQ ({cost})",
+    "workstationTech": "Workstation Hardware (Tier {tier}/4)",
+    "workstationDesc": "Upgrades all office monitors and developer workstations for +10% team productivity per tier.",
+    "hardwareMaxed": "Hardware Maxed",
+    "upgradeHardwareBtn": "Upgrade All Workstations ({cost})",
+    "perksTitle": "Office Perks & Amenities ({owned}/{total} Active)",
+    "perksDailyBuff": "Daily Buffs: +{morale} Morale · +{energy} Energy · -{stress} Stress",
+    "perkStats": "+{morale} Morale/d · +{energy} Energy/d · -{stress} Stress/d",
+    "perkComfort": "+{comfort} Comfort",
+    "perkReqHq": " · Requires HQ L{lvl}",
+    "activeBadge": "Active",
+    "installedBtn": "Installed",
+    "reqHqBtn": "Requires HQ Level {lvl}",
+    "purchasePerkBtn": "Purchase Perk ({cost})",
+    "buyFurnitureTitle": "Buy & Place Furniture (Select Buy, then click a floor tile)",
+    "furnStats": "+{comfort} Comfort · +{prod}% Output",
+    "buyPlaceBtn": "Buy & Place",
+    "relocateTitle": "Relocate Office Furniture ({count})",
+    "moveBtn": "Move",
+    "levels": {
+      "1": {
+        "name": "Startup Office",
+        "description": "A compact starter suite with room for a small founding crew."
+      },
+      "2": {
+        "name": "Product Studio",
+        "description": "Expanded workstations, faster network gear, and dedicated studio space."
+      },
+      "3": {
+        "name": "Client Lounge",
+        "description": "Executive client reception, upgraded meeting suite, and enterprise readiness."
+      },
+      "4": {
+        "name": "Large Technology Company",
+        "description": "Full-floor modern tech HQ with high morale comfort and maximum capacity."
+      }
+    },
+    "perks": {
+      "perk_coffee_machine": {
+        "name": "Coffee Machine",
+        "description": "Artisan espresso & cold brew station keeping daily stamina topped up."
+      },
+      "perk_ergonomic_chairs": {
+        "name": "Ergonomic Chairs",
+        "description": "Lumbar-support seating that eases physical fatigue and work strain."
+      },
+      "perk_ping_pong": {
+        "name": "Ping Pong Table",
+        "description": "Friendly office rallies that lift team morale and dissolve crunch stress."
+      },
+      "perk_snack_pantry": {
+        "name": "Stocked Snack Pantry",
+        "description": "Healthy snacks and hydration to sustain energy through long sprints."
+      },
+      "perk_quiet_pods": {
+        "name": "Acoustic Focus Pods",
+        "description": "Soundproof booths that cut meeting noise and deep-work stress."
+      },
+      "perk_wellness_suite": {
+        "name": "Wellness & Nap Suite",
+        "description": "Dedicated recovery lounge with quiet recharge pods and stretching mats."
+      }
+    },
+    "furniture": {
+      "WORKSTATION": {
+        "name": "Developer Desk",
+        "description": "Adds an active desk seat and +4% workstation output."
+      },
+      "ESPRESSO_BAR": {
+        "name": "Espresso Machine",
+        "description": "Speeds up employee energy recovery during breaks."
+      },
+      "PLANT_FIDDLE": {
+        "name": "Fiddle-Leaf Plant",
+        "description": "Cozy office greenery that softens stress across the team."
+      },
+      "SERVER_RACK": {
+        "name": "Server Rack",
+        "description": "Boosts engineering build speed and lowers outage risk."
+      },
+      "LOUNGE_SOFA": {
+        "name": "Lounge Sofa",
+        "description": "Improves comfort score and visitor impression."
+      },
+      "WHITEBOARD": {
+        "name": "Strategy Whiteboard",
+        "description": "Supports roadmap alignment and feature quality."
+      },
+      "ARCADE_CABINET": {
+        "name": "Retro Arcade",
+        "description": "Major morale booster that cuts team stress daily."
+      },
+      "CEO_DESK": { "name": "Executive Desk", "description": "" },
+      "HR_BOARD": { "name": "Recruitment Board", "description": "" },
+      "FINANCE_TERMINAL": { "name": "Ledger Terminal", "description": "" },
+      "SAFE_VAULT": { "name": "Company Vault", "description": "" },
+      "LEGAL_DESK": { "name": "Contracts Desk", "description": "" },
+      "BOOKSHELF": { "name": "Compliance Library", "description": "" },
+      "RECEPTION_DESK": { "name": "Reception Desk", "description": "" },
+      "MEETING_TABLE": { "name": "Conference Table", "description": "" }
+    }
+  },
+  "milestones": {
+    "title": "Milestones, Achievements & Stats",
+    "subtitle": "{mode} · {msUnlocked}/{msTotal} Milestones · {achUnlocked}/{achTotal} Achievements",
+    "modeCampaign": "Campaign Mode",
+    "modeSandbox": "Sandbox Mode",
+    "founderLevel": "Founder Level",
+    "levelValue": "Lv.{level} (Lead {lead})",
+    "reputation": "Reputation",
+    "investorTrust": "Investor Trust",
+    "personalCash": "Personal Cash",
+    "payingCustomers": "Paying Customers",
+    "daysOperated": "Days Operated",
+    "daysUnit": "{days} Days",
+    "tabMilestones": "Milestones ({unlocked}/{total})",
+    "tabTimeline": "Milestone Timeline",
+    "tabAchievements": "Achievements ({unlocked}/{total})",
+    "progressionTitle": "Progression Milestones",
+    "achievementsTitle": "Company Achievements",
+    "unlockedRatio": "{unlocked} / {total} Unlocked",
+    "unlockedOnDay": "Unlocked on Day {day}",
+    "progressPrefix": "Progress: {text}",
+    "activityLog": "Recent Activity Log",
+    "alertTag": "[Alert] ",
+    "timeline": {
+      "title": "Company Milestone Timeline",
+      "summaryLine": "{completed} completed · {current} in progress · {upcoming} upcoming",
+      "filterAll": "All ({count})",
+      "filterCompleted": "Completed ({count})",
+      "filterUpcoming": "In Progress & Upcoming ({count})",
+      "statusCompleted": "Completed",
+      "statusCurrent": "Current Goal",
+      "statusUpcoming": "Upcoming",
+      "completedDate": "Day {day} · Month {month}, {year}",
+      "rewardSummary": "+{cash} · +{rep} Rep",
+      "emptyCompleted": "No milestones completed yet — hit your first goal below to record the team's opening memory.",
+      "emptyFiltered": "No milestones in this view yet.",
+      "teamMemoryLabel": "Team Note",
+      "currentNote": "{teammate} and the {company} crew are rallying around this milestone.",
+      "details": {
+        "d1": "around warm coffee mugs",
+        "d2": "next to a whiteboard full of sticky notes",
+        "d3": "between glowing desk monitors",
+        "d4": "while sharing quiet smiles across the room"
+      },
+      "flavors": {
+        "ms_first_product": {
+          "v1": "{teammate} hit deploy on {product} {detail}, and {company} cheered as the first live release came online.",
+          "v2": "After late-evening polish by {teammate} and {teammate2}, {product} finally went live on Day {day}.",
+          "v3": "Sticky notes gave way to real release notes — {founder} and {teammate} watched {product} welcome its first users."
+        },
+        "ms_first_customer": {
+          "v1": "The whole studio paused {detail} when {company} rang up its very first paying customer.",
+          "v2": "{teammate} pinned the first invoice by the monitor — someone out there believed in {product}.",
+          "v3": "Day {day} proved {company} was more than a sketchbook idea; {teammate} and {teammate2} celebrated the milestone."
+        },
+        "ms_profitable_month": {
+          "v1": "Ledgers closed in the green {detail} — {teammate} raised a mug to {company}'s first profitable month.",
+          "v2": "When monthly revenue cleared rent and payroll, {founder} and {teammate} breathed a joyful sigh of relief.",
+          "v3": "For the first time, {company} stood on its own sustainable momentum thanks to steady work from {teammate2}."
+        },
+        "ms_ten_employees": {
+          "v1": "Ten desks humming in harmony {detail} — {teammate} joked that coffee beans now vanish twice as fast.",
+          "v2": "From three starter chairs to a ten-person studio, {teammate} and {teammate2} welcomed the newest faces aboard.",
+          "v3": "Morning standups at {company} now fill the floor with energy, ideas, and ten distinct voices."
+        },
+        "ms_major_contract": {
+          "v1": "Inked signatures on Day {day}! {teammate} brought pastries {detail} after closing {company}'s first major contract.",
+          "v2": "Enterprise clients took notice of {product} — {teammate2} and {founder} celebrated a breakthrough deal.",
+          "v3": "Landing a flagship contract gave {company} real runway and quiet pride across every desk."
+        },
+        "ms_office_expansion": {
+          "v1": "Moving boxes turned into {office} {detail}, giving {teammate} and the crew room to stretch and build.",
+          "v2": "Fresh desks, brighter windows, and new floor space marked {company}'s leap on Day {day}.",
+          "v3": "{teammate} taped a welcome sign to the doorway as everyone settled into the expanded {office}."
+        },
+        "ms_one_million": {
+          "v1": "Seven figures on the revenue counter! {teammate} and {teammate2} clinked mugs {detail} to honor every sprint.",
+          "v2": "Reaching one million in revenue felt surreal for a studio that began with three starter desks.",
+          "v3": "{founder} thanked {teammate} and the whole {company} team for turning quiet persistence into a milestone."
+        },
+        "ms_tech_leader": {
+          "v1": "From a modest starter room to a recognized tech leader — {teammate} and {teammate2} toasted {company}'s journey {detail}.",
+          "v2": "On Day {day}, {company} stood tall in the industry with thriving products, steady reserves, and loyal builders.",
+          "v3": "Every hallway conversation in {office} carried quiet pride: {company} had truly made its mark."
+        }
+      },
+      "currentFocus": {
+        "ms_first_product": "{teammate} is wrapping up core tasks in Engineering to bring {product} live.",
+        "ms_first_customer": "{teammate} and {founder} are tuning onboarding and outreach to earn the first paying believer.",
+        "ms_profitable_month": "The {company} crew is balancing product revenue and expenses toward a green monthly close.",
+        "ms_ten_employees": "Desks are opening up as {company} prepares to grow toward a 10-person studio.",
+        "ms_major_contract": "{teammate} is polishing product quality and contract readiness for a major enterprise deal.",
+        "ms_office_expansion": "The team is building cash reserves to upgrade {office} into a larger headquarters.",
+        "ms_one_million": "Steady product updates and loyal customers are carrying {company} toward the seven-figure mark.",
+        "ms_tech_leader": "{company} is aiming for Level 4 HQ, strong market reputation, and deep financial reserves."
+      }
+    },
+    "categories": {
+      "FINANCE": "Finance",
+      "TEAM": "Team",
+      "PRODUCT": "Product",
+      "GROWTH": "Growth"
+    },
+    "ms": {
+      "ms_first_product": {
+        "title": "Shipped First MVP",
+        "description": "Launch your first live product to customers."
+      },
+      "ms_first_customer": {
+        "title": "First Paying Customer",
+        "description": "Acquire your first paying customer or active B2B contract."
+      },
+      "ms_profitable_month": {
+        "title": "First Profitable Month",
+        "description": "Close a month with positive net profit after payroll and rent."
+      },
+      "ms_ten_employees": {
+        "title": "Growing Studio (10 Staff)",
+        "description": "Build a team of at least 10 active employees."
+      },
+      "ms_major_contract": {
+        "title": "First Major Contract",
+        "description": "Sign an enterprise or B2B contract worth 2,000+ VND/month."
+      },
+      "ms_office_expansion": {
+        "title": "Office Expansion",
+        "description": "Upgrade your headquarters beyond the starter office."
+      },
+      "ms_one_million": {
+        "title": "Million-Unit Revenue",
+        "description": "Reach 1,000,000 VND in cumulative company revenue."
+      },
+      "ms_tech_leader": {
+        "title": "Recognized Tech Company",
+        "description": "Reach Level 4 HQ, 75+ Reputation, and 250,000+ VND cash reserve."
+      }
+    },
+    "ach": {
+      "ach_100k_revenue": {
+        "title": "First 100k Revenue",
+        "description": "Generate 100,000 VND in cumulative company revenue."
+      },
+      "ach_1m_revenue": {
+        "title": "Seven-Figure Club",
+        "description": "Reach 1,000,000 VND in cumulative company revenue."
+      },
+      "ach_burned_1m": {
+        "title": "Burned 1M Cash",
+        "description": "Spend 1,000,000 VND across payroll, rent, R&D, marketing, and operations."
+      },
+      "ach_all_roles": {
+        "title": "Hired All Roles",
+        "description": "Recruit employees across all 8 specialized startup roles."
+      },
+      "ach_lead_veteran": {
+        "title": "Executive Bench",
+        "description": "Promote any employee to Level 4 (Lead)."
+      },
+      "ach_zero_bugs_mature": {
+        "title": "Flagship Polish",
+        "description": "Operate a Mature (v3+) product with 85+ quality and 0 open bugs."
+      },
+      "ach_multi_product": {
+        "title": "Multi-Product Portfolio",
+        "description": "Operate at least 3 live products in the market simultaneously."
+      },
+      "ach_1k_customers": {
+        "title": "Thousand True Fans",
+        "description": "Reach 1,000 active paying customers across all products."
+      },
+      "ach_enterprise_whale": {
+        "title": "Enterprise Whale",
+        "description": "Sign an enterprise B2B contract worth 4,000+ VND/month."
+      },
+      "ach_debt_free_hq": {
+        "title": "Fortress Balance Sheet",
+        "description": "Reach Level 3+ HQ with zero debt and 100,000+ VND cash reserve."
+      }
+    }
+  },
+  "reports": {
+    "dailyTitle": "Day {day} Progress Report",
+    "dailySubtitle": "Month {month}, Year {year} · End-of-Day Summary",
+    "dayRevenue": "Day Revenue",
+    "totalPaying": "Total Paying Customers",
+    "avgMorale": "Average Team Morale",
+    "operatingSpend": "Operating Spend Today",
+    "dailyHighlights": "Daily Highlights",
+    "startNextDay": "Start Day {day}",
+    "listenReport": "Read Report Aloud",
+    "monthlyTitle": "Month {month}, Year {year} Report",
+    "monthlySubtitle": "End-of-Month Financial & Operational Statement",
+    "netProfitLoss": "Monthly Net Profit / Loss",
+    "endingCash": "Ending Cash",
+    "totalRevenue": "Total Revenue",
+    "productSalesSub": "Product Sales & Subscriptions",
+    "b2bContracts": "B2B Client Contracts",
+    "totalExpenses": "Total Expenses",
+    "employeePayroll": "Employee Payroll ({count} staff)",
+    "founderSalaryLine": "Founder Salary (to Personal Cash)",
+    "officeRent": "Office Rent",
+    "serverMaint": "Server Maintenance",
+    "marketingSpend": "Marketing Campaigns",
+    "rdOpsHiring": "R&D / Operations / Hiring",
+    "taxesInterest": "Taxes & Interest",
+    "activeCustomers": "Active Customers",
+    "teamMorale": "Team Morale",
+    "headcount": "Headcount",
+    "startNextMonth": "Start Next Month"
+  },
+  "events": {
+    "subtitle": "{category} Decision · Day {day}",
+    "outcomeLabel": "Outcome: {text}",
+    "categories": {
+      "MARKET": "Market",
+      "PRODUCT": "Product",
+      "HR": "HR",
+      "FINANCE": "Finance",
+      "OPERATIONS": "Operations",
+      "INVESTOR": "Investor"
+    },
+    "templates": {
+      "CRITICAL_BUG": {
+        "title": "Production Bug Discovered",
+        "description": "Early customers reported a checkout and data-sync glitch in your flagship release. Support tickets are climbing.",
+        "choices": {
+          "HOTFIX_NOW": {
+            "label": "Authorize Emergency Hotfix",
+            "description": "Spend {cost} on cloud tools and overtime to patch immediately.",
+            "effects": "Clears bugs, +4 Satisfaction, -10 Team Energy"
+          },
+          "QUEUE_PATCH": {
+            "label": "Schedule in Regular Sprint",
+            "description": "Avoid extra spend and let engineers fix it during normal hours.",
+            "effects": "+4 Bugs, -5 Customer Satisfaction"
+          }
+        }
+      },
+      "VIRAL_POST": {
+        "title": "Viral Product Mention",
+        "description": "A respected tech creator shared a glowing thread about your startup, driving a wave of curious traffic.",
+        "choices": {
+          "AMPLIFY_CAMPAIGN": {
+            "label": "Boost With Follow-Up Content",
+            "description": "Invest {cost} into landing page polish and paid amplification.",
+            "effects": "+25–45 New Customers, +6 Reputation"
+          },
+          "ORGANIC_RIDE": {
+            "label": "Thank Community Organically",
+            "description": "Engage in comments directly with zero ad spend.",
+            "effects": "+12–18 New Customers, +3 Reputation"
+          }
+        }
+      },
+      "MAJOR_CLIENT_OPP": {
+        "title": "Enterprise Pilot Invitation",
+        "description": "A mid-market firm wants to pilot your product across 40 seats, provided you tailor onboarding this week.",
+        "choices": {
+          "PITCH_CUSTOM": {
+            "label": "Build Custom Pilot Deck",
+            "description": "Spend {cost} on legal review and demo preparation.",
+            "effects": "Adds a high-value B2B Contract to your pipeline"
+          },
+          "STANDARD_OFFER": {
+            "label": "Send Standard Self-Serve Link",
+            "description": "Keep team focused on core roadmap.",
+            "effects": "+600 VND Instant Pilot Fee, +2 Reputation"
+          }
+        }
+      },
+      "EMPLOYEE_RESIGN_RISK": {
+        "title": "Key Employee Burnout Warning",
+        "description": "One of your team members is feeling overworked and received a recruiter message from a larger firm.",
+        "choices": {
+          "RETENTION_BONUS": {
+            "label": "Give {name} Retention Bonus & Day Off",
+            "description": "Offer {cost} bonus and lighter workload.",
+            "effects": "+25 Morale, -25 Stress, stays committed"
+          },
+          "PEP_TALK": {
+            "label": "Hold 1-on-1 Career Check-In",
+            "description": "Use founder leadership to realign goals without cash outlay.",
+            "effects": "+10 Morale, small risk of resignation if stress stays high"
+          }
+        }
+      },
+      "INVESTOR_OFFER": {
+        "title": "Seed Investor Term Sheet",
+        "description": "An angel syndicate visited your Lobby and was impressed by your execution. They are offering growth capital.",
+        "choices": {
+          "ACCEPT_FUNDING": {
+            "label": "Accept {amount} for {eq}% Equity",
+            "description": "Inject runway immediately to accelerate hiring and marketing.",
+            "effects": "+{amount} Cash, +{eq}% Dilution, +5 Reputation"
+          },
+          "STAY_BOOTSTRAPPED": {
+            "label": "Politely Decline & Stay Independent",
+            "description": "Keep 100% ownership and build from customer revenue.",
+            "effects": "+4 Founder Reputation, 0% Dilution"
+          }
+        }
+      },
+      "SERVER_OUTAGE": {
+        "title": "Cloud Infrastructure Outage",
+        "description": "Traffic spiked unexpectedly and your database cluster is throttling requests across customer regions.",
+        "choices": {
+          "UPGRADE_CLUSTER": {
+            "label": "Failover & Upgrade Nodes",
+            "description": "Pay {cost} for emergency autoscaling capacity.",
+            "effects": "Zero data loss, +3 Satisfaction, +4 Quality"
+          },
+          "RESTART_MANUAL": {
+            "label": "Manual Restart & Status Apology",
+            "description": "Save cash while ops restarts nodes manually.",
+            "effects": "-7 Customer Satisfaction, -3 Reputation"
+          }
+        }
+      },
+      "COMPETITOR_LAUNCH": {
+        "title": "Competitor Launches Rival Release",
+        "description": "A rival studio shipped a competing release with aggressive introductory pricing.",
+        "choices": {
+          "FEATURE_SPRINT": {
+            "label": "Launch Differentiation Sprint",
+            "description": "Invest {cost} into targeted customer outreach and polish.",
+            "effects": "+6 Market Demand, +4 Product Quality"
+          },
+          "HOLD_COURSE": {
+            "label": "Stay Focused on Core Users",
+            "description": "Avoid reactionary spending and keep runway safe.",
+            "effects": "-4 Market Demand"
+          }
+        }
+      },
+      "EMPLOYEE_CONFLICT": {
+        "title": "Product vs. Engineering Disagreement",
+        "description": "Two team members disagree sharply on shipping speed versus architectural refactoring.",
+        "choices": {
+          "MEDIATE_COMPROMISE": {
+            "label": "Facilitate Architecture Compromise",
+            "description": "Spend Founder energy to align both sides in the Meeting Room.",
+            "effects": "+8 Team Morale, +5 Founder Leadership XP"
+          },
+          "PUSH_DEADLINE": {
+            "label": "Prioritize Immediate Shipping",
+            "description": "Force the feature out quickly without refactoring.",
+            "effects": "+8 Dev Progress, -6 Morale, +2 Bugs"
+          }
+        }
+      },
+      "UNEXPECTED_EXPENSE": {
+        "title": "Software License & Compliance Audit",
+        "description": "Annual third-party API and security compliance fees came in slightly higher than budgeted.",
+        "choices": {
+          "PAY_AUDIT": {
+            "label": "Settle Full Compliance Fee",
+            "description": "Pay {cost} immediately to keep enterprise trust intact.",
+            "effects": "-{cost} Cash, +3 Reputation"
+          },
+          "RENEGOTIATE": {
+            "label": "Defer via Quarterly Debt Plan",
+            "description": "Avoid immediate cash hit using legal & finance leverage.",
+            "effects": "0 VND Upfront, +950 VND Short-Term Debt"
+          }
+        }
+      },
+      "NEGATIVE_FEEDBACK": {
+        "title": "Critical Customer Review Thread",
+        "description": "A paying customer posted detailed criticism about missing workflow polish.",
+        "choices": {
+          "FOUNDER_REPLY": {
+            "label": "Respond Personally & Ship Quick Fix",
+            "description": "Spend {cost} and founder energy to turn a critic into an advocate.",
+            "effects": "+6 Customer Satisfaction, +4 Reputation"
+          },
+          "IGNORE_THREAD": {
+            "label": "Log Feedback & Move On",
+            "description": "Conserve resources for the next milestone.",
+            "effects": "-5 Customer Satisfaction"
+          }
+        }
+      }
+    }
+  },
+  "saveLoad": {
+    "title": "Save & Load Game",
+    "subtitle": "Saves are stored locally in your browser.",
+    "autosaveTitle": "Autosave Slot",
+    "slotTitle": "Save Slot {num}",
+    "metaSummary": "{company} · Founder {founder}",
+    "metaDetails": "Y{year} M{month} D{day} · {cash} · {count} staff · {time}",
+    "emptySlot": "Empty slot",
+    "deleteTitle": "Delete save",
+    "confirmOverwriteTitle": "Overwrite {slot}?",
+    "confirmOverwriteBody": "This will replace {company} (Day {day}) with your current game.",
+    "confirmOverwriteBtn": "Overwrite Save"
+  },
+  "settings": {
+    "title": "Game Settings, Language & Audio",
+    "menuBtn": "Settings",
+    "soundEffects": "Sound Effects",
+    "soundEffectsDesc": "Synthesized UI & financial chimes",
+    "controlsTitle": "Keyboard & Mouse Controls",
+    "controlsDesc": "Open the full hotkey reference for movement, game speed, and office controls.",
+    "openShortcutsBtn": "Keyboard Shortcuts",
+    "ctrlMove": "WASD / Arrow Keys: Move Founder around the office",
+    "ctrlWalk": "Left-Click Floor: Walk to tile",
+    "ctrlInspect": "Left-Click Room / Employee: Open contextual actions",
+    "ctrlCamera": "Drag / Wheel: Pan & zoom office camera",
+    "ctrlSpeed": "Space: Pause / Resume · 1 / 2 / 3: Simulation speed",
+    "reviewTutorial": "Review Onboarding Tutorial",
+    "returnTitle": "Return to Title Screen",
+    "resetFresh": "Reset & Start Fresh",
+    "resetConfirm": "Resetting discards unsaved progress for {company}. Confirm?",
+    "confirmReset": "Confirm Reset"
+  },
+  "voice": {
+    "panelTitle": "Voice-Over & Subtitles (Web Speech API)",
+    "enableLabel": "Enable Voice-Over Narration",
+    "enableDesc": "Reads tutorials, financial reports, and employee dialogue aloud with synchronized subtitles.",
+    "selectVoice": "Available Device Voice",
+    "autoVoiceOption": "Auto-select best voice ({lang})",
+    "noViVoiceWarning": "No Vietnamese (vi-VN) TTS voice was found on this device or browser. Subtitles remain fully displayed, and English voices will never be used to read Vietnamese.",
+    "noViVoiceBadge": "No vi-VN voice installed",
+    "viVoiceReadyBadge": "Vietnamese voices ready ({count})",
+    "enVoiceReadyBadge": "English voices ready ({count})",
+    "unsupportedWarning": "Web Speech API is not available in this browser. Subtitles continue working normally.",
+    "mutedNote": "Sound is currently muted, so spoken audio is paused while subtitles remain visible.",
+    "rateLabel": "Speech Speed",
+    "volumeLabel": "Voice Volume",
+    "autoReadTitle": "Auto-Read Triggers",
+    "autoReadTutorial": "Onboarding tutorial steps",
+    "autoReadNotifications": "Notifications & unlocked achievements",
+    "autoReadDialogue": "Employee office chatter & quotes",
+    "autoReadObjectives": "Completed startup objectives",
+    "autoReadReports": "Daily / Monthly reports & events",
+    "testVoiceBtn": "Test Voice",
+    "stopVoiceBtn": "Stop Speaking",
+    "subtitleBarLabel": "Voice-Over Subtitles",
+    "speakingNow": "Speaking",
+    "subtitleHide": "Dismiss",
+    "speakerNarrator": "Narrator",
+    "speakerAdvisor": "Startup Advisor",
+    "testPhrase": "Hello founder. Voice narration is active and ready for your startup journey."
+  },
+  "endgame": {
+    "victoryTitle": "Company Milestone Achieved",
+    "victorySubtitle": "{company} is now a thriving technology company",
+    "victoryBody": "You scaled {company} to a Level 4 HQ with {count} team members, {revenue} cumulative revenue, and {rep} reputation.",
+    "continueSandbox": "Continue in Sandbox",
+    "playAgain": "Play Again",
+    "gameOverTitle": "Company Closed",
+    "gameOverSubtitle": "{company} · Year {year}, Month {month}",
+    "gameOverFallback": "The startup ran out of operating runway.",
+    "daysOperated": "Days Operated",
+    "cumulativeRevenue": "Cumulative Revenue",
+    "endingCash": "Ending Cash",
+    "titleScreenBtn": "Title Screen"
+  },
+  "shortcutsModal": {
+    "title": "Keyboard Shortcuts",
+    "subtitle": "Quick reference for all currently supported hotkeys and office controls",
+    "movementSection": "Founder Movement",
+    "speedSection": "Game Speed & Pause",
+    "interfaceSection": "Menus & Furniture Placement",
+    "mouseSection": "Mouse & Camera Controls",
+    "keySpace": "Space",
+    "keyArrows": "Arrow Keys (↑ ↓ ← →)",
+    "keyEsc": "Esc",
+    "keyM": "M",
+    "keyLeftClick": "Left-Click",
+    "keyDragWheel": "Drag / Wheel",
+    "moveWasdDesc": "Step the Founder tile-by-tile (Up, Left, Down, Right)",
+    "moveArrowsDesc": "Step the Founder using the directional arrow keys",
+    "pauseResumeDesc": "Pause or resume the daily simulation (toggles between Pause and 1x)",
+    "speed1Desc": "Set simulation speed to Normal (1x)",
+    "speed2Desc": "Set simulation speed to Fast (2x)",
+    "speed3Desc": "Set simulation speed to Ultra (3x)",
+    "muteAudioDesc": "Mute or unmute all game audio (Master Volume)",
+    "escDesc": "Cancel furniture placement, close open panels/drawers, or open Settings",
+    "mouseWalkDesc": "Click any walkable floor tile to send the Founder there",
+    "mouseInspectDesc": "Click a room, employee, or furniture item to open contextual actions",
+    "mouseCameraDesc": "Drag the office canvas to pan the camera; scroll wheel to zoom",
+    "noteText": "Note: Hotkeys automatically pause while typing inside text inputs or while a report or event dialog is open."
+  },
+  "shortcutFeedback": {
+    "PAUSE": "Simulation Paused",
+    "RESUME": "Resumed (1x)",
+    "SPEED_1": "Speed 1x",
+    "SPEED_2": "Speed 2x",
+    "SPEED_3": "Speed 3x",
+    "MOVE_UP": "Step Up",
+    "MOVE_DOWN": "Step Down",
+    "MOVE_LEFT": "Step Left",
+    "MOVE_RIGHT": "Step Right",
+    "CANCEL_PLACEMENT": "Cancelled Placement",
+    "CLOSE_PANEL": "Closed Panel",
+    "OPEN_SETTINGS": "Opened Settings",
+    "MUTE_AUDIO": "Master Audio Muted",
+    "UNMUTE_AUDIO": "Master Audio Unmuted"
+  },
+  "canvasSpeed": {
+    "label": "Speed",
+    "s0": "Paused",
+    "s1": "Normal",
+    "s2": "Fast",
+    "s3": "Ultra"
+  },
+  "tooltips": {
+    "cashBalance": "Available company operating cash for payroll, rent, R&D, and marketing. Running out past your credit limit triggers bankruptcy.",
+    "companyStatus": "Quick snapshot of your company's current cash health and growth stage.",
+    "speedPause": "Pause simulation time so you can plan tasks and inspect the office (Space).",
+    "speed1x": "Run the daily workday simulation at standard speed (Key 1).",
+    "speed2x": "Accelerate the simulation to 2x speed (Key 2).",
+    "speed3x": "Accelerate the simulation to maximum 3x speed (Key 3).",
+    "endDay": "Immediately complete today's workday, applying product progress, customer revenue, and team stamina updates.",
+    "navOffice": "Return to the interactive office map to watch employees and inspect rooms or desks.",
+    "navEmployees": "Manage your team roster, assign tasks, train skills, promote staff, and hire new candidates.",
+    "navProducts": "Create product ideas, run R&D sprints, fix bugs, launch MVPs, and raise product quality.",
+    "navFinance": "Track cash runway, monthly burn, credit line usage, and adjust your Founder salary.",
+    "navMarket": "Launch marketing campaigns to grow active users and negotiate B2B client contracts.",
+    "navUpgrades": "Expand office HQ capacity, unlock new departments, and install morale-boosting perks.",
+    "navMilestones": "View company growth milestones and unlocked achievements.",
+    "navSaveLoad": "Save your current progress to slots or load an earlier save.",
+    "navTutorial": "Reopen the step-by-step interactive guide at any time.",
+    "navSettings": "Switch display language, adjust TTS voice-over, audio volume, and view keyboard shortcuts.",
+    "empSkill": "Primary role skill that directly drives task speed and output quality.",
+    "empOutput": "Effective daily productivity calculated from skill mastery, morale, energy, and role fit.",
+    "empMorale": "Team spirit and motivation. High morale boosts output; low morale risks burnout resignation.",
+    "empEnergy": "Remaining daily stamina. Fatigued employees slow down unless supported by rest or office perks.",
+    "empStress": "Accumulated workload pressure. Sustained high stress drains morale and triggers resignation warnings.",
+    "empTaskSelect": "Assign a daily focus matching this employee's strongest skill for peak efficiency.",
+    "empProductSelect": "Choose which active product this employee contributes their daily work toward.",
+    "financeCompanyCash": "Operating capital used for R&D, campaigns, and Day 30 monthly payroll and rent.",
+    "financeProjectedNet": "Estimated monthly net profit or burn based on recurring revenue minus payroll, rent, and upkeep.",
+    "financePersonalCash": "Your personal savings accumulated from your monthly Founder salary draw.",
+    "financeCreditDebt": "Current borrowed balance against your credit line. Exceeding the limit on month close causes bankruptcy.",
+    "financeApplySalary": "Apply the selected Founder salary. Lower draws boost team respect and investor trust; lavish draws reduce both."
+  },
+  "audio": {
+    "sectionTitle": "Audio Settings",
+    "masterLabel": "Master Volume",
+    "bgmLabel": "Music",
+    "sfxLabel": "Sound Effects",
+    "muteBtn": "Mute",
+    "unmuteBtn": "Unmute",
+    "testSoundBtn": "Test Sound",
+    "masterMutedHint": "Master volume is currently muted.",
+    "sfxMutedHint": "Sound effects are currently muted.",
+    "sfxZeroHint": "Sound effects volume is set to 0%.",
+    "testPlayedHint": "Played sample chime.",
+    "bgmMuteAria": "Toggle music mute"
+  },
+  "auth": {
+    "sectionTitle": "Player Account",
+    "guestTitle": "Guest Player",
+    "guestDesc": "Your progress saves locally right on this device—no account required.",
+    "signedInStatus": "Signed In",
+    "localSavesIntact": "All local saves remain intact.",
+    "loginBtn": "Login",
+    "createAccountBtn": "Create Account",
+    "logoutBtn": "Logout",
+    "continueGuestBtn": "Continue as Guest",
+    "backToLoginBtn": "Back to Login",
+    "loginTitle": "Account Login",
+    "registerTitle": "Create Account",
+    "loginSubtitle": "Optional — you can always play and save locally as a Guest.",
+    "registerSubtitle": "Register with email and password for optional account access.",
+    "emailLabel": "Email",
+    "emailPlaceholder": "you@company.com",
+    "passwordLabel": "Password",
+    "confirmPasswordLabel": "Confirm Password",
+    "passwordRule": "At least 8 characters with letters and numbers.",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "rememberMe": "Remember session",
+    "submitting": "Please wait...",
+    "sessionExpiredNotice": "Your previous session expired. You are playing in Guest Mode and all local saves are safe.",
+    "errors": {
+      "INVALID_EMAIL": "Please enter a valid email address.",
+      "WEAK_PASSWORD": "Password must be at least 8 characters and include letters and numbers.",
+      "PASSWORD_MISMATCH": "Passwords do not match.",
+      "EMAIL_IN_USE": "An account with this email already exists.",
+      "INVALID_CREDENTIALS": "Incorrect email or password.",
+      "SESSION_EXPIRED": "Your session has expired. Please log in again.",
+      "UNAUTHORIZED": "Please log in first.",
+      "RATE_LIMITED": "Too many attempts. Please wait a moment and try again.",
+      "NETWORK_ERROR": "Unable to reach the account server. You can continue playing in Guest Mode.",
+      "SERVER_ERROR": "Something went wrong on the server. Please try again."
+    }
+  },
+  "story": {
+    "chapterPrefix": "Chapter {n}",
+    "speakers": {
+      "narrator": "Narrator",
+      "founder": "Founder",
+      "teamLead": "Founding Team"
+    },
+    "controls": {
+      "musicVolume": "Music volume",
+      "voiceVolume": "Voice volume",
+      "voiceMuteAria": "Toggle voice narration",
+      "speed_SLOW": "0.7x",
+      "speed_NORMAL": "1x",
+      "speed_FAST": "1.5x",
+      "autoBtn": "Auto",
+      "subtitlesBtn": "Subtitles",
+      "skip": "Skip",
+      "next": "Next",
+      "finish": "Begin",
+      "reveal": "Show",
+      "autoOnHint": "Auto-advance on · Click to continue",
+      "clickContinue": "Click anywhere to continue"
+    },
+    "intro": {
+      "badge": "Prologue · A Small Beginning",
+      "s1Scene": "Scene 1 · A New Morning",
+      "s1Text": "Every great company once started from a very small place...",
+      "s2Scene": "Scene 2 · The Office",
+      "s2Text": "You have a small office, some hard-earned savings, and an idea.",
+      "s3Scene": "Scene 3 · The First Team",
+      "s3Text": "You cannot build everything alone.",
+      "s4Scene": "Scene 4 · The First Decision",
+      "s4Text": "Well then... let's begin.",
+      "s5Title": "STARTUP FOUNDER SIMULATOR",
+      "s5Subtitle": "A Small Beginning",
+      "readyDay1": "{company} opens its doors for Day 1. Time to write your first chapter."
+    },
+    "chapters": {
+      "c1": {
+        "title": "First Day",
+        "theme": "A small beginning — discovering the office, the team, and who you want to become.",
+        "milestone": "Officially begin company operations."
+      },
+      "c2": {
+        "title": "First Product",
+        "theme": "Turning a raw sketch into software real people can use.",
+        "milestone": "Complete and launch the first product prototype."
+      },
+      "c3": {
+        "title": "First Customer",
+        "theme": "Finding the first people who trust your product and hearing their honest feedback.",
+        "milestone": "Acquire the first paying customer."
+      },
+      "c4": {
+        "title": "Growing Pains",
+        "theme": "Momentum brings real tension between expenses, workload, quality, and culture.",
+        "milestone": "Navigate the company's first major growth challenge."
+      },
+      "c5": {
+        "title": "Big Opportunity",
+        "theme": "Investors, competitors, and buyout offers force a defining strategic choice.",
+        "milestone": "Choose the company's strategic future."
+      },
+      "c6": {
+        "title": "Future of Company",
+        "theme": "Looking back at everything you built — and what kind of company you created.",
+        "milestone": "Evaluate the journey and reach your ending."
+      }
+    },
+    "milestones": {
+      "c1Line1": "The coffee machine hums to life as keyboards begin to click across your starter room.",
+      "c1Line2": "We finally have a real direction. Let's ship something worth believing in.",
+      "c2Line1": "Our first prototype is live! Real users can sign in today.",
+      "c2Line2": "What started as late-night sketches now lives out in the world.",
+      "c3Line1": "The first invoice just cleared — someone paid for what this small team built.",
+      "c3Line2": "One customer turned an idea into a real business. Now we earn their trust every day.",
+      "c4Line1": "More desks, deeper ambitions, and tougher trade-offs test your leadership.",
+      "c4Line2": "Growing fast is easy to dream about; growing healthy takes courage.",
+      "c5Line1": "Word has spread across the industry. Bigger doors are opening ahead.",
+      "c5Line2": "From here on, every decision defines what our company truly stands for.",
+      "c6Line1": "Looking out over the office, every empty mug and milestone tells your story.",
+      "c6Line2": "This is the company we built together — and the future waiting beyond today."
+    },
+    "events": {
+      "ch1Identity": {
+        "title": "Chapter 1 · Company Identity",
+        "desc": "As {company} settles into its opening week, the three founding teammates ask what core value should guide your young studio.",
+        "c1Label": "Craft & Quality First",
+        "c1Desc": "Set high technical standards from day one, even if shipping takes patience.",
+        "c1Effects": "+6 Product Quality · +6 Culture · +4 Reputation",
+        "c2Label": "Move Fast & Capture Market",
+        "c2Desc": "Prioritize speed and early experimentation above comfort.",
+        "c2Effects": "+12% Prototype Progress · +6 Team Stress · -4 Culture",
+        "c3Label": "People & Warm Culture",
+        "c3Desc": "Build a supportive, sustainable studio where teammates thrive together.",
+        "c3Effects": "+10 Team Morale · -6 Stress · +12 Culture"
+      },
+      "ch2Direction": {
+        "title": "Chapter 2 · Early Product Direction",
+        "desc": "{product} is taking shape in Engineering. Before locking in the first release, choose how the team focuses its energy.",
+        "c1Label": "Deep Technical Architecture",
+        "c1Desc": "Invest in resilient infrastructure and lasting product quality.",
+        "c1Effects": "+10 Quality · +10% Progress · +4 Culture",
+        "c2Label": "Friendly, Accessible UX",
+        "c2Desc": "Polish onboarding and ease of use so early adopters love day one.",
+        "c2Effects": "+8 Satisfaction · +8 Market Demand · +14% Progress"
+      },
+      "ch3Feedback": {
+        "title": "Chapter 3 · Candid Customer Feedback",
+        "desc": "Your first real users sent thoughtful notes about rough edges in {product}. How do you respond?",
+        "c1Label": "Pause to Fix & Improve Quality",
+        "c1Desc": "Listen closely, patch bugs, and delight early believers.",
+        "c1Effects": "+8 Quality · +10 Satisfaction · -3 Bugs · +5 Reputation · +8 Culture",
+        "c2Label": "Ship Fast & Keep Pushing Sales",
+        "c2Desc": "Accept rough edges for now to convert more trials immediately.",
+        "c2Effects": "+8 Customers · +3 Bugs · -6 Morale · -6 Culture",
+        "c3Label": "Amplify With Marketing Push",
+        "c3Desc": "Run outreach campaigns alongside gradual fixes to bring in new users.",
+        "c3Effects": "+10 Customers · +22 Active Users · +7 Demand"
+      },
+      "ch4Workload": {
+        "title": "Chapter 4 · The Weight of Growth",
+        "desc": "Deadlines are piling up and {employee} looks exhausted from carrying extra sprint pressure. What do you do?",
+        "c1Label": "Ease the Workload",
+        "c1Desc": "Trim non-urgent scope and give the team breathing room.",
+        "c1Effects": "+14 Team Morale · -18 Stress · +12 Culture",
+        "c2Label": "Hire Additional Help",
+        "c2Desc": "Bring on a new teammate immediately to share the load.",
+        "c2Effects": "+1 Teammate (if desk space allows) · +12 Morale · -15 Stress · +8 Culture",
+        "c3Label": "Ask Team to Push Through",
+        "c3Desc": "Squeeze out extra short-term delivery and revenue at a human cost.",
+        "c3Effects": "+$2,500 Cash · +12% Dev · -18 Morale · +20 Stress · -16 Culture"
+      },
+      "ch4Expansion": {
+        "title": "Chapter 4 · Space to Grow",
+        "desc": "Desks are getting cozy as {company} matures. How will you allocate your hard-earned surplus?",
+        "c1Label": "Expand Office Capacity Now",
+        "c1Desc": "Add room capacity, nicer comfort, and stronger brand presence.",
+        "c1Effects": "+2 Max Team Slots · +10 Comfort · +6 Reputation",
+        "c2Label": "Protect Cash Runway First",
+        "c2Desc": "Stay lean and fortify reserves before taking on higher fixed costs.",
+        "c2Effects": "+$1,500 Reserve Efficiency · +5 Investor Trust",
+        "c3Label": "Reinvest in Your People",
+        "c3Desc": "Upgrade team wellness, coffee perks, and morale instead of square footage.",
+        "c3Effects": "+14 Team Morale · -10 Stress · +14 Culture"
+      },
+      "ch5Investment": {
+        "title": "Chapter 5 · Venture Capital Offer",
+        "desc": "A prominent tech fund is ready to back {company} as you enter the big leagues.",
+        "c1Label": "Accept Expansion Funding",
+        "c1Desc": "Take the capital immediately to fuel rapid hiring and market capture.",
+        "c1Effects": "+$45,000 Cash · +12% Dilution · +8 Investor Trust",
+        "c2Label": "Negotiate Fairer Terms",
+        "c2Desc": "Hold firm at the table to protect founder ownership and culture.",
+        "c2Effects": "+$35,000 Cash · +7% Dilution · +6 Reputation · +4 Culture",
+        "c3Label": "Decline & Stay Independent",
+        "c3Desc": "Keep full control and grow purely on customer trust.",
+        "c3Effects": "0% Dilution · +8 Reputation · +6 Morale · +10 Culture"
+      },
+      "ch5Acquisition": {
+        "title": "Chapter 5 · Major Acquisition Offer",
+        "desc": "An industry giant wants to acquire {company} at a {amount} valuation. Will you sell or keep building independently?",
+        "c1Label": "Accept the Acquisition Offer",
+        "c1Desc": "Close a celebrated exit for founders, investors, and the team (Triggers Acquisition Ending).",
+        "c1Effects": "Company acquired at {amount} · Unlocks Ending C",
+        "c2Label": "Reject & Build Our Own Future",
+        "c2Desc": "Turn down the buyout and lead your team into Chapter 6 independently.",
+        "c2Effects": "+10 Reputation · +10 Team Morale · +10 Culture"
+      },
+      "ch6Horizon": {
+        "title": "Chapter 6 · Future of the Company",
+        "desc": "{founder}, look back at every late night, breakthrough, and teammate beside you. What final chapter defines {company}?",
+        "c1Label": "Anchor Our Culture & Legacy",
+        "c1Desc": "Empower senior teammates and cement the values that carried you here.",
+        "c1Effects": "+12 Culture · +10 Morale · +6 Reputation",
+        "c2Label": "Lead a Bold Market Expansion",
+        "c2Desc": "Push revenue and customer reach to their peak before the final evaluation.",
+        "c2Effects": "+$15,000 Cash · +18 Customers · +6 Reputation"
+      }
+    },
+    "endings": {
+      "DREAM_COMPANY": {
+        "title": "Ending A: The Dream Company",
+        "tagline": "Thriving products, happy people, and a studio you are proud to walk into.",
+        "message": "You built the very thing that on Day 1 you only dared to dream about.",
+        "hint": "Reach strong valuation/cash, live products, high reputation, and satisfied staff.",
+        "s1": "The expanded office buzzes with laughter, glowing monitors, and shipping milestones.",
+        "s2": "From three desks and cardboard boxes to an admired tech studio — we made it together."
+      },
+      "SMALL_BUT_HAPPY": {
+        "title": "Ending B: Small But Happy",
+        "tagline": "Close-knit, profitable, and deeply human.",
+        "message": "You do not need to become the biggest company to have a journey worth being proud of.",
+        "hint": "Keep finances stable with a compact team, high morale, and healthy culture.",
+        "s1": "Warm sunlight pours across the cozy office while teammates share fresh morning coffee.",
+        "s2": "Every customer knows us by name, and nobody wants to trade this team for the world."
+      },
+      "ACQUISITION": {
+        "title": "Ending C: The Acquisition",
+        "tagline": "A triumphant exit and a bittersweet farewell.",
+        "message": "Sometimes, the end of one journey is also the beginning of another.",
+        "hint": "Accept the major Acquisition offer during Chapter 5.",
+        "s1": "Press releases announce the acquisition across tech headlines as champagne glasses clink.",
+        "s2": "Thank you for trusting us from Day 1. Wherever we go next, we started here."
+      },
+      "BURNOUT": {
+        "title": "Ending D: Burnout",
+        "tagline": "Impressive numbers on paper, silence in the hallways.",
+        "message": "You built a company. But do you still want to work there?",
+        "hint": "Grow to high valuation or revenue while morale, retention, and culture collapse.",
+        "s1": "Midnight settles over empty desks while notifications still glow on one lonely screen.",
+        "s2": "The metrics climbed every quarter, yet almost everyone who cared has already left."
+      },
+      "LAST_DAY": {
+        "title": "Ending E: The Last Day",
+        "tagline": "The lights dim, but the lessons endure.",
+        "message": "Not every idea succeeds. Yet every journey leaves something behind.",
+        "hint": "Occurs when insolvency leaves no viable financial recovery path.",
+        "s1": "Cardboard boxes return to the desks where dreams once unpacked on a bright morning.",
+        "s2": "We gave it everything we had. See you on the next venture, founder."
+      },
+      "LEGACY": {
+        "title": "Ending F: Legacy",
+        "tagline": "A company built to outlast its founder.",
+        "message": "What you leave behind is not just a company, but the people and what they will keep building.",
+        "hint": "Sustain elite long-term valuation, high product quality, high morale, strong culture, and near-zero turnover.",
+        "s1": "Years later, a new generation gathers around the whiteboard under warm golden light.",
+        "s2": "Your founding teammates now mentor new builders, carrying the studio spirit forward."
+      }
+    },
+    "endingCard": {
+      "badge": "Story Finale",
+      "reachedDate": "Day {day}, Month {month}, {year}",
+      "valuation": "Valuation",
+      "revenue": "Total Revenue",
+      "moraleCulture": "Morale / Culture",
+      "chapterTeam": "Chapter / Team",
+      "majorChoicesTitle": "Defining Decisions",
+      "newCompanyBtn": "New Company",
+      "confirmNewGameBody": "Start a brand-new company? Your unlocked Ending Gallery stays saved, while this completed run will remain in manual slots.",
+      "confirmNewGameAction": "Start New Company"
+    },
+    "gallery": {
+      "openBtn": "Story & Endings",
+      "title": "Story Chapters & Ending Gallery",
+      "subtitle": "{unlocked} / {total} Endings Unlocked",
+      "overviewSubtitle": "{chapters}/{totalChapters} chapters completed · {unlocked}/{totalEndings} endings unlocked",
+      "tabEndings": "Endings ({unlocked}/{total})",
+      "tabChapters": "6 Story Chapters",
+      "unlockedBadge": "Unlocked",
+      "lockedBadge": "Locked",
+      "lockedTitle": "??? (Undiscovered Ending)",
+      "hintLabel": "Hint",
+      "viewDetails": "Details",
+      "hideDetails": "Hide",
+      "replayEnding": "Replay Ending",
+      "replayScene": "Replay Scene",
+      "founderLabel": "Founder: {name}",
+      "statusCompleted": "Completed",
+      "statusActive": "Current Chapter",
+      "statusLocked": "Locked",
+      "milestoneGoal": "Milestone"
+    },
+    "celebration": {
+      "badge": "Team Milestone",
+      "watchTeam": "Watch Team",
+      "focusRoom": "Focus",
+      "dismiss": "Dismiss",
+      "kinds": {
+        "PRODUCT_MVP_LAUNCH": {
+          "title": "{subject} Is Live!",
+          "line": "Cheers echo across Engineering — {count} first paying customers are already onboard!"
+        },
+        "PRODUCT_MATURE_RELEASE": {
+          "title": "{subject} Reaches v{version}.0!",
+          "line": "Your flagship product is now Mature. The whole team celebrates the craft behind it!"
+        },
+        "HQ_EXPANSION": {
+          "title": "Welcome to {subject}!",
+          "line": "More room, brighter desks, and fresh energy as {company} steps into a bigger chapter."
+        },
+        "DEPARTMENT_EXPANSION": {
+          "title": "{subject} Unlocked!",
+          "line": "A brand-new wing opens its doors — teammates gather to celebrate the expansion."
+        }
+      }
+    }
+  }
+}
+
+

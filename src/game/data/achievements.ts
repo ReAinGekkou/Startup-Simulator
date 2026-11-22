@@ -1,0 +1,86 @@
+import { Achievement } from '@/src/types/game';
+
+export function createInitialAchievements(): Achievement[] {
+  return [
+    {
+      id: 'ach_100k_revenue',
+      title: 'First 100k Revenue',
+      description: 'Generate $100,000 in cumulative company revenue.',
+      category: 'FINANCE',
+      unlocked: false,
+      unlockedDay: null,
+    },
+    {
+      id: 'ach_1m_revenue',
+      title: 'Seven-Figure Club',
+      description: 'Reach $1,000,000 in cumulative company revenue.',
+      category: 'FINANCE',
+      unlocked: false,
+      unlockedDay: null,
+    },
+    {
+      id: 'ach_burned_1m',
+      title: 'Burned 1M Cash',
+      description: 'Spend $1,000,000 across payroll, rent, R&D, marketing, and operations.',
+      category: 'FINANCE',
+      unlocked: false,
+      unlockedDay: null,
+    },
+    {
+      id: 'ach_all_roles',
+      title: 'Hired All Roles',
+      description: 'Recruit employees across all 8 specialized startup roles.',
+      category: 'TEAM',
+      unlocked: false,
+      unlockedDay: null,
+    },
+    {
+      id: 'ach_lead_veteran',
+      title: 'Executive Bench',
+      description: 'Promote any employee to Level 4 (Lead / Principal / Director).',
+      category: 'TEAM',
+      unlocked: false,
+      unlockedDay: null,
+    },
+    {
+      id: 'ach_zero_bugs_mature',
+      title: 'Flagship Polish',
+      description: 'Operate a Mature (v3+) product with 85+ quality and 0 open bugs.',
+      category: 'PRODUCT',
+      unlocked: false,
+      unlockedDay: null,
+    },
+    {
+      id: 'ach_multi_product',
+      title: 'Multi-Product Portfolio',
+      description: 'Operate at least 3 live products in the market simultaneously.',
+      category: 'PRODUCT',
+      unlocked: false,
+      unlockedDay: null,
+    },
+    {
+      id: 'ach_1k_customers',
+      title: 'Thousand True Fans',
+      description: 'Reach 1,000 active paying customers across all products.',
+      category: 'GROWTH',
+      unlocked: false,
+      unlockedDay: null,
+    },
+    {
+      id: 'ach_enterprise_whale',
+      title: 'Enterprise Whale',
+      description: 'Sign an enterprise B2B contract worth $4,000+/month.',
+      category: 'GROWTH',
+      unlocked: false,
+      unlockedDay: null,
+    },
+    {
+      id: 'ach_debt_free_hq',
+      title: 'Fortress Balance Sheet',
+      description: 'Reach Level 3+ HQ with zero debt and $100,000+ cash reserve.',
+      category: 'FINANCE',
+      unlocked: false,
+      unlockedDay: null,
+    },
+  ];
+}

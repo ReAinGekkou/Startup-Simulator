@@ -1,0 +1,78 @@
+import { Milestone } from '@/src/types/game';
+
+export function createInitialMilestones(): Milestone[] {
+  return [
+    {
+      id: 'ms_first_product',
+      title: 'Shipped First MVP',
+      description: 'Launch your first live product to customers.',
+      unlocked: false,
+      unlockedDay: null,
+      rewardCash: 1500,
+      rewardReputation: 5,
+    },
+    {
+      id: 'ms_first_customer',
+      title: 'First Paying Customer',
+      description: 'Acquire your first paying customer or active B2B contract.',
+      unlocked: false,
+      unlockedDay: null,
+      rewardCash: 1000,
+      rewardReputation: 4,
+    },
+    {
+      id: 'ms_profitable_month',
+      title: 'First Profitable Month',
+      description: 'Close a month with positive net profit after payroll and rent.',
+      unlocked: false,
+      unlockedDay: null,
+      rewardCash: 3500,
+      rewardReputation: 8,
+    },
+    {
+      id: 'ms_ten_employees',
+      title: 'Growing Studio (10 Staff)',
+      description: 'Build a team of at least 10 active employees.',
+      unlocked: false,
+      unlockedDay: null,
+      rewardCash: 5000,
+      rewardReputation: 7,
+    },
+    {
+      id: 'ms_major_contract',
+      title: 'First Major Contract',
+      description: 'Sign an enterprise or B2B contract worth $2,000+/month.',
+      unlocked: false,
+      unlockedDay: null,
+      rewardCash: 4000,
+      rewardReputation: 6,
+    },
+    {
+      id: 'ms_office_expansion',
+      title: 'Office Expansion',
+      description: 'Upgrade your headquarters beyond the starter office.',
+      unlocked: false,
+      unlockedDay: null,
+      rewardCash: 3000,
+      rewardReputation: 5,
+    },
+    {
+      id: 'ms_one_million',
+      title: 'Million-Dollar Revenue',
+      description: 'Reach $1,000,000 in cumulative company revenue.',
+      unlocked: false,
+      unlockedDay: null,
+      rewardCash: 25000,
+      rewardReputation: 15,
+    },
+    {
+      id: 'ms_tech_leader',
+      title: 'Recognized Tech Company',
+      description: 'Reach Level 4 HQ, 75+ Reputation, and $250,000+ cash reserve.',
+      unlocked: false,
+      unlockedDay: null,
+      rewardCash: 50000,
+      rewardReputation: 20,
+    },
+  ];
+}
