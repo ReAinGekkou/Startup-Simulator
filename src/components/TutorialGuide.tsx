@@ -11,10 +11,11 @@ import {
   X,
 } from 'lucide-react';
 import { getTutorialVoiceScript } from '@/src/audio/voiceRegistry';
+import { PixelAvatar } from '@/src/components/PixelAvatar';
 import { useLocalization } from '@/src/hooks/useLocalization';
 import { useVoiceOver } from '@/src/hooks/useVoiceOver';
 import { getRoomLocalized, getTutorialStepLocalized } from '@/src/localization/i18n';
-import { GameCommand, GameState } from '@/src/types/game';
+import { CharacterMood, GameCommand, GameState } from '@/src/types/game';
 import { ActiveModal } from './GameHUD';
 
 interface TutorialGuideProps {
@@ -22,6 +23,18 @@ interface TutorialGuideProps {
   onDispatch: (cmd: GameCommand) => void;
   onNavigate?: (target: ActiveModal) => void;
 }
+
+const STEP_MOODS: Record<number, CharacterMood> = {
+  1: 'HAPPY',
+  2: 'THOUGHTFUL',
+  3: 'DETERMINED',
+  4: 'NEUTRAL',
+  5: 'HAPPY',
+  6: 'SURPRISED',
+  7: 'THOUGHTFUL',
+  8: 'DETERMINED',
+};
+
 
 export const TutorialGuide: React.FC<TutorialGuideProps> = ({ state, onDispatch }) => {
   const { locale, t } = useLocalization();
@@ -140,11 +153,21 @@ export const TutorialGuide: React.FC<TutorialGuideProps> = ({ state, onDispatch 
         </div>
       </div>
 
-      {/* Body: Short Title + One Short Instruction + Progress Bar */}
+      {/* Body: Avatar + Short Title + One Short Instruction + Progress Bar */}
       <div className="p-3 space-y-2">
-        <div>
-          <h3 className="text-[15px] font-bold text-[#303B38] leading-snug">{locStep.title}</h3>
-          <p className="text-[14px] text-[#303B38]/90 leading-snug mt-0.5">{locStep.actionPrompt}</p>
+        <div className="flex items-start gap-3">
+          <div className="shrink-0 pt-0.5">
+            <PixelAvatar
+              appearance={state.founder.appearance}
+              size={44}
+              isFounder
+              moodTone={STEP_MOODS[tut.currentStep] ?? 'NEUTRAL'}
+            />
+          </div>
+          <div className="min-w-0 flex-1">
+            <h3 className="text-[15px] font-bold text-[#303B38] leading-snug">{locStep.title}</h3>
+            <p className="text-[14px] text-[#303B38]/90 leading-snug mt-0.5">{locStep.actionPrompt}</p>
+          </div>
         </div>
 
         {tut.currentStep === 2 && (

@@ -29,11 +29,30 @@ export interface MilestoneTimelineEntry {
   flavorText: string | null;
 }
 
+export interface ChallengingMilestoneBadge {
+  milestoneId: string;
+  title: string;
+  unlockedDay: number;
+  daysToReach: number;
+  rewardCash: number;
+  rewardReputation: number;
+}
+
+export interface MilestoneTimelineSummary {
+  totalCount: number;
+  completedCount: number;
+  completionPercent: number;
+  averageDaysPerMilestone: number | null;
+  elapsedDays: number;
+  mostChallenging: ChallengingMilestoneBadge | null;
+}
+
 export interface MilestoneTimelineResult {
   entries: MilestoneTimelineEntry[];
   completedCount: number;
   currentCount: number;
   upcomingCount: number;
+  summary: MilestoneTimelineSummary;
 }
 
 const START_YEAR = 2026;
@@ -220,10 +239,72 @@ export function buildMilestoneTimeline(
     ...upcomingRaw.map((item) => toEntry(item, 'UPCOMING')),
   ];
 
+  const totalCount = state.milestones.length;
+  const completedCount = completedRaw.length;
+  const completionPercent =
+    totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
+
+  const latestCompletedDay =
+    completedCount > 0
+      ? Math.max(1, completedRaw[completedCount - 1].milestone.unlockedDay ?? 1)
+      : 0;
+  const elapsedDays = Math.max(1, state.totalDays, latestCompletedDay);
+  const averageDaysPerMilestone =
+    completedCount > 0
+      ? Math.round((elapsedDays / completedCount) * 10) / 10
+      : null;
+
+  let mostChallenging: ChallengingMilestoneBadge | null = null;
+  if (completedCount > 0) {
+    let bestScore = -1;
+    for (let i = 0; i < completedRaw.length; i++) {
+      const item = completedRaw[i];
+      const unlockedDay = Math.max(1, item.milestone.unlockedDay ?? 1);
+      const prevDay =
+        i === 0 ? 0 : Math.max(1, completedRaw[i - 1].milestone.unlockedDay ?? 1);
+      const daysToReach = Math.max(1, unlockedDay - prevDay);
+      const challengeScore =
+        item.milestone.rewardCash +
+        item.milestone.rewardReputation * 500 +
+        daysToReach * 50;
+
+      if (
+        challengeScore > bestScore ||
+        (challengeScore === bestScore &&
+          mostChallenging &&
+          daysToReach > mostChallenging.daysToReach)
+      ) {
+        bestScore = challengeScore;
+        const localized = getMilestoneLocalized(
+          item.milestone.id,
+          item.milestone.title,
+          item.milestone.description,
+          locale
+        );
+        mostChallenging = {
+          milestoneId: item.milestone.id,
+          title: localized.title,
+          unlockedDay,
+          daysToReach,
+          rewardCash: item.milestone.rewardCash,
+          rewardReputation: item.milestone.rewardReputation,
+        };
+      }
+    }
+  }
+
   return {
     entries,
-    completedCount: completedRaw.length,
+    completedCount,
     currentCount: currentItem ? 1 : 0,
     upcomingCount: upcomingRaw.length,
+    summary: {
+      totalCount,
+      completedCount,
+      completionPercent,
+      averageDaysPerMilestone,
+      elapsedDays,
+      mostChallenging,
+    },
   };
 }

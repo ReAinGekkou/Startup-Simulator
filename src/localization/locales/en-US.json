@@ -144,7 +144,14 @@
     "welcomeBanner": {
       "title": "Welcome to your company!",
       "subtitle": "Let's get started!"
-    }
+    },
+    "menuBtn": "Manage",
+    "menuTitle": "Company Menu",
+    "menuSectionOps": "Operations",
+    "menuSectionStudio": "Studio & System",
+    "mapBtn": "City",
+    "mapTitle": "Connected City",
+    "checklistBtn": "Checklist"
   },
   "objectives": {
     "panelTitle": "FIRST GOALS",
@@ -255,7 +262,8 @@
     "step6LaunchCampaign": "Click to start promotion.",
     "step7OpenFinance": "Check money in and out.",
     "step8EndDay": "Click to end the workday.",
-    "closeModalFirst": "Close this panel to see the office."
+    "closeModalFirst": "Close this panel to see the office.",
+    "openMenuFor": "Open Manage to reach {section}."
   },
   "rooms": {
     "lockedSuffix": "Locked",
@@ -352,6 +360,18 @@
     "inUse": "In Use",
     "ready": "Ready",
     "lobbyVisitors": "Lobby Visitors",
+    "furnitureOverview": "Station Actions",
+    "furnitureUseActive": "In active use",
+    "furnitureComfortLabel": "+{comfort} Comfort · +{prod}% Output",
+    "viewRoomActions": "Room Overview: {room}",
+    "activeProductLabel": "Active Product",
+    "noProductHint": "No product started yet.",
+    "quickBuildSprintBtn": "Quick Sprint (+35% · {cost})",
+    "teamSummary": "{count}/{max} Team Seats",
+    "cashSummary": "Company Money: {cash}",
+    "burnSummary": "Monthly Net: {net}",
+    "customersSummary": "{customers} Paying Users · {deals} Active Deals",
+    "comfortScoreSummary": "Office Comfort: {comfort}/100",
     "empStates": {
       "WORKING": "Working",
       "IDLE": "Relaxing",
@@ -891,6 +911,18 @@
     "timeline": {
       "title": "Company Milestone Timeline",
       "summaryLine": "{completed} completed · {current} in progress · {upcoming} upcoming",
+      "statsLabel": "Timeline Summary Statistics",
+      "completionLabel": "Total Completion",
+      "completionSub": "{completed} of {total} milestones",
+      "avgDaysLabel": "Avg. Days / Milestone",
+      "avgDaysValue": "{days} days",
+      "avgDaysEmpty": "—",
+      "avgDaysSub": "Across {totalDays} days operated",
+      "avgDaysEmptySub": "Awaiting 1st milestone",
+      "challengingLabel": "Most Challenging Milestone",
+      "challengingEmptyTitle": "None earned yet",
+      "challengingEmptySub": "Reach your first milestone to earn this badge",
+      "challengingMeta": "Day {day} · {span}d climb",
       "filterAll": "All ({count})",
       "filterCompleted": "Completed ({count})",
       "filterUpcoming": "In Progress & Upcoming ({count})",
@@ -1332,39 +1364,51 @@
     "interfaceSection": "Menus & Furniture Placement",
     "mouseSection": "Mouse & Camera Controls",
     "keySpace": "Space",
+    "keyP": "P",
     "keyArrows": "Arrow Keys (↑ ↓ ← →)",
     "keyEsc": "Esc",
     "keyM": "M",
     "keyLeftClick": "Left-Click",
-    "keyDragWheel": "Drag / Wheel",
-    "moveWasdDesc": "Step the Founder tile-by-tile (Up, Left, Down, Right)",
-    "moveArrowsDesc": "Step the Founder using the directional arrow keys",
+    "keyDragWheel": "Drag / Pinch / Wheel",
+    "moveWasdDesc": "Move the Founder smoothly across the isometric floor (Up, Left, Down, Right)",
+    "moveArrowsDesc": "Move the Founder using the directional arrow keys",
     "pauseResumeDesc": "Pause or resume the daily simulation (toggles between Pause and 1x)",
+    "focusFounderDesc": "Center the camera smoothly on the Founder",
     "speed1Desc": "Set simulation speed to Normal (1x)",
     "speed2Desc": "Set simulation speed to Fast (2x)",
     "speed3Desc": "Set simulation speed to Ultra (3x)",
     "muteAudioDesc": "Mute or unmute all game audio (Master Volume)",
     "escDesc": "Cancel furniture placement, close open panels/drawers, or open Settings",
-    "mouseWalkDesc": "Click any walkable floor tile to send the Founder there",
-    "mouseInspectDesc": "Click a room, employee, or furniture item to open contextual actions",
-    "mouseCameraDesc": "Drag the office canvas to pan the camera; scroll wheel to zoom",
+    "mouseWalkDesc": "Click any walkable ground tile to navigate the Founder there",
+    "mouseInspectDesc": "Click a room, NPC, employee, or building to inspect and interact",
+    "mouseCameraDesc": "Drag or touch-pan the map; scroll wheel or pinch to zoom around cursor",
     "noteText": "Note: Hotkeys automatically pause while typing inside text inputs or while a report or event dialog is open."
   },
   "shortcutFeedback": {
     "PAUSE": "Simulation Paused",
     "RESUME": "Resumed (1x)",
+    "FOCUS_FOUNDER": "Centered on Founder",
     "SPEED_1": "Speed 1x",
     "SPEED_2": "Speed 2x",
     "SPEED_3": "Speed 3x",
-    "MOVE_UP": "Step Up",
-    "MOVE_DOWN": "Step Down",
-    "MOVE_LEFT": "Step Left",
-    "MOVE_RIGHT": "Step Right",
+    "MOVE_UP": "Move Up",
+    "MOVE_DOWN": "Move Down",
+    "MOVE_LEFT": "Move Left",
+    "MOVE_RIGHT": "Move Right",
     "CANCEL_PLACEMENT": "Cancelled Placement",
     "CLOSE_PANEL": "Closed Panel",
     "OPEN_SETTINGS": "Opened Settings",
     "MUTE_AUDIO": "Master Audio Muted",
     "UNMUTE_AUDIO": "Master Audio Unmuted"
+  },
+  "camera": {
+    "toolbarLabel": "Camera controls",
+    "followFounder": "Toggle follow Founder camera",
+    "followShort": "Follow",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out",
+    "resetView": "Reset camera view",
+    "resetShort": "Reset"
   },
   "canvasSpeed": {
     "label": "Speed",
@@ -1376,7 +1420,7 @@
   "tooltips": {
     "cashBalance": "Available company operating cash for payroll, rent, R&D, and marketing. Running out past your credit limit triggers bankruptcy.",
     "companyStatus": "Quick snapshot of your company's current cash health and growth stage.",
-    "speedPause": "Pause simulation time so you can plan tasks and inspect the office (Space).",
+    "speedPause": "Pause simulation time so you can plan tasks and inspect the world (Key P).",
     "speed1x": "Run the daily workday simulation at standard speed (Key 1).",
     "speed2x": "Accelerate the simulation to 2x speed (Key 2).",
     "speed3x": "Accelerate the simulation to maximum 3x speed (Key 3).",
@@ -1742,6 +1786,113 @@
           "line": "A brand-new wing opens its doors — teammates gather to celebrate the expansion."
         }
       }
+    }
+  },
+  "world": {
+    "districtBarLabel": "Connected City Districts",
+    "stepOutsideLobby": "Step Outside to Main Street",
+    "locations": {
+      "COMPANY_HQ": {
+        "shortName": "Company HQ",
+        "name": "Company HQ Studio",
+        "description": "Your growing startup office where the team collaborates, builds products, and relaxes."
+      },
+      "MAIN_STREET": {
+        "shortName": "Main Street",
+        "name": "Main Street Promenade",
+        "description": "A sunny walkable street linking your HQ with customers, partners, cafes, and city venues."
+      },
+      "COFFEE_SHOP": {
+        "shortName": "Bean & Byte",
+        "name": "Bean & Byte Coffee Shop",
+        "description": "Cozy artisan espresso corner where founders recharge energy and chat with local product buyers."
+      },
+      "COWORKING_SPACE": {
+        "shortName": "Foundry Commons",
+        "name": "Foundry Commons Coworking",
+        "description": "An open talent hub next door where skilled engineers, designers, and marketers hang out."
+      },
+      "INVESTOR_CENTER": {
+        "shortName": "Harbor Capital",
+        "name": "Harbor Capital Investor Center",
+        "description": "Pitch your traction and financials to venture partners to grow investor trust and funding offers."
+      },
+      "EVENT_HALL": {
+        "shortName": "Event Hall",
+        "name": "Civic Demo & Event Hall",
+        "description": "Sponsor Demo Day showcases to spark organic user traction, reputation, and customer growth."
+      },
+      "BUSINESS_PROPERTIES": {
+        "shortName": "Properties",
+        "name": "Commercial Business Properties",
+        "description": "Acquire retail kiosks, regional sales hubs, and innovation labs for passive revenue and HQ capacity."
+      }
+    },
+    "npcKinds": {
+      "CUSTOMER": "Customer",
+      "CANDIDATE": "Candidate",
+      "PARTNER": "Partner",
+      "INVESTOR": "Investor",
+      "HOST": "Event Host"
+    },
+    "properties": {
+      "prop_retail_kiosk": {
+        "shortName": "Pop-Up Kiosk",
+        "name": "Main Street Pop-Up Kiosk",
+        "description": "A cozy street-front booth selling merchandise and live product demos to foot traffic."
+      },
+      "prop_sales_hub": {
+        "shortName": "Sales Hub",
+        "name": "Harbor Regional Sales Hub",
+        "description": "Dedicated downtown client showcase office boosting recurring income and team seats."
+      },
+      "prop_innovation_lab": {
+        "shortName": "Innovation Lab",
+        "name": "Foundry Innovation Studio",
+        "description": "Flagship R&D annex expanding company seats, prestige, and recurring enterprise value."
+      }
+    },
+    "drawer": {
+      "closeAria": "Close city location drawer",
+      "districtLabel": "Connected District",
+      "walkHereBtn": "Walk Here",
+      "npcTalkBtn": "Talk & Connect (-10 Energy)",
+      "npcTalkedToday": "Already connected today",
+      "npcHireNowBtn": "Hire ({fee})",
+      "coffeeVisitsLabel": "Daily Espresso Visits",
+      "buyCoffeeBtn": "Grab Artisan Espresso ({cost} · +22 Energy)",
+      "coworkingTitle": "Coworking Talent Nearby",
+      "refreshSearchBtn": "Refresh Talent ({cost})",
+      "openHrBtn": "Open Team & Hiring Panel",
+      "noCandidatesHint": "Refresh the talent pool to meet new professionals at the coworking patio.",
+      "investorTrustLabel": "Investor Trust",
+      "investorReputationLabel": "Company Reputation",
+      "investorPitchedToday": "Daily Pitch Limit",
+      "pitchInvestorBtn": "Pitch Startup Deck (-14 Energy)",
+      "openFinanceBtn": "Open Finance & Runway",
+      "eventsAttendedLabel": "Demo Days Hosted",
+      "hostEventBtn": "Host Demo Day ({cost} · -14 Energy)",
+      "openMarketBtn": "Open Market & Contracts",
+      "ownedBadge": "Owned",
+      "availableBadge": "Available",
+      "buyPropertyBtn": "Acquire ({cost})",
+      "monthlyRevLabel": "Recurring Revenue",
+      "capacityBonusLabel": "Team Capacity",
+      "repBonusLabel": "Reputation Boost",
+      "purchasedOnDay": "Acquired on Day {day}",
+      "mainStreetContactsTitle": "Neighborhood Contacts",
+      "billboardHint": "Reach 32+ Reputation to feature {company} on the Main Street billboard!",
+      "npcSectionTitle": "People Here"
+    }
+  },
+  "weather": {
+    "label": "Weather",
+    "autoShort": "Auto",
+    "cycleTooltip": "Weather: {state} (Click to cycle Sunny / Overcast / Rainy)",
+    "states": {
+      "SUNNY": "Sunny",
+      "OVERCAST": "Overcast",
+      "RAINY": "Rainy"
     }
   }
 }

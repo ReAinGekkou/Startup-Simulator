@@ -9,6 +9,7 @@ import { EmployeeChatterFeed } from '@/src/components/EmployeeChatterFeed';
 import { ActiveModal, GameHUD, ShortcutFeedback } from '@/src/components/GameHUD';
 import { CameraActionHandle, OfficeCanvas } from '@/src/components/OfficeCanvas';
 import { RoomActionDrawer } from '@/src/components/RoomActionDrawer';
+import { WorldActionDrawer } from '@/src/components/WorldActionDrawer';
 import { TutorialManager } from '@/src/components/tutorial/TutorialManager';
 import { SubtitlePanel } from '@/src/components/SubtitlePanel';
 import { TitleScreen } from '@/src/components/TitleScreen';
@@ -32,7 +33,9 @@ import {
   createCelebrationBurstCoordinator,
   isCelebratoryCinematic,
 } from '@/src/game/systems/celebrationParticles';
+import { WORLD_LOCATIONS } from '@/src/game/data/cityWorld';
 import { DEFAULT_NEW_GAME_PARAMS } from '@/src/game/engine/initGame';
+import { getIsoMovementVector } from '@/src/game/engine/isoMath';
 import {
   buildWalkabilityGrid,
   findAdjacentWalkableTile,
@@ -49,7 +52,7 @@ import {
   getLocalizedGameOverReason,
   getObjectiveLocalized,
 } from '@/src/localization';
-import { GridPoint, RoomId, SimulationSpeed } from '@/src/types/game';
+import { GridPoint, RoomId, SimulationSpeed, WorldLocationId } from '@/src/types/game';
 
 export default function App() {
   const {
@@ -89,9 +92,14 @@ export default function App() {
   const [showTitleIntro, setShowTitleIntro] = useState(false);
   const [confirmEndModalNewGame, setConfirmEndModalNewGame] = useState(false);
   const [selectedRoomId, setSelectedRoomId] = useState<RoomId | null>(null);
+  const [selectedFurnitureId, setSelectedFurnitureId] = useState<string | null>(null);
   const [selectedEmployeeId, setSelectedEmployeeId] = useState<string | null>(null);
+  const [selectedLocationId, setSelectedLocationId] = useState<WorldLocationId | null>(null);
+  const [selectedWorldNpcId, setSelectedWorldNpcId] = useState<string | null>(null);
+  const [followFounder, setFollowFounder] = useState(false);
   const [movingFurnitureId, setMovingFurnitureId] = useState<string | null>(null);
   const [placingTemplateId, setPlacingTemplateId] = useState<string | null>(null);
+  const heldNavKeysRef = useRef({ up: false, down: false, left: false, right: false });
   const [shortcutFeedback, setShortcutFeedback] = useState<ShortcutFeedback | null>(null);
   const [speedShortcutPulseId, setSpeedShortcutPulseId] = useState(0);
   const shortcutTimerRef = useRef<number | null>(null);
@@ -455,9 +463,18 @@ export default function App() {
           triggerShortcutFeedback(t('shortcutsModal.keyEsc'), 'CLOSE_PANEL');
           return;
         }
-        if (selectedEmployeeId || selectedRoomId) {
+        if (
+          selectedEmployeeId ||
+          selectedRoomId ||
+          selectedFurnitureId ||
+          selectedWorldNpcId ||
+          selectedLocationId
+        ) {
           setSelectedEmployeeId(null);
           setSelectedRoomId(null);
+          setSelectedFurnitureId(null);
+          setSelectedWorldNpcId(null);
+          setSelectedLocationId(null);
           triggerShortcutFeedback(t('shortcutsModal.keyEsc'), 'CLOSE_PANEL');
           return;
         }
@@ -478,14 +495,22 @@ export default function App() {
         return;
       }
 
-      switch (e.key.toLowerCase()) {
+      const keyLower = e.key.toLowerCase();
+      switch (keyLower) {
         case ' ': {
+          e.preventDefault();
+          if (e.repeat) return;
+          cameraActionRef.current?.focusFounder();
+          triggerShortcutFeedback(t('shortcutsModal.keySpace'), 'FOCUS_FOUNDER');
+          break;
+        }
+        case 'p': {
           e.preventDefault();
           if (e.repeat) return;
           const nextSpeed: SimulationSpeed = gameState.speed === 0 ? 1 : 0;
           dispatch({ type: 'SET_SPEED', speed: nextSpeed });
           triggerShortcutFeedback(
-            t('shortcutsModal.keySpace'),
+            t('shortcutsModal.keyP'),
             nextSpeed === 0 ? 'PAUSE' : 'RESUME',
             nextSpeed
           );
@@ -508,33 +533,87 @@ export default function App() {
           break;
         case 'w':
         case 'arrowup':
-          e.preventDefault();
-          dispatch({ type: 'STEP_FOUNDER', dx: 0, dy: -1 });
-          triggerShortcutFeedback(e.key === 'ArrowUp' ? '↑' : 'W', 'MOVE_UP');
-          break;
         case 's':
         case 'arrowdown':
-          e.preventDefault();
-          dispatch({ type: 'STEP_FOUNDER', dx: 0, dy: 1 });
-          triggerShortcutFeedback(e.key === 'ArrowDown' ? '↓' : 'S', 'MOVE_DOWN');
-          break;
         case 'a':
         case 'arrowleft':
-          e.preventDefault();
-          dispatch({ type: 'STEP_FOUNDER', dx: -1, dy: 0 });
-          triggerShortcutFeedback(e.key === 'ArrowLeft' ? '←' : 'A', 'MOVE_LEFT');
-          break;
         case 'd':
-        case 'arrowright':
+        case 'arrowright': {
           e.preventDefault();
-          dispatch({ type: 'STEP_FOUNDER', dx: 1, dy: 0 });
-          triggerShortcutFeedback(e.key === 'ArrowRight' ? '→' : 'D', 'MOVE_RIGHT');
+          if (keyLower === 'w' || keyLower === 'arrowup') heldNavKeysRef.current.up = true;
+          if (keyLower === 's' || keyLower === 'arrowdown') heldNavKeysRef.current.down = true;
+          if (keyLower === 'a' || keyLower === 'arrowleft') heldNavKeysRef.current.left = true;
+          if (keyLower === 'd' || keyLower === 'arrowright') heldNavKeysRef.current.right = true;
+          const dir = getIsoMovementVector(heldNavKeysRef.current);
+          stateRef.current.founder.inputVector = dir;
+          stateRef.current.founder.path = [];
+          stateRef.current.founder.targetTile = null;
+          if (!e.repeat) {
+            const actionKey =
+              keyLower === 'w' || keyLower === 'arrowup'
+                ? 'MOVE_UP'
+                : keyLower === 's' || keyLower === 'arrowdown'
+                  ? 'MOVE_DOWN'
+                  : keyLower === 'a' || keyLower === 'arrowleft'
+                    ? 'MOVE_LEFT'
+                    : 'MOVE_RIGHT';
+            const label =
+              e.key === 'ArrowUp'
+                ? '↑'
+                : e.key === 'ArrowDown'
+                  ? '↓'
+                  : e.key === 'ArrowLeft'
+                    ? '←'
+                    : e.key === 'ArrowRight'
+                      ? '→'
+                      : keyLower.toUpperCase();
+            triggerShortcutFeedback(label, actionKey);
+          }
           break;
+        }
+      }
+    };
+
+    const clearHeldNav = () => {
+      heldNavKeysRef.current = { up: false, down: false, left: false, right: false };
+      if (stateRef.current.founder.inputVector) {
+        stateRef.current.founder.inputVector = { x: 0, y: 0 };
+      }
+    };
+
+    const onKeyUp = (e: KeyboardEvent) => {
+      const keyLower = e.key.toLowerCase();
+      let changed = false;
+      if (keyLower === 'w' || keyLower === 'arrowup') {
+        heldNavKeysRef.current.up = false;
+        changed = true;
+      }
+      if (keyLower === 's' || keyLower === 'arrowdown') {
+        heldNavKeysRef.current.down = false;
+        changed = true;
+      }
+      if (keyLower === 'a' || keyLower === 'arrowleft') {
+        heldNavKeysRef.current.left = false;
+        changed = true;
+      }
+      if (keyLower === 'd' || keyLower === 'arrowright') {
+        heldNavKeysRef.current.right = false;
+        changed = true;
+      }
+      if (changed) {
+        stateRef.current.founder.inputVector = getIsoMovementVector(heldNavKeysRef.current);
       }
     };
 
     window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
+    window.addEventListener('keyup', onKeyUp);
+    window.addEventListener('blur', clearHeldNav);
+    return () => {
+      clearHeldNav();
+      window.removeEventListener('keydown', onKeyDown);
+      window.removeEventListener('keyup', onKeyUp);
+      window.removeEventListener('blur', clearHeldNav);
+    };
   }, [
     activeModal,
     showEndingGallery,
@@ -550,6 +629,10 @@ export default function App() {
     placingTemplateId,
     selectedEmployeeId,
     selectedRoomId,
+    selectedFurnitureId,
+    selectedLocationId,
+    selectedWorldNpcId,
+    stateRef,
     t,
     toggleMasterMute,
     triggerShortcutFeedback,
@@ -560,7 +643,8 @@ export default function App() {
       tile: GridPoint,
       hitEmployeeId: string | null,
       hitFurnitureId: string | null,
-      hitRoomId: RoomId | null
+      hitRoomId: RoomId | null,
+      worldExtra?: { worldNpcId: string | null; locationId: WorldLocationId | null }
     ) => {
       // Furniture placement or relocation mode
       if (movingFurnitureId) {
@@ -577,9 +661,47 @@ export default function App() {
       }
 
       if (hitEmployeeId) {
+        const emp = stateRef.current.employees.find((e) => e.id === hitEmployeeId);
+        if (emp) {
+          const dist = Math.hypot(
+            emp.position.x - stateRef.current.founder.position.x,
+            emp.position.y - stateRef.current.founder.position.y
+          );
+          if (dist > 2.2) {
+            dispatch({
+              type: 'MOVE_FOUNDER',
+              target: { x: Math.round(emp.position.x), y: Math.round(emp.position.y) },
+            });
+          }
+        }
         setSelectedEmployeeId(hitEmployeeId);
         setSelectedRoomId(null);
+        setSelectedFurnitureId(null);
+        setSelectedWorldNpcId(null);
+        setSelectedLocationId(null);
         dispatch({ type: 'REPORT_TUTORIAL_ACTION', action: 'REVIEW_EMPLOYEE' });
+        return;
+      }
+
+      if (worldExtra?.worldNpcId) {
+        const npc = stateRef.current.world?.npcs.find((n) => n.id === worldExtra.worldNpcId);
+        if (npc) {
+          const dist = Math.hypot(
+            npc.position.x - stateRef.current.founder.position.x,
+            npc.position.y - stateRef.current.founder.position.y
+          );
+          if (dist > 2.4) {
+            dispatch({
+              type: 'MOVE_FOUNDER',
+              target: npc.position,
+            });
+          }
+        }
+        setSelectedEmployeeId(null);
+        setSelectedRoomId(null);
+        setSelectedFurnitureId(null);
+        setSelectedWorldNpcId(worldExtra.worldNpcId);
+        setSelectedLocationId(npc?.locationId ?? worldExtra.locationId ?? null);
         return;
       }
 
@@ -590,6 +712,9 @@ export default function App() {
         if (furn) {
           setSelectedEmployeeId(null);
           setSelectedRoomId(furn.roomId);
+          setSelectedFurnitureId(furn.id);
+          setSelectedWorldNpcId(null);
+          setSelectedLocationId(null);
           if (stateRef.current.office.rooms[furn.roomId]?.unlocked) {
             const grid = buildWalkabilityGrid(stateRef.current.office);
             const target = findAdjacentWalkableTile(grid, furn) ?? tile;
@@ -604,40 +729,58 @@ export default function App() {
       if (hitRoomId) {
         setSelectedEmployeeId(null);
         setSelectedRoomId(hitRoomId);
+        setSelectedFurnitureId(null);
+        setSelectedWorldNpcId(null);
+        setSelectedLocationId(null);
         if (stateRef.current.office.rooms[hitRoomId]?.unlocked) {
           dispatch({ type: 'MOVE_FOUNDER', target: tile });
           dispatch({ type: 'REPORT_TUTORIAL_ACTION', action: 'EXPLORE_ROOM', roomId: hitRoomId });
         }
-      } else {
-        dispatch({ type: 'MOVE_FOUNDER', target: tile });
+        return;
+      }
+
+      if (
+        worldExtra?.locationId &&
+        worldExtra.locationId !== 'COMPANY_HQ' &&
+        worldExtra.locationId !== 'MAIN_STREET'
+      ) {
+        const locId = worldExtra.locationId;
         setSelectedEmployeeId(null);
         setSelectedRoomId(null);
+        setSelectedFurnitureId(null);
+        setSelectedWorldNpcId(null);
+        setSelectedLocationId(locId);
+        dispatch({ type: 'MOVE_FOUNDER', target: WORLD_LOCATIONS[locId].entranceTile });
+        return;
       }
+
+      dispatch({ type: 'MOVE_FOUNDER', target: tile });
+      setSelectedEmployeeId(null);
+      setSelectedRoomId(null);
+      setSelectedFurnitureId(null);
+      setSelectedWorldNpcId(null);
+      setSelectedLocationId(null);
     },
     [dispatch, movingFurnitureId, placingTemplateId, stateRef]
   );
 
   return (
     <div className="relative w-screen h-screen overflow-hidden bg-[#F3F0E7] text-[#303B38] select-none">
-      {/* Live 2D Pixel-Art Office Canvas framed inside the unobstructed play region */}
-      <div
-        className={
-          gameState.screen === 'PLAYING'
-            ? 'w-full h-full md:pl-44 lg:pl-48 pt-14 pb-16'
-            : 'w-full h-full'
-        }
-      >
+      {/* LAYER A — Full-Bleed Live 2.5D Isometric Office & Main Street World */}
+      <div className="w-full h-full">
         <OfficeCanvas
           stateRef={stateRef}
           isTitlePan={gameState.screen === 'TITLE_MENU'}
-          speed={gameState.speed}
-          speedShortcutPulseId={speedShortcutPulseId}
           selectedRoomId={selectedRoomId}
+          selectedFurnitureId={selectedFurnitureId}
           selectedEmployeeId={selectedEmployeeId}
+          selectedLocationId={selectedLocationId}
+          selectedWorldNpcId={selectedWorldNpcId}
           movingFurnitureId={movingFurnitureId}
           placingTemplateId={placingTemplateId}
           highlightedRoomIds={highlightedRoomIds}
           highlightedEmployeeId={highlightedEmployeeId}
+          onFollowFounderChange={setFollowFounder}
           onTileClick={handleTileClick}
           onCameraActionRef={cameraActionRef}
         />
@@ -650,7 +793,10 @@ export default function App() {
           latestSaveMeta={latestSaveMeta}
           onStartGame={(p) => {
             setSelectedRoomId(null);
+            setSelectedFurnitureId(null);
             setSelectedEmployeeId(null);
+            setSelectedLocationId(null);
+            setSelectedWorldNpcId(null);
             setMovingFurnitureId(null);
             setPlacingTemplateId(null);
             setActiveModal(null);
@@ -659,7 +805,10 @@ export default function App() {
           }}
           onContinueGame={() => {
             setSelectedRoomId(null);
+            setSelectedFurnitureId(null);
             setSelectedEmployeeId(null);
+            setSelectedLocationId(null);
+            setSelectedWorldNpcId(null);
             setMovingFurnitureId(null);
             setPlacingTemplateId(null);
             setShowTitleIntro(false);
@@ -686,7 +835,10 @@ export default function App() {
           onSaveSlot={saveToSlot}
           onLoadSlot={(slotId) => {
             setSelectedRoomId(null);
+            setSelectedFurnitureId(null);
             setSelectedEmployeeId(null);
+            setSelectedLocationId(null);
+            setSelectedWorldNpcId(null);
             setMovingFurnitureId(null);
             setPlacingTemplateId(null);
             setShowTitleIntro(false);
@@ -712,8 +864,32 @@ export default function App() {
             welcomeBannerOpen={welcomeBannerOpen}
             onDismissWelcomeBanner={dismissWelcomeBanner}
             shortcutFeedback={shortcutFeedback}
+            speedShortcutPulseId={speedShortcutPulseId}
             movingMode={Boolean(movingFurnitureId || placingTemplateId)}
-            hasDrawerOpen={Boolean(selectedEmployeeId || selectedRoomId)}
+            hasDrawerOpen={Boolean(
+              selectedEmployeeId ||
+                selectedRoomId ||
+                selectedFurnitureId ||
+                selectedWorldNpcId ||
+                selectedLocationId
+            )}
+            selectedLocationId={selectedLocationId}
+            selectedRoomId={selectedRoomId}
+            followFounder={followFounder}
+            cameraActionRef={cameraActionRef}
+            onSelectDistrict={(locId) => {
+              setSelectedEmployeeId(null);
+              setSelectedWorldNpcId(null);
+              setSelectedFurnitureId(null);
+              if (locId === 'COMPANY_HQ') {
+                setSelectedLocationId(null);
+                setSelectedRoomId(null);
+              } else {
+                setSelectedRoomId(null);
+                setSelectedLocationId(locId);
+              }
+            }}
+            onCycleWeather={() => dispatch({ type: 'CYCLE_WEATHER' })}
             onCancelMoving={() => {
               setMovingFurnitureId(null);
               setPlacingTemplateId(null);
@@ -752,28 +928,65 @@ export default function App() {
               gameState.tutorial?.skipped) && (
               <EmployeeChatterFeed
                 messages={gameState.chatterFeed}
-                hideOnMobile={Boolean(selectedEmployeeId || selectedRoomId)}
+                hideOnMobile={Boolean(
+                  selectedEmployeeId ||
+                    selectedRoomId ||
+                    selectedFurnitureId ||
+                    selectedWorldNpcId ||
+                    selectedLocationId
+                )}
                 onSelectEmployee={(empId) => {
                   setSelectedEmployeeId(empId);
                   setSelectedRoomId(null);
+                  setSelectedFurnitureId(null);
+                  setSelectedWorldNpcId(null);
+                  setSelectedLocationId(null);
                   dispatch({ type: 'REPORT_TUTORIAL_ACTION', action: 'REVIEW_EMPLOYEE' });
                 }}
               />
             )}
 
-          {!activeModal && (selectedEmployeeId || selectedRoomId) && (
+          {!activeModal && (selectedEmployeeId || selectedRoomId || selectedFurnitureId) && (
             <RoomActionDrawer
               state={gameState}
               selectedRoomId={selectedRoomId}
+              selectedFurnitureId={selectedFurnitureId}
               selectedEmployeeId={selectedEmployeeId}
+              onClearFurniture={() => setSelectedFurnitureId(null)}
               onClose={() => {
                 setSelectedEmployeeId(null);
                 setSelectedRoomId(null);
+                setSelectedFurnitureId(null);
               }}
               onDispatch={dispatch}
               onOpenModal={(m) => setActiveModal(m)}
+              onWalkOutsideLobby={() => {
+                setSelectedEmployeeId(null);
+                setSelectedRoomId(null);
+                setSelectedFurnitureId(null);
+                setSelectedWorldNpcId(null);
+                setSelectedLocationId('MAIN_STREET');
+                cameraActionRef.current?.focusLocation('MAIN_STREET');
+              }}
             />
           )}
+
+          {!activeModal &&
+            (selectedWorldNpcId ||
+              (selectedLocationId && selectedLocationId !== 'COMPANY_HQ')) && (
+              <WorldActionDrawer
+                state={gameState}
+                selectedLocationId={selectedLocationId}
+                selectedWorldNpcId={selectedWorldNpcId}
+                onClose={() => {
+                  setSelectedWorldNpcId(null);
+                  setSelectedLocationId(null);
+                }}
+                onDispatch={dispatch}
+                onOpenModal={(m) => setActiveModal(m)}
+                onWalkToLocation={(locId) => cameraActionRef.current?.focusLocation(locId)}
+              />
+            )}
 
           {/* Management Modals */}
           {activeModal === 'EMPLOYEES' && (
@@ -891,6 +1104,9 @@ export default function App() {
             setActiveModal(null);
             setSelectedEmployeeId(null);
             setSelectedRoomId(null);
+            setSelectedFurnitureId(null);
+            setSelectedWorldNpcId(null);
+            setSelectedLocationId(null);
             cameraActionRef.current?.focusRoom(roomId);
           }}
           onDispatch={dispatch}

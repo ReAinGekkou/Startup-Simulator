@@ -1,16 +1,50 @@
 import { OFFICE_COLS, OFFICE_ROWS, PERK_FURNITURE_SPECS } from '@/src/game/data/officeLayout';
 import { FurnitureItem, GridPoint, OfficeState, RoomId } from '@/src/types/game';
 
+export interface WorldNavGrid {
+  minX: number;
+  maxX: number;
+  minY: number;
+  maxY: number;
+  cells: boolean[][]; // indexed [y - minY][x - minX]
+}
+
+export function gridToNav(grid: boolean[][]): WorldNavGrid {
+  const rows = grid.length;
+  const cols = grid[0]?.length ?? 0;
+  return {
+    minX: 0,
+    maxX: cols - 1,
+    minY: 0,
+    maxY: rows - 1,
+    cells: grid,
+  };
+}
+
+export function isNavWalkable(nav: WorldNavGrid, tx: number, ty: number): boolean {
+  if (tx < nav.minX || tx > nav.maxX || ty < nav.minY || ty > nav.maxY) return false;
+  return Boolean(nav.cells[ty - nav.minY]?.[tx - nav.minX]);
+}
+
+export function setNavWalkable(nav: WorldNavGrid, tx: number, ty: number, walkable: boolean): void {
+  if (tx < nav.minX || tx > nav.maxX || ty < nav.minY || ty > nav.maxY) return;
+  const row = nav.cells[ty - nav.minY];
+  if (row) row[tx - nav.minX] = walkable;
+}
+
 /**
- * Builds a boolean walkability grid (true = walkable) for the 36x24 office.
+ * Builds a boolean walkability grid (true = walkable) for the 36x24 HQ office.
  * Corridor runs horizontally at y=11 and y=12, connecting all 8 rooms through doorways.
+ * When `openSouthEntrance` is true, the Lobby main entrance at x=4..5, y=23 opens onto Main Street.
  */
-export function buildWalkabilityGrid(office: OfficeState): boolean[][] {
+export function buildWalkabilityGrid(
+  office: OfficeState,
+  openSouthEntrance = true
+): boolean[][] {
   const grid: boolean[][] = Array.from({ length: OFFICE_ROWS }, () =>
     Array.from({ length: OFFICE_COLS }, () => false)
   );
 
-  // Outer perimeter walls at x=0, x=35, y=0, y=23 remain non-walkable.
   // Central corridor y=11..12, x=1..34 is walkable.
   for (let y = 11; y <= 12; y++) {
     for (let x = 1; x < OFFICE_COLS - 1; x++) {
@@ -24,7 +58,6 @@ export function buildWalkabilityGrid(office: OfficeState): boolean[][] {
     if (!room.unlocked) continue;
     const { x, y, w, h } = room.bounds;
     const isTopRow = y < 11;
-    // Interior tiles
     for (let ry = y + 1; ry < y + h - 1; ry++) {
       for (let rx = x + 1; rx < x + w - 1; rx++) {
         if (rx > 0 && rx < OFFICE_COLS - 1 && ry > 0 && ry < OFFICE_ROWS - 1) {
@@ -32,13 +65,20 @@ export function buildWalkabilityGrid(office: OfficeState): boolean[][] {
         }
       }
     }
-    // Doorway connecting room to corridor (y=10 for top row, y=13 for bottom row)
     const doorX1 = x + Math.floor(w / 2) - 1;
     const doorX2 = doorX1 + 1;
     const doorY = isTopRow ? y + h - 1 : y;
     if (doorY >= 0 && doorY < OFFICE_ROWS) {
       grid[doorY][doorX1] = true;
       grid[doorY][doorX2] = true;
+    }
+
+    // Lobby main entrance connecting HQ seamlessly onto Main Street (y=22..23)
+    if (openSouthEntrance && room.id === 'LOBBY') {
+      grid[22][4] = true;
+      grid[22][5] = true;
+      grid[23][4] = true;
+      grid[23][5] = true;
     }
   }
 
@@ -68,13 +108,13 @@ export function findRoomAtTile(office: OfficeState, tile: GridPoint): RoomId | n
   return null;
 }
 
-export function findNearestWalkable(
-  grid: boolean[][],
+export function findNearestNavWalkable(
+  nav: WorldNavGrid,
   desired: GridPoint
 ): GridPoint {
-  const startX = Math.max(1, Math.min(OFFICE_COLS - 2, Math.round(desired.x)));
-  const startY = Math.max(1, Math.min(OFFICE_ROWS - 2, Math.round(desired.y)));
-  if (grid[startY]?.[startX]) return { x: startX, y: startY };
+  const startX = Math.max(nav.minX, Math.min(nav.maxX, Math.round(desired.x)));
+  const startY = Math.max(nav.minY, Math.min(nav.maxY, Math.round(desired.y)));
+  if (isNavWalkable(nav, startX, startY)) return { x: startX, y: startY };
 
   const visited = new Set<string>();
   const queue: GridPoint[] = [{ x: startX, y: startY }];
@@ -87,15 +127,16 @@ export function findNearestWalkable(
     { x: -1, y: 0 },
   ];
 
-  while (queue.length > 0) {
-    const curr = queue.shift()!;
+  let qHead = 0;
+  while (qHead < queue.length && qHead < 1800) {
+    const curr = queue[qHead++];
     for (const d of dirs) {
       const nx = curr.x + d.x;
       const ny = curr.y + d.y;
-      if (nx < 1 || nx >= OFFICE_COLS - 1 || ny < 1 || ny >= OFFICE_ROWS - 1) continue;
+      if (nx < nav.minX || nx > nav.maxX || ny < nav.minY || ny > nav.maxY) continue;
       const key = `${nx},${ny}`;
       if (visited.has(key)) continue;
-      if (grid[ny][nx]) return { x: nx, y: ny };
+      if (isNavWalkable(nav, nx, ny)) return { x: nx, y: ny };
       visited.add(key);
       queue.push({ x: nx, y: ny });
     }
@@ -104,20 +145,84 @@ export function findNearestWalkable(
   return { x: 4, y: 11 };
 }
 
-export function findPath(
+export function findNearestWalkable(
   grid: boolean[][],
+  desired: GridPoint
+): GridPoint {
+  return findNearestNavWalkable(gridToNav(grid), desired);
+}
+
+interface AStarNode {
+  x: number;
+  y: number;
+  g: number;
+  f: number;
+}
+
+class MinHeap {
+  private data: AStarNode[] = [];
+
+  get size() {
+    return this.data.length;
+  }
+
+  push(node: AStarNode) {
+    this.data.push(node);
+    let idx = this.data.length - 1;
+    while (idx > 0) {
+      const parent = (idx - 1) >> 1;
+      if (this.data[parent].f <= this.data[idx].f) break;
+      [this.data[parent], this.data[idx]] = [this.data[idx], this.data[parent]];
+      idx = parent;
+    }
+  }
+
+  pop(): AStarNode | undefined {
+    const top = this.data[0];
+    const last = this.data.pop();
+    if (this.data.length > 0 && last) {
+      this.data[0] = last;
+      let idx = 0;
+      const n = this.data.length;
+      while (true) {
+        let smallest = idx;
+        const left = idx * 2 + 1;
+        const right = idx * 2 + 2;
+        if (left < n && this.data[left].f < this.data[smallest].f) smallest = left;
+        if (right < n && this.data[right].f < this.data[smallest].f) smallest = right;
+        if (smallest === idx) break;
+        [this.data[idx], this.data[smallest]] = [this.data[smallest], this.data[idx]];
+        idx = smallest;
+      }
+    }
+    return top;
+  }
+}
+
+/**
+ * A* pathfinding across any WorldNavGrid (works for HQ 36x24 and full Open World).
+ */
+export function findWorldPath(
+  nav: WorldNavGrid,
   from: GridPoint,
   to: GridPoint
 ): GridPoint[] {
-  const start = findNearestWalkable(grid, from);
-  const goal = findNearestWalkable(grid, to);
+  const start = findNearestNavWalkable(nav, from);
+  const goal = findNearestNavWalkable(nav, to);
   if (start.x === goal.x && start.y === goal.y) return [];
 
-  const queue: GridPoint[] = [start];
+  const open = new MinHeap();
+  const gScore = new Map<string, number>();
   const parent = new Map<string, string | null>();
+  const closed = new Set<string>();
+
   const startKey = `${start.x},${start.y}`;
   const goalKey = `${goal.x},${goal.y}`;
+  const h0 = Math.abs(goal.x - start.x) + Math.abs(goal.y - start.y);
+
+  gScore.set(startKey, 0);
   parent.set(startKey, null);
+  open.push({ x: start.x, y: start.y, g: 0, f: h0 });
 
   const dirs = [
     { x: 1, y: 0 },
@@ -126,20 +231,32 @@ export function findPath(
     { x: 0, y: -1 },
   ];
 
-  while (queue.length > 0) {
-    const curr = queue.shift()!;
+  let expansions = 0;
+  const maxExpansions = 6000;
+
+  while (open.size > 0 && expansions < maxExpansions) {
+    const curr = open.pop()!;
     const currKey = `${curr.x},${curr.y}`;
     if (currKey === goalKey) break;
+    if (closed.has(currKey)) continue;
+    closed.add(currKey);
+    expansions++;
 
     for (const d of dirs) {
       const nx = curr.x + d.x;
       const ny = curr.y + d.y;
-      if (nx < 1 || nx >= OFFICE_COLS - 1 || ny < 1 || ny >= OFFICE_ROWS - 1) continue;
-      if (!grid[ny][nx]) continue;
+      if (!isNavWalkable(nav, nx, ny)) continue;
       const nextKey = `${nx},${ny}`;
-      if (parent.has(nextKey)) continue;
-      parent.set(nextKey, currKey);
-      queue.push({ x: nx, y: ny });
+      if (closed.has(nextKey)) continue;
+
+      const tentativeG = curr.g + 1;
+      const prevG = gScore.get(nextKey);
+      if (prevG === undefined || tentativeG < prevG) {
+        gScore.set(nextKey, tentativeG);
+        parent.set(nextKey, currKey);
+        const h = Math.abs(goal.x - nx) + Math.abs(goal.y - ny);
+        open.push({ x: nx, y: ny, g: tentativeG, f: tentativeG + h });
+      }
     }
   }
 
@@ -154,6 +271,96 @@ export function findPath(
   }
   path.reverse();
   return path;
+}
+
+export function findPath(
+  grid: boolean[][],
+  from: GridPoint,
+  to: GridPoint
+): GridPoint[] {
+  return findWorldPath(gridToNav(grid), from, to);
+}
+
+/**
+ * Checks whether a continuous character coordinate (top-left of character tile footprint)
+ * is safely standing on a walkable tile (checking its center tile + slight collision margin).
+ */
+export function isContinuousPosWalkable(
+  nav: WorldNavGrid,
+  posX: number,
+  posY: number
+): boolean {
+  const cx = posX + 0.5;
+  const cy = posY + 0.5;
+  const tx = Math.floor(cx);
+  const ty = Math.floor(cy);
+  if (!isNavWalkable(nav, tx, ty)) return false;
+
+  // Check cardinal 0.20 radius margin to prevent clipping through wall edges/desks
+  const pad = 0.2;
+  const checks: [number, number][] = [
+    [Math.floor(cx - pad), ty],
+    [Math.floor(cx + pad), ty],
+    [tx, Math.floor(cy - pad)],
+    [tx, Math.floor(cy + pad)],
+  ];
+  for (const [qx, qy] of checks) {
+    if (!isNavWalkable(nav, qx, qy)) return false;
+  }
+  return true;
+}
+
+/**
+ * Steps a continuous entity position along a normalized direction vector with smooth wall sliding.
+ */
+export function stepContinuousPosition(
+  nav: WorldNavGrid,
+  pos: GridPoint,
+  dir: GridPoint,
+  speedTilesPerSec: number,
+  dt: number
+): { pos: GridPoint; facing: 'UP' | 'DOWN' | 'LEFT' | 'RIGHT'; moved: boolean } {
+  const mag = Math.hypot(dir.x, dir.y);
+  if (mag < 0.01 || dt <= 0) {
+    return { pos, facing: 'DOWN', moved: false };
+  }
+  const nx = dir.x / mag;
+  const ny = dir.y / mag;
+  const stepX = nx * speedTilesPerSec * dt;
+  const stepY = ny * speedTilesPerSec * dt;
+
+  let facing: 'UP' | 'DOWN' | 'LEFT' | 'RIGHT' = 'DOWN';
+  if (Math.abs(nx) >= Math.abs(ny)) {
+    facing = nx > 0 ? 'RIGHT' : 'LEFT';
+  } else {
+    facing = ny > 0 ? 'DOWN' : 'UP';
+  }
+
+  let nextX = pos.x;
+  let nextY = pos.y;
+  let moved = false;
+
+  if (isContinuousPosWalkable(nav, pos.x + stepX, pos.y + stepY)) {
+    nextX = pos.x + stepX;
+    nextY = pos.y + stepY;
+    moved = true;
+  } else {
+    // Axis-independent sliding so diagonal keys glide cleanly along walls & desks
+    if (Math.abs(stepX) > 1e-4 && isContinuousPosWalkable(nav, pos.x + stepX, pos.y)) {
+      nextX = pos.x + stepX;
+      moved = true;
+    }
+    if (Math.abs(stepY) > 1e-4 && isContinuousPosWalkable(nav, nextX, pos.y + stepY)) {
+      nextY = pos.y + stepY;
+      moved = true;
+    }
+  }
+
+  return {
+    pos: { x: nextX, y: nextY },
+    facing,
+    moved,
+  };
 }
 
 export function getRoomSeatTile(office: OfficeState, roomId: RoomId, indexOffset = 0): GridPoint {
@@ -197,11 +404,9 @@ export function canPlaceFurnitureAt(
     for (let dx = 0; dx < width; dx++) {
       const tx = tile.x + dx;
       const ty = tile.y + dy;
-      // Must stay strictly inside room interior walls
       if (tx <= x || tx >= x + w - 1 || ty <= y || ty >= y + h - 1) {
         return { valid: false, roomId, reason: 'Cannot block walls or doorways.' };
       }
-      // Must not overlap existing furniture
       const overlaps = office.furniture.some((item) => {
         if (ignoreFurnitureId && item.id === ignoreFurnitureId) return false;
         return (
@@ -233,10 +438,9 @@ export function findAdjacentWalkableTile(
         ty >= item.tile.y &&
         ty < item.tile.y + item.height;
       if (insideItem) continue;
-      // Prefer cardinal adjacency first
       const cardinal =
-        tx >= item.tile.x && tx < item.tile.x + item.width ||
-        ty >= item.tile.y && ty < item.tile.y + item.height;
+        (tx >= item.tile.x && tx < item.tile.x + item.width) ||
+        (ty >= item.tile.y && ty < item.tile.y + item.height);
       if (!cardinal) continue;
       if (grid[ty]?.[tx]) {
         candidates.push({ x: tx, y: ty });

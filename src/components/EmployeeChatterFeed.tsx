@@ -27,7 +27,7 @@ export const EmployeeChatterFeed: React.FC<EmployeeChatterFeedProps> = ({
   return (
     <section
       aria-label={t('chatter.title')}
-      className={`fixed left-3 md:left-48 lg:left-52 bottom-32 md:bottom-20 z-10 w-68 sm:w-76 pointer-events-none flex-col gap-1.5 ${
+      className={`fixed left-2 sm:left-3 bottom-[5.25rem] sm:bottom-[5.75rem] z-10 w-64 sm:w-72 pointer-events-none flex-col gap-1.5 ${
         hideOnMobile ? 'hidden md:flex' : 'flex'
       }`}
     >

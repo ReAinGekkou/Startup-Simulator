@@ -3,6 +3,7 @@ import {
   Award,
   Briefcase,
   Coffee,
+  Footprints,
   Lock,
   MessageSquare,
   Sparkles,
@@ -10,11 +11,13 @@ import {
   UserCheck,
   Volume2,
   X,
+  Zap,
 } from 'lucide-react';
 import { getEmployeeVoiceLine } from '@/src/audio/voiceRegistry';
 import { EMPLOYEE_TRAITS, ROLE_DEFINITIONS, TASK_LABELS } from '@/src/game/data/roles';
 import { getRenderableFurniture, isFurnitureInUse } from '@/src/game/renderer/pixelRenderer';
 import { getNextTraitForEmployee } from '@/src/game/systems/employeeSystem';
+import { estimateMonthlyBurn } from '@/src/game/systems/financeSystem';
 import { useLocalization } from '@/src/hooks/useLocalization';
 import { useVoiceOver } from '@/src/hooks/useVoiceOver';
 import {
@@ -26,26 +29,32 @@ import {
   getTaskLocalized,
   getTraitLocalized,
 } from '@/src/localization/i18n';
-import { EmployeeTask, GameCommand, GameState, RoomId } from '@/src/types/game';
+import { EmployeeTask, GameCommand, GameState, OfficeRoom, RoomId } from '@/src/types/game';
 import { ActiveModal } from './GameHUD';
 import { PixelAvatar } from './PixelAvatar';
 
 interface RoomActionDrawerProps {
   state: GameState;
   selectedRoomId: RoomId | null;
+  selectedFurnitureId?: string | null;
   selectedEmployeeId: string | null;
   onClose: () => void;
+  onClearFurniture?: () => void;
   onDispatch: (cmd: GameCommand) => void;
   onOpenModal: (modal: ActiveModal) => void;
+  onWalkOutsideLobby?: () => void;
 }
 
 export const RoomActionDrawer: React.FC<RoomActionDrawerProps> = ({
   state,
   selectedRoomId,
+  selectedFurnitureId = null,
   selectedEmployeeId,
   onClose,
+  onClearFurniture,
   onDispatch,
   onOpenModal,
+  onWalkOutsideLobby,
 }) => {
   const { locale, t, formatCurrency } = useLocalization();
   const { speak } = useVoiceOver();
@@ -53,11 +62,22 @@ export const RoomActionDrawer: React.FC<RoomActionDrawerProps> = ({
   const emp = selectedEmployeeId
     ? state.employees.find((e) => e.id === selectedEmployeeId)
     : null;
-  const room = selectedRoomId ? state.office.rooms[selectedRoomId] : null;
+  const furn =
+    !emp && selectedFurnitureId
+      ? getRenderableFurniture(state.office).find((f) => f.id === selectedFurnitureId) ?? null
+      : null;
+  const effectiveRoomId = emp ? null : furn?.roomId ?? selectedRoomId;
+  const room = effectiveRoomId ? state.office.rooms[effectiveRoomId] : null;
 
   if (!emp && !room) return null;
 
   const localizedRoom = room ? getRoomLocalized(room.id, room.unlockCost, locale) : null;
+  const furnUnlocked = Boolean(furn && room?.unlocked);
+  const localizedFurn =
+    furn && furnUnlocked
+      ? getFurnitureLocalized(furn.templateId, furn.name, '', locale)
+      : null;
+
   const empMoodTone: 'HAPPY' | 'NEUTRAL' | 'STRESSED' = emp
     ? emp.stress >= 70 || emp.morale < 40
       ? 'STRESSED'
@@ -66,11 +86,515 @@ export const RoomActionDrawer: React.FC<RoomActionDrawerProps> = ({
         : 'NEUTRAL'
     : 'NEUTRAL';
 
+  const headerTitle = emp
+    ? emp.name
+    : localizedFurn
+      ? localizedFurn.name
+      : localizedRoom?.name ?? room?.name;
+
+  const headerSubtitle = emp
+    ? getLevelTitleLocalized(emp.role, emp.level, locale)
+    : localizedFurn && localizedRoom
+      ? `${localizedRoom.name} · ${t('drawer.furnitureOverview')}`
+      : room?.unlocked
+        ? t('rooms.levelLabel', { level: room.level })
+        : t('rooms.lockedLabel');
+
+  const renderRoomActionsBody = (targetRoom: OfficeRoom, targetLocRoom: NonNullable<typeof localizedRoom>) => (
+    <>
+      <p className="text-[14px] text-[#303B38] leading-relaxed">{targetLocRoom.description}</p>
+
+      <div className="pt-3 border-t border-[#303B38]/20 space-y-2.5">
+        {targetRoom.id === 'CEO_OFFICE' && (
+          <>
+            <div className="bg-[#FAF8F2] border border-[#303B38]/20 p-3 space-y-1.5 text-[14px] font-mono-num">
+              <div className="flex justify-between">
+                <span className="text-[#303B38]/80">{t('drawer.founderSalary')}</span>
+                <span className="font-bold">
+                  {formatCurrency(state.founder.monthlySalary ?? 0)}
+                  {t('common.perMonth')}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-[#303B38]/80">{t('drawer.personalCash')}</span>
+                <span className="font-bold">
+                  {formatCurrency(state.founder.personalCash ?? 0)}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-[#303B38]/80">{t('drawer.investorTrust')}</span>
+                <span className="font-bold">
+                  {Math.round(state.founder.investorTrust ?? 55)}/100
+                </span>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => onDispatch({ type: 'FOUNDER_STRATEGY_SESSION' })}
+              className="w-full min-h-[44px] flex items-center gap-2 bg-[#78978A] hover:bg-[#6A897C] border border-[#303B38]/35 text-[#303B38] font-bold px-3 py-2.5 text-[14px] cursor-pointer text-left"
+            >
+              <Briefcase className="w-4 h-4 shrink-0" aria-hidden="true" />
+              <span>{t('drawer.strategySprintBtn')}</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                onDispatch({ type: 'REPORT_TUTORIAL_ACTION', action: 'REVIEW_FINANCE' });
+                onOpenModal('FINANCE');
+              }}
+              className="w-full min-h-[44px] bg-[#FAF8F2] hover:bg-[#EAE5D8] border border-[#303B38]/30 px-3 py-2 text-[14px] font-bold text-[#303B38] cursor-pointer text-left"
+            >
+              {t('drawer.adjustFinanceBtn')}
+            </button>
+            <button
+              type="button"
+              onClick={() => onOpenModal('MILESTONES')}
+              className="w-full min-h-[44px] bg-[#FAF8F2] hover:bg-[#EAE5D8] border border-[#303B38]/30 px-3 py-2 text-[14px] font-bold text-[#303B38] cursor-pointer text-left"
+            >
+              {t('drawer.viewMilestonesBtn')}
+            </button>
+          </>
+        )}
+
+        {targetRoom.id === 'HR_DEPT' && (
+          <button
+            type="button"
+            onClick={() => onOpenModal('EMPLOYEES')}
+            className="w-full min-h-[44px] bg-[#78978A] hover:bg-[#6A897C] border border-[#303B38]/35 text-[#303B38] font-bold px-3 py-2.5 text-[14px] cursor-pointer"
+          >
+            {t('drawer.openHrBtn')}
+          </button>
+        )}
+
+        {targetRoom.id === 'FINANCE_DEPT' && (
+          <button
+            type="button"
+            onClick={() => {
+              onDispatch({ type: 'REPORT_TUTORIAL_ACTION', action: 'REVIEW_FINANCE' });
+              onOpenModal('FINANCE');
+            }}
+            className="w-full min-h-[44px] bg-[#78978A] hover:bg-[#6A897C] border border-[#303B38]/35 text-[#303B38] font-bold px-3 py-2.5 text-[14px] cursor-pointer"
+          >
+            {t('drawer.openFinanceBtn')}
+          </button>
+        )}
+
+        {targetRoom.id === 'ENGINEERING' && (
+          <button
+            type="button"
+            onClick={() => onOpenModal('PRODUCTS')}
+            className="w-full min-h-[44px] bg-[#78978A] hover:bg-[#6A897C] border border-[#303B38]/35 text-[#303B38] font-bold px-3 py-2.5 text-[14px] cursor-pointer"
+          >
+            {t('drawer.openProductBtn')}
+          </button>
+        )}
+
+        {(targetRoom.id === 'MEETING_ROOM' ||
+          targetRoom.id === 'LOBBY' ||
+          targetRoom.id === 'LEGAL_DEPT') && (
+          <button
+            type="button"
+            onClick={() => onOpenModal('MARKET')}
+            className="w-full min-h-[44px] bg-[#78978A] hover:bg-[#6A897C] border border-[#303B38]/35 text-[#303B38] font-bold px-3 py-2.5 text-[14px] cursor-pointer"
+          >
+            {targetRoom.id === 'LEGAL_DEPT'
+              ? t('drawer.openLegalBtn')
+              : t('drawer.openMarketBtn')}
+          </button>
+        )}
+
+        {targetRoom.id === 'LOBBY' && (
+          <button
+            type="button"
+            onClick={() => {
+              onDispatch({ type: 'MOVE_FOUNDER', target: { x: 4, y: 24 } });
+              onWalkOutsideLobby?.();
+            }}
+            className="w-full min-h-[44px] flex items-center justify-center gap-2 bg-[#FAF8F2] hover:bg-[#EAE5D8] border border-[#303B38]/35 text-[#303B38] font-bold px-3 py-2.5 text-[14px] cursor-pointer"
+          >
+            <Footprints className="w-4 h-4 shrink-0" aria-hidden="true" />
+            <span>{t('world.stepOutsideLobby')}</span>
+          </button>
+        )}
+
+        {targetRoom.id === 'BREAK_ROOM' && (
+          <button
+            type="button"
+            onClick={() => onDispatch({ type: 'FOUNDER_REST' })}
+            className="w-full min-h-[44px] flex items-center justify-center gap-2 bg-[#78978A] hover:bg-[#6A897C] border border-[#303B38]/35 text-[#303B38] font-bold px-3 py-2.5 text-[14px] cursor-pointer"
+          >
+            <Coffee className="w-4 h-4" aria-hidden="true" />
+            <span>{t('drawer.drinkEspressoBtn')}</span>
+          </button>
+        )}
+
+        {targetRoom.level < 3 && (
+          <button
+            type="button"
+            onClick={() => onDispatch({ type: 'UNLOCK_ROOM', roomId: targetRoom.id })}
+            className="w-full min-h-[44px] bg-[#FAF8F2] hover:bg-[#EAE5D8] border border-[#303B38]/30 px-3 py-2 text-[14px] font-bold text-[#303B38] cursor-pointer"
+          >
+            {t('rooms.upgradeRoom', {
+              name: targetLocRoom.name,
+              cost: formatCurrency(targetRoom.upgradeCost),
+            })}
+          </button>
+        )}
+      </div>
+
+      {(() => {
+        const roomPerks = getRenderableFurniture(state.office).filter(
+          (f) => f.roomId === targetRoom.id && f.templateId.startsWith('PERK_')
+        );
+        if (roomPerks.length === 0) return null;
+        return (
+          <div className="pt-3 border-t border-[#303B38]/20 space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-[14px] font-bold text-[#303B38]">
+                {t('drawer.installedPerks', { count: roomPerks.length })}
+              </span>
+              <button
+                type="button"
+                onClick={() => onOpenModal('OFFICE')}
+                className="text-[13px] font-bold underline text-[#303B38] cursor-pointer"
+              >
+                {t('drawer.managePerks')}
+              </button>
+            </div>
+            <div className="space-y-1.5">
+              {roomPerks.map((perkFurn) => {
+                const inUse = isFurnitureInUse(perkFurn, state);
+                const locFurn = getFurnitureLocalized(
+                  perkFurn.templateId,
+                  perkFurn.name,
+                  '',
+                  locale
+                );
+                return (
+                  <div
+                    key={perkFurn.id}
+                    className="bg-[#FAF8F2] border border-[#303B38]/20 px-3 py-2 flex items-center justify-between gap-2 text-[14px]"
+                  >
+                    <span className="truncate">{locFurn.name}</span>
+                    <span className="text-[13px] font-mono-num font-bold shrink-0">
+                      [{inUse ? t('drawer.inUse') : t('drawer.ready')}]
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })()}
+
+      {targetRoom.id === 'LOBBY' && state.visitors.length > 0 && (
+        <div className="pt-3 border-t border-[#303B38]/20 space-y-2">
+          <div className="text-[14px] font-bold text-[#303B38]">
+            {t('drawer.lobbyVisitors')}
+          </div>
+          {state.visitors.map((v) => (
+            <div
+              key={v.id}
+              className="bg-[#FAF8F2] border border-[#303B38]/20 p-3 text-[14px]"
+            >
+              <div className="font-bold text-[#303B38]">{v.name}</div>
+              <p className="text-[#303B38]/85 mt-1">{v.dialogue}</p>
+            </div>
+          ))}
+        </div>
+      )}
+    </>
+  );
+
+  const renderFurnitureStation = () => {
+    if (!furn || !room || !localizedRoom) return null;
+    const inUse = isFurnitureInUse(furn, state);
+    const tpl = furn.templateId;
+    const activeDevProd =
+      state.products.find((p) => p.stage === 'IN_DEV' || p.stage === 'CONCEPT') ??
+      state.products[0] ??
+      null;
+    const isDevInProgress =
+      activeDevProd &&
+      activeDevProd.stage !== 'MVP_LIVE' &&
+      activeDevProd.stage !== 'MATURE' &&
+      activeDevProd.developmentProgress < 100;
+    const burn = estimateMonthlyBurn(state);
+    const totalCustomers = state.products.reduce((s, p) => s + p.payingCustomers, 0);
+    const activeDeals = state.contracts.filter((c) => c.status === 'ACTIVE').length;
+    const unlockedMilestones = state.milestones.filter((m) => m.unlocked).length;
+
+    return (
+      <>
+        <div className="bg-[#FAF8F2] border border-[#303B38]/20 p-3 flex items-center justify-between gap-2 text-[13px]">
+          <span className="text-[#303B38]/85">
+            {t('drawer.furnitureComfortLabel', {
+              comfort: furn.comfortBonus,
+              prod: Math.round(furn.productivityBonus),
+            })}
+          </span>
+          <span
+            className={`px-2 py-0.5 border text-[12px] font-bold shrink-0 ${
+              inUse
+                ? 'bg-[#78978A]/35 border-[#78978A] text-[#303B38]'
+                : 'bg-[#F3F0E7] border-[#303B38]/25 text-[#303B38]'
+            }`}
+          >
+            {inUse ? t('drawer.inUse') : t('drawer.ready')}
+          </span>
+        </div>
+
+        {(tpl === 'WORKSTATION' || tpl === 'SERVER_RACK') && (
+          <div className="space-y-2.5">
+            <div className="bg-[#FAF8F2] border border-[#303B38]/20 p-3 space-y-1.5 text-[14px]">
+              <div className="text-[12px] font-bold uppercase tracking-wider text-[#303B38]/70">
+                {t('drawer.activeProductLabel')}
+              </div>
+              {activeDevProd ? (
+                <>
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="font-bold text-[#303B38] truncate">{activeDevProd.name}</span>
+                    <span className="font-mono-num text-[13px] font-bold shrink-0">
+                      {Math.round(activeDevProd.developmentProgress)}%
+                    </span>
+                  </div>
+                  <div className="h-2 bg-[#EAE5D8] border border-[#303B38]/20 overflow-hidden">
+                    <div
+                      className="h-full bg-[#78978A] transition-all"
+                      style={{
+                        width: `${Math.min(100, Math.round(activeDevProd.developmentProgress))}%`,
+                      }}
+                    />
+                  </div>
+                </>
+              ) : (
+                <p className="text-[13px] text-[#303B38]/75">{t('drawer.noProductHint')}</p>
+              )}
+            </div>
+
+            {isDevInProgress && activeDevProd && (
+              <button
+                type="button"
+                onClick={() =>
+                  onDispatch({ type: 'RUN_PROTOTYPE_SPRINT', productId: activeDevProd.id })
+                }
+                className="w-full min-h-[44px] flex items-center justify-center gap-2 bg-[#D9A66C]/45 hover:bg-[#D9A66C]/65 border border-[#303B38] px-3 py-2 text-[14px] font-bold text-[#303B38] cursor-pointer"
+              >
+                <Zap className="w-4 h-4 shrink-0" aria-hidden="true" />
+                <span>
+                  {t('drawer.quickBuildSprintBtn', { cost: formatCurrency(400) })}
+                </span>
+              </button>
+            )}
+
+            <button
+              type="button"
+              onClick={() => onOpenModal('PRODUCTS')}
+              className="w-full min-h-[44px] bg-[#78978A] hover:bg-[#6A897C] border border-[#303B38] px-3 py-2 text-[14px] font-bold text-[#303B38] cursor-pointer"
+            >
+              {t('drawer.openProductBtn')}
+            </button>
+          </div>
+        )}
+
+        {tpl === 'CEO_DESK' && (
+          <div className="space-y-2.5">
+            <div className="bg-[#FAF8F2] border border-[#303B38]/20 p-3 space-y-1.5 text-[13px] font-mono-num">
+              <div className="flex justify-between">
+                <span className="text-[#303B38]/80">{t('hud.cashBalance')}</span>
+                <span className="font-bold">{formatCurrency(state.finance.cash)}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-[#303B38]/80">{t('drawer.investorTrust')}</span>
+                <span className="font-bold">
+                  {Math.round(state.founder.investorTrust ?? 55)}/100
+                </span>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => onDispatch({ type: 'FOUNDER_STRATEGY_SESSION' })}
+              className="w-full min-h-[44px] flex items-center justify-center gap-2 bg-[#78978A] hover:bg-[#6A897C] border border-[#303B38] px-3 py-2 text-[14px] font-bold text-[#303B38] cursor-pointer"
+            >
+              <Briefcase className="w-4 h-4 shrink-0" aria-hidden="true" />
+              <span>{t('drawer.strategySprintBtn')}</span>
+            </button>
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  onDispatch({ type: 'REPORT_TUTORIAL_ACTION', action: 'REVIEW_FINANCE' });
+                  onOpenModal('FINANCE');
+                }}
+                className="min-h-[42px] bg-[#FAF8F2] hover:bg-[#EAE5D8] border border-[#303B38]/30 px-2.5 py-2 text-[13px] font-bold text-[#303B38] cursor-pointer"
+              >
+                {t('drawer.openFinanceBtn')}
+              </button>
+              <button
+                type="button"
+                onClick={() => onOpenModal('MILESTONES')}
+                className="min-h-[42px] bg-[#FAF8F2] hover:bg-[#EAE5D8] border border-[#303B38]/30 px-2.5 py-2 text-[13px] font-bold text-[#303B38] cursor-pointer"
+              >
+                {t('drawer.viewMilestonesBtn')}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {tpl === 'HR_BOARD' && (
+          <div className="space-y-2.5">
+            <div className="bg-[#FAF8F2] border border-[#303B38]/20 p-3 text-[14px] font-mono-num font-bold">
+              {t('drawer.teamSummary', {
+                count: state.employees.length,
+                max: state.office.maxEmployees,
+              })}
+            </div>
+            <button
+              type="button"
+              onClick={() => onOpenModal('EMPLOYEES')}
+              className="w-full min-h-[44px] bg-[#78978A] hover:bg-[#6A897C] border border-[#303B38] px-3 py-2 text-[14px] font-bold text-[#303B38] cursor-pointer"
+            >
+              {t('drawer.openHrBtn')}
+            </button>
+          </div>
+        )}
+
+        {(tpl === 'FINANCE_TERMINAL' || tpl === 'SAFE_VAULT') && (
+          <div className="space-y-2.5">
+            <div className="bg-[#FAF8F2] border border-[#303B38]/20 p-3 space-y-1 text-[13px] font-mono-num font-bold">
+              <div>{t('drawer.cashSummary', { cash: formatCurrency(state.finance.cash) })}</div>
+              <div>{t('drawer.burnSummary', { net: formatCurrency(burn.netMonthly) })}</div>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                onDispatch({ type: 'REPORT_TUTORIAL_ACTION', action: 'REVIEW_FINANCE' });
+                onOpenModal('FINANCE');
+              }}
+              className="w-full min-h-[44px] bg-[#78978A] hover:bg-[#6A897C] border border-[#303B38] px-3 py-2 text-[14px] font-bold text-[#303B38] cursor-pointer"
+            >
+              {t('drawer.openFinanceBtn')}
+            </button>
+          </div>
+        )}
+
+        {tpl === 'WHITEBOARD' && (
+          <div className="space-y-2.5">
+            <div className="bg-[#FAF8F2] border border-[#303B38]/20 p-3 flex justify-between text-[13px] font-mono-num">
+              <span>{t('hud.nav.milestones')}</span>
+              <span className="font-bold">
+                {unlockedMilestones}/{state.milestones.length}
+              </span>
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={() => onOpenModal('MILESTONES')}
+                className="min-h-[44px] bg-[#78978A] hover:bg-[#6A897C] border border-[#303B38] px-2.5 py-2 text-[13px] font-bold text-[#303B38] cursor-pointer"
+              >
+                {t('drawer.viewMilestonesBtn')}
+              </button>
+              <button
+                type="button"
+                onClick={() => onOpenModal('PRODUCTS')}
+                className="min-h-[44px] bg-[#FAF8F2] hover:bg-[#EAE5D8] border border-[#303B38]/30 px-2.5 py-2 text-[13px] font-bold text-[#303B38] cursor-pointer"
+              >
+                {t('drawer.openProductBtn')}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {(tpl === 'MEETING_TABLE' ||
+          tpl === 'RECEPTION_DESK' ||
+          tpl === 'LEGAL_DESK' ||
+          tpl === 'BOOKSHELF') && (
+          <div className="space-y-2.5">
+            <div className="bg-[#FAF8F2] border border-[#303B38]/20 p-3 text-[13px] font-mono-num font-bold">
+              {t('drawer.customersSummary', {
+                customers: totalCustomers,
+                deals: activeDeals,
+              })}
+            </div>
+            <button
+              type="button"
+              onClick={() => onOpenModal('MARKET')}
+              className="w-full min-h-[44px] bg-[#78978A] hover:bg-[#6A897C] border border-[#303B38] px-3 py-2 text-[14px] font-bold text-[#303B38] cursor-pointer"
+            >
+              {tpl === 'LEGAL_DESK' ? t('drawer.openLegalBtn') : t('drawer.openMarketBtn')}
+            </button>
+            {room.id === 'LOBBY' && (
+              <button
+                type="button"
+                onClick={() => {
+                  onDispatch({ type: 'MOVE_FOUNDER', target: { x: 4, y: 24 } });
+                  onWalkOutsideLobby?.();
+                }}
+                className="w-full min-h-[42px] flex items-center justify-center gap-2 bg-[#FAF8F2] hover:bg-[#EAE5D8] border border-[#303B38]/30 px-3 py-2 text-[13px] font-bold text-[#303B38] cursor-pointer"
+              >
+                <Footprints className="w-4 h-4 shrink-0" aria-hidden="true" />
+                <span>{t('world.stepOutsideLobby')}</span>
+              </button>
+            )}
+          </div>
+        )}
+
+        {(tpl === 'ESPRESSO_BAR' ||
+          tpl === 'LOUNGE_SOFA' ||
+          tpl === 'ARCADE_CABINET' ||
+          tpl === 'PLANT_FIDDLE' ||
+          tpl.startsWith('PERK_')) && (
+          <div className="space-y-2.5">
+            <div className="bg-[#FAF8F2] border border-[#303B38]/20 p-3 text-[13px] font-mono-num font-bold">
+              {t('drawer.comfortScoreSummary', {
+                comfort: Math.round(state.office.comfortScore),
+              })}
+            </div>
+            {tpl === 'PLANT_FIDDLE' ? (
+              <button
+                type="button"
+                onClick={() => onOpenModal('OFFICE')}
+                className="w-full min-h-[44px] bg-[#78978A] hover:bg-[#6A897C] border border-[#303B38] px-3 py-2 text-[14px] font-bold text-[#303B38] cursor-pointer"
+              >
+                {t('hud.nav.upgrades')}
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => onDispatch({ type: 'FOUNDER_REST' })}
+                className="w-full min-h-[44px] flex items-center justify-center gap-2 bg-[#78978A] hover:bg-[#6A897C] border border-[#303B38] px-3 py-2 text-[14px] font-bold text-[#303B38] cursor-pointer"
+              >
+                <Coffee className="w-4 h-4 shrink-0" aria-hidden="true" />
+                <span>{t('drawer.drinkEspressoBtn')}</span>
+              </button>
+            )}
+          </div>
+        )}
+
+        <details className="bg-[#FAF8F2] border border-[#303B38]/25 p-3">
+          <summary
+            onClick={() => onClearFurniture?.()}
+            className="cursor-pointer text-[13px] font-bold text-[#303B38] select-none"
+          >
+            {t('drawer.viewRoomActions', { room: localizedRoom.name })}
+          </summary>
+          <div className="mt-3 pt-3 border-t border-[#303B38]/15 space-y-3">
+            {renderRoomActionsBody(room, localizedRoom)}
+          </div>
+        </details>
+      </>
+    );
+  };
+
   return (
     <aside
-      aria-label={emp ? emp.name : localizedRoom?.name ?? room?.name}
-      className="fixed right-2 sm:right-3 top-[5.25rem] sm:top-20 bottom-[136px] md:bottom-[76px] w-[min(22rem,calc(100vw-16px))] z-20 bg-[#F3F0E7] border-2 border-[#303B38] shadow-md flex flex-col overflow-hidden text-[#303B38]"
+      aria-label={headerTitle}
+      className="fixed inset-x-2 bottom-2 max-h-[60dvh] md:inset-x-auto md:right-3 md:top-[4.75rem] md:bottom-20 md:max-h-none md:w-[22rem] z-20 bg-[#F3F0E7] border-2 border-[#303B38] shadow-[4px_4px_0px_rgba(48,59,56,0.22)] flex flex-col overflow-hidden text-[#303B38]"
     >
+      <div className="md:hidden flex justify-center pt-1.5 bg-[#FAF8F2]" aria-hidden="true">
+        <span className="w-10 h-1 bg-[#303B38]/25" />
+      </div>
+
       <div className="flex items-center justify-between gap-2 px-4 py-3 border-b border-[#303B38]/20 bg-[#FAF8F2]">
         <div className="flex items-center gap-3 min-w-0">
           {emp && (
@@ -82,16 +606,8 @@ export const RoomActionDrawer: React.FC<RoomActionDrawerProps> = ({
             />
           )}
           <div className="min-w-0">
-            <h2 className="text-[18px] font-bold text-[#303B38] truncate">
-              {emp ? emp.name : localizedRoom?.name}
-            </h2>
-            <p className="text-[13px] text-[#303B38]/80 truncate">
-              {emp
-                ? getLevelTitleLocalized(emp.role, emp.level, locale)
-                : room?.unlocked
-                  ? t('rooms.levelLabel', { level: room.level })
-                  : t('rooms.lockedLabel')}
-            </p>
+            <h2 className="text-[18px] font-bold text-[#303B38] truncate">{headerTitle}</h2>
+            <p className="text-[13px] text-[#303B38]/80 truncate">{headerSubtitle}</p>
           </div>
         </div>
         <button
@@ -415,200 +931,13 @@ export const RoomActionDrawer: React.FC<RoomActionDrawerProps> = ({
               {t('rooms.unlockEarly', { cost: formatCurrency(room.unlockCost) })}
             </button>
           </div>
+        ) : furn && furnUnlocked && room && localizedRoom ? (
+          renderFurnitureStation()
         ) : room && localizedRoom ? (
-          <>
-            <p className="text-[15px] text-[#303B38] leading-relaxed">
-              {localizedRoom.description}
-            </p>
-
-            <div className="pt-3 border-t border-[#303B38]/20 space-y-2.5">
-              {room.id === 'CEO_OFFICE' && (
-                <>
-                  <div className="bg-[#FAF8F2] border border-[#303B38]/20 p-3 space-y-1.5 text-[14px] font-mono-num">
-                    <div className="flex justify-between">
-                      <span className="text-[#303B38]/80">{t('drawer.founderSalary')}</span>
-                      <span className="font-bold">
-                        {formatCurrency(state.founder.monthlySalary ?? 0)}
-                        {t('common.perMonth')}
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-[#303B38]/80">{t('drawer.personalCash')}</span>
-                      <span className="font-bold">
-                        {formatCurrency(state.founder.personalCash ?? 0)}
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-[#303B38]/80">{t('drawer.investorTrust')}</span>
-                      <span className="font-bold">
-                        {Math.round(state.founder.investorTrust ?? 55)}/100
-                      </span>
-                    </div>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => onDispatch({ type: 'FOUNDER_STRATEGY_SESSION' })}
-                    className="w-full min-h-[44px] flex items-center gap-2 bg-[#78978A] hover:bg-[#6A897C] border border-[#303B38]/35 text-[#303B38] font-bold px-3 py-2.5 text-[14px] cursor-pointer text-left"
-                  >
-                    <Briefcase className="w-4 h-4 shrink-0" aria-hidden="true" />
-                    <span>{t('drawer.strategySprintBtn')}</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      onDispatch({ type: 'REPORT_TUTORIAL_ACTION', action: 'REVIEW_FINANCE' });
-                      onOpenModal('FINANCE');
-                    }}
-                    className="w-full min-h-[44px] bg-[#FAF8F2] hover:bg-[#EAE5D8] border border-[#303B38]/30 px-3 py-2 text-[14px] font-bold text-[#303B38] cursor-pointer text-left"
-                  >
-                    {t('drawer.adjustFinanceBtn')}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => onOpenModal('MILESTONES')}
-                    className="w-full min-h-[44px] bg-[#FAF8F2] hover:bg-[#EAE5D8] border border-[#303B38]/30 px-3 py-2 text-[14px] font-bold text-[#303B38] cursor-pointer text-left"
-                  >
-                    {t('drawer.viewMilestonesBtn')}
-                  </button>
-                </>
-              )}
-
-              {room.id === 'HR_DEPT' && (
-                <button
-                  type="button"
-                  onClick={() => onOpenModal('EMPLOYEES')}
-                  className="w-full min-h-[44px] bg-[#78978A] hover:bg-[#6A897C] border border-[#303B38]/35 text-[#303B38] font-bold px-3 py-2.5 text-[14px] cursor-pointer"
-                >
-                  {t('drawer.openHrBtn')}
-                </button>
-              )}
-
-              {room.id === 'FINANCE_DEPT' && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    onDispatch({ type: 'REPORT_TUTORIAL_ACTION', action: 'REVIEW_FINANCE' });
-                    onOpenModal('FINANCE');
-                  }}
-                  className="w-full min-h-[44px] bg-[#78978A] hover:bg-[#6A897C] border border-[#303B38]/35 text-[#303B38] font-bold px-3 py-2.5 text-[14px] cursor-pointer"
-                >
-                  {t('drawer.openFinanceBtn')}
-                </button>
-              )}
-
-              {room.id === 'ENGINEERING' && (
-                <button
-                  type="button"
-                  onClick={() => onOpenModal('PRODUCTS')}
-                  className="w-full min-h-[44px] bg-[#78978A] hover:bg-[#6A897C] border border-[#303B38]/35 text-[#303B38] font-bold px-3 py-2.5 text-[14px] cursor-pointer"
-                >
-                  {t('drawer.openProductBtn')}
-                </button>
-              )}
-
-              {(room.id === 'MEETING_ROOM' ||
-                room.id === 'LOBBY' ||
-                room.id === 'LEGAL_DEPT') && (
-                <button
-                  type="button"
-                  onClick={() => onOpenModal('MARKET')}
-                  className="w-full min-h-[44px] bg-[#78978A] hover:bg-[#6A897C] border border-[#303B38]/35 text-[#303B38] font-bold px-3 py-2.5 text-[14px] cursor-pointer"
-                >
-                  {room.id === 'LEGAL_DEPT'
-                    ? t('drawer.openLegalBtn')
-                    : t('drawer.openMarketBtn')}
-                </button>
-              )}
-
-              {room.id === 'BREAK_ROOM' && (
-                <button
-                  type="button"
-                  onClick={() => onDispatch({ type: 'FOUNDER_REST' })}
-                  className="w-full min-h-[44px] flex items-center justify-center gap-2 bg-[#78978A] hover:bg-[#6A897C] border border-[#303B38]/35 text-[#303B38] font-bold px-3 py-2.5 text-[14px] cursor-pointer"
-                >
-                  <Coffee className="w-4 h-4" aria-hidden="true" />
-                  <span>{t('drawer.drinkEspressoBtn')}</span>
-                </button>
-              )}
-
-              {room.level < 3 && (
-                <button
-                  type="button"
-                  onClick={() => onDispatch({ type: 'UNLOCK_ROOM', roomId: room.id })}
-                  className="w-full min-h-[44px] bg-[#FAF8F2] hover:bg-[#EAE5D8] border border-[#303B38]/30 px-3 py-2 text-[14px] font-bold text-[#303B38] cursor-pointer"
-                >
-                  {t('rooms.upgradeRoom', {
-                    name: localizedRoom.name,
-                    cost: formatCurrency(room.upgradeCost),
-                  })}
-                </button>
-              )}
-            </div>
-
-            {(() => {
-              const roomPerks = getRenderableFurniture(state.office).filter(
-                (f) => f.roomId === room.id && f.templateId.startsWith('PERK_')
-              );
-              if (roomPerks.length === 0) return null;
-              return (
-                <div className="pt-3 border-t border-[#303B38]/20 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[14px] font-bold text-[#303B38]">
-                      {t('drawer.installedPerks', { count: roomPerks.length })}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => onOpenModal('OFFICE')}
-                      className="text-[13px] font-bold underline text-[#303B38] cursor-pointer"
-                    >
-                      {t('drawer.managePerks')}
-                    </button>
-                  </div>
-                  <div className="space-y-1.5">
-                    {roomPerks.map((perkFurn) => {
-                      const inUse = isFurnitureInUse(perkFurn, state);
-                      const locFurn = getFurnitureLocalized(
-                        perkFurn.templateId,
-                        perkFurn.name,
-                        '',
-                        locale
-                      );
-                      return (
-                        <div
-                          key={perkFurn.id}
-                          className="bg-[#FAF8F2] border border-[#303B38]/20 px-3 py-2 flex items-center justify-between gap-2 text-[14px]"
-                        >
-                          <span className="truncate">{locFurn.name}</span>
-                          <span className="text-[13px] font-mono-num font-bold shrink-0">
-                            [{inUse ? t('drawer.inUse') : t('drawer.ready')}]
-                          </span>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              );
-            })()}
-
-            {room.id === 'LOBBY' && state.visitors.length > 0 && (
-              <div className="pt-3 border-t border-[#303B38]/20 space-y-2">
-                <div className="text-[14px] font-bold text-[#303B38]">
-                  {t('drawer.lobbyVisitors')}
-                </div>
-                {state.visitors.map((v) => (
-                  <div
-                    key={v.id}
-                    className="bg-[#FAF8F2] border border-[#303B38]/20 p-3 text-[14px]"
-                  >
-                    <div className="font-bold text-[#303B38]">{v.name}</div>
-                    <p className="text-[#303B38]/85 mt-1">{v.dialogue}</p>
-                  </div>
-                ))}
-              </div>
-            )}
-          </>
+          renderRoomActionsBody(room, localizedRoom)
         ) : null}
       </div>
     </aside>
   );
 };
+

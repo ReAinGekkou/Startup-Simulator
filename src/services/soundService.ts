@@ -8,7 +8,8 @@ export type SoundEffect =
   | 'ALERT'
   | 'LEVEL_UP'
   | 'MILESTONE_CHIME'
-  | 'TEST_CHIME';
+  | 'TEST_CHIME'
+  | 'TYPEWRITER_CLICK';
 
 export interface ChimeToneSpec {
   freq: number;
@@ -234,6 +235,9 @@ class SoundService {
             playTone(659.25, 0.07, 0.08, 'triangle', 0.055);
             playTone(783.99, 0.14, 0.09, 'triangle', 0.06);
             playTone(1046.5, 0.22, 0.2, 'triangle', 0.065);
+            break;
+          case 'TYPEWRITER_CLICK':
+            playTone(920, 0, 0.018, 'triangle', 0.014);
             break;
         }
       } catch {

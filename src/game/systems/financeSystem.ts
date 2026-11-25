@@ -123,7 +123,11 @@ export function estimateMonthlyBurn(state: GameState): {
   const contractRev = state.contracts
     .filter((c) => c.status === 'ACTIVE')
     .reduce((sum, c) => sum + c.monthlyValue, 0);
-  const projectedRevenue = Math.round(productRev + contractRev);
+  const propertyRev = (state.world?.properties ?? []).reduce(
+    (sum, p) => sum + (p.owned ? p.monthlyRevenue : 0),
+    0
+  );
+  const projectedRevenue = Math.round(productRev + contractRev + propertyRev);
 
   const salaries = calculateMonthlyPayroll(state);
   const founderSalary = calculateFounderSalary(state);

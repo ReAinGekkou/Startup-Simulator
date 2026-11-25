@@ -144,7 +144,14 @@
     "welcomeBanner": {
       "title": "Chào mừng đến với công ty của bạn!",
       "subtitle": "Cùng bắt đầu nhé!"
-    }
+    },
+    "menuBtn": "Quản lý",
+    "menuTitle": "Bảng điều hành",
+    "menuSectionOps": "Vận hành",
+    "menuSectionStudio": "Hệ thống & Lưu",
+    "mapBtn": "Thành phố",
+    "mapTitle": "Khu vực thành phố",
+    "checklistBtn": "Mục tiêu"
   },
   "objectives": {
     "panelTitle": "MỤC TIÊU KHỞI ĐẦU",
@@ -255,7 +262,8 @@
     "step6LaunchCampaign": "Nhấn chạy chiến dịch.",
     "step7OpenFinance": "Xem tiền vào và tiền ra.",
     "step8EndDay": "Nhấn để kết thúc ngày làm việc.",
-    "closeModalFirst": "Đóng bảng này để về văn phòng."
+    "closeModalFirst": "Đóng bảng này để về văn phòng.",
+    "openMenuFor": "Mở Quản lý để vào {section}."
   },
   "rooms": {
     "lockedSuffix": "Khóa",
@@ -352,6 +360,18 @@
     "inUse": "Đang dùng",
     "ready": "Sẵn sàng",
     "lobbyVisitors": "Khách đang ở sảnh",
+    "furnitureOverview": "Tương tác đồ vật",
+    "furnitureUseActive": "Đang được sử dụng",
+    "furnitureComfortLabel": "+{comfort} Tiện nghi · +{prod}% Năng suất",
+    "viewRoomActions": "Xem phòng: {room}",
+    "activeProductLabel": "Sản phẩm hiện tại",
+    "noProductHint": "Chưa có sản phẩm nào.",
+    "quickBuildSprintBtn": "Làm nhanh (+35% · {cost})",
+    "teamSummary": "{count}/{max} Chỗ ngồi",
+    "cashSummary": "Tiền hiện có: {cash}",
+    "burnSummary": "Thu chi tháng: {net}",
+    "customersSummary": "{customers} Khách trả phí · {deals} Hợp đồng",
+    "comfortScoreSummary": "Độ tiện nghi: {comfort}/100",
     "empStates": {
       "WORKING": "Đang làm việc",
       "IDLE": "Đang nghỉ ngơi",
@@ -891,6 +911,18 @@
     "timeline": {
       "title": "Dòng thời gian cột mốc công ty",
       "summaryLine": "{completed} đã đạt · {current} đang thực hiện · {upcoming} sắp tới",
+      "statsLabel": "Thống kê tổng hợp cột mốc",
+      "completionLabel": "Tỷ lệ hoàn thành",
+      "completionSub": "{completed} / {total} cột mốc",
+      "avgDaysLabel": "TB ngày mỗi cột mốc",
+      "avgDaysValue": "{days} ngày",
+      "avgDaysEmpty": "—",
+      "avgDaysEmptySub": "Chờ cột mốc đầu tiên",
+      "avgDaysSub": "Trong {totalDays} ngày vận hành",
+      "challengingLabel": "Cột mốc thử thách nhất",
+      "challengingEmptyTitle": "Chưa có cột mốc",
+      "challengingEmptySub": "Hoàn thành cột mốc đầu tiên để nhận huy hiệu",
+      "challengingMeta": "Ngày {day} · {span} ngày bứt phá",
       "filterAll": "Tất cả ({count})",
       "filterCompleted": "Đã đạt ({count})",
       "filterUpcoming": "Đang & sắp tới ({count})",
@@ -1332,27 +1364,30 @@
     "interfaceSection": "Giao diện & Đặt nội thất",
     "mouseSection": "Thao tác chuột & Camera",
     "keySpace": "Space",
+    "keyP": "P",
     "keyArrows": "Mũi tên (↑ ↓ ← →)",
     "keyEsc": "Esc",
     "keyM": "M",
     "keyLeftClick": "Nhấp chuột trái",
-    "keyDragWheel": "Kéo chuột / Con lăn",
-    "moveWasdDesc": "Di chuyển Nhà sáng lập từng ô theo 4 hướng (Lên, Trái, Xuống, Phải)",
-    "moveArrowsDesc": "Di chuyển Nhà sáng lập bằng các phím mũi tên",
+    "keyDragWheel": "Kéo / Chụm / Con lăn",
+    "moveWasdDesc": "Điều khiển Nhà sáng lập di chuyển mượt theo góc nhìn isometric (Lên, Trái, Xuống, Phải)",
+    "moveArrowsDesc": "Điều khiển Nhà sáng lập bằng các phím mũi tên",
     "pauseResumeDesc": "Tạm dừng hoặc tiếp tục chạy thời gian mô phỏng (1x)",
+    "focusFounderDesc": "Đưa camera về vị trí Nhà sáng lập mượt mà",
     "speed1Desc": "Chuyển sang tốc độ bình thường (1x)",
     "speed2Desc": "Chuyển sang tốc độ nhanh (2x)",
     "speed3Desc": "Chuyển sang tốc độ rất nhanh (3x)",
     "muteAudioDesc": "Tắt hoặc bật toàn bộ âm thanh trò chơi (Âm lượng tổng)",
     "escDesc": "Hủy đặt nội thất, đóng bảng đang mở hoặc mở menu Cài đặt",
-    "mouseWalkDesc": "Nhấp lên sàn để Nhà sáng lập tự động đi tới ô đó",
-    "mouseInspectDesc": "Nhấp vào phòng, nhân viên hoặc đồ nội thất để xem chi tiết & thao tác",
-    "mouseCameraDesc": "Kéo nền văn phòng để di chuyển góc nhìn; cuộn con lăn để thu phóng",
+    "mouseWalkDesc": "Nhấp lên mặt đất hoặc sàn đi được để Nhà sáng lập đi tới đó",
+    "mouseInspectDesc": "Nhấp vào phòng, NPC, nhân viên hoặc tòa nhà để xem chi tiết & tương tác",
+    "mouseCameraDesc": "Kéo chuột hoặc chạm để di chuyển bản đồ; cuộn hoặc chụm 2 ngón để thu phóng theo con trỏ",
     "noteText": "Lưu ý: Phím tắt sẽ tạm khóa khi bạn đang nhập liệu trong ô văn bản hoặc khi có báo cáo / sự kiện cần xử lý."
   },
   "shortcutFeedback": {
     "PAUSE": "Đã tạm dừng",
     "RESUME": "Tiếp tục (1x)",
+    "FOCUS_FOUNDER": "Đã căn giữa Nhà sáng lập",
     "SPEED_1": "Tốc độ 1x",
     "SPEED_2": "Tốc độ 2x",
     "SPEED_3": "Tốc độ 3x",
@@ -1366,6 +1401,15 @@
     "MUTE_AUDIO": "Đã tắt âm thanh tổng",
     "UNMUTE_AUDIO": "Đã bật âm thanh tổng"
   },
+  "camera": {
+    "toolbarLabel": "Điều khiển camera",
+    "followFounder": "Bật/tắt chế độ camera bám theo Nhà sáng lập",
+    "followShort": "Theo dõi",
+    "zoomIn": "Phóng to",
+    "zoomOut": "Thu nhỏ",
+    "resetView": "Đặt lại góc nhìn",
+    "resetShort": "Đặt lại"
+  },
   "canvasSpeed": {
     "label": "Tốc độ",
     "s0": "Tạm dừng",
@@ -1376,7 +1420,7 @@
   "tooltips": {
     "cashBalance": "Tiền mặt công ty hiện có. Dùng để trả lương, thuê văn phòng, R&D và tiếp thị. Hết tiền vượt hạn mức tín dụng sẽ phá sản.",
     "companyStatus": "Đánh giá nhanh sức khỏe tài chính và tăng trưởng hiện tại của công ty.",
-    "speedPause": "Tạm dừng dòng thời gian mô phỏng để sắp xếp công việc thoải mái (Phím Space).",
+    "speedPause": "Tạm dừng dòng thời gian mô phỏng để sắp xếp công việc thoải mái (Phím P).",
     "speed1x": "Chạy thời gian mô phỏng ở tốc độ chuẩn hằng ngày (Phím 1).",
     "speed2x": "Tăng tốc mô phỏng lên gấp 2 lần (Phím 2).",
     "speed3x": "Tăng tốc mô phỏng tối đa 3 lần (Phím 3).",
@@ -1742,6 +1786,113 @@
           "line": "Một phân khu mới chính thức mở cửa — cả văn phòng cùng nâng ly chúc mừng bước tiến mới."
         }
       }
+    }
+  },
+  "world": {
+    "districtBarLabel": "Các khu vực thành phố liên thông",
+    "stepOutsideLobby": "Ra Phố Chính",
+    "locations": {
+      "COMPANY_HQ": {
+        "shortName": "Trụ sở HQ",
+        "name": "Trụ sở Công ty",
+        "description": "Văn phòng khởi nghiệp ấm cúng nơi cả đội cùng phát triển sản phẩm và nghỉ ngơi."
+      },
+      "MAIN_STREET": {
+        "shortName": "Phố Chính",
+        "name": "Đại lộ Phố Chính",
+        "description": "Tuyến phố đi bộ kết nối liền mạch từ trụ sở ra quán cà phê, đối tác, nhà đầu tư và sự kiện."
+      },
+      "COFFEE_SHOP": {
+        "shortName": "Bean & Byte",
+        "name": "Tiệm Cà Phê Bean & Byte",
+        "description": "Góc espresso thủ công giúp nhà sáng lập hồi phục năng lượng và gặp gỡ khách hàng địa phương."
+      },
+      "COWORKING_SPACE": {
+        "shortName": "Foundry Hub",
+        "name": "Không gian Coworking Foundry Commons",
+        "description": "Điểm hẹn nhân tài công nghệ ngay cạnh trụ sở để gặp gỡ ứng viên kỹ thuật và thiết kế."
+      },
+      "INVESTOR_CENTER": {
+        "shortName": "Harbor Capital",
+        "name": "Trung tâm Đầu tư Harbor Capital",
+        "description": "Thuyết trình tăng trưởng và tài chính để nâng niềm tin nhà đầu tư và mở cơ hội gọi vốn."
+      },
+      "EVENT_HALL": {
+        "shortName": "Nhà Triển Lãm",
+        "name": "Trung tâm Sự kiện & Demo Day",
+        "description": "Tổ chức gian hàng Demo Day để thu hút người dùng mới, khách hàng trả phí và uy tín."
+      },
+      "BUSINESS_PROPERTIES": {
+        "shortName": "Mặt Bằng",
+        "name": "Khu Mặt Bằng Kinh Doanh",
+        "description": "Mua ki-ốt bán lẻ, văn phòng bán hàng và phòng Lab để tăng doanh thu thụ động và sức chứa."
+      }
+    },
+    "npcKinds": {
+      "CUSTOMER": "Khách hàng",
+      "CANDIDATE": "Ứng viên",
+      "PARTNER": "Đối tác",
+      "INVESTOR": "Nhà đầu tư",
+      "HOST": "Ban tổ chức"
+    },
+    "properties": {
+      "prop_retail_kiosk": {
+        "shortName": "Ki-ốt Phố Chính",
+        "name": "Ki-ốt Trải nghiệm Phố Chính",
+        "description": "Quầy trưng bày ấm cúng trên mặt phố giúp giới thiệu sản phẩm tới khách qua đường."
+      },
+      "prop_sales_hub": {
+        "shortName": "Văn phòng Bán hàng",
+        "name": "Trung tâm Kinh doanh Khu vực Harbor",
+        "description": "Văn phòng giao dịch trung tâm giúp tăng doanh thu định kỳ hàng tháng và chỗ ngồi làm việc."
+      },
+      "prop_innovation_lab": {
+        "shortName": "Phòng Sáng tạo",
+        "name": "Xưởng Đổi mới Sáng tạo Foundry",
+        "description": "Phân khu R&D cao cấp mở rộng sức chứa đội ngũ, uy tín và nguồn thu định kỳ."
+      }
+    },
+    "drawer": {
+      "closeAria": "Đóng bảng khu vực thành phố",
+      "districtLabel": "Khu vực liên thông",
+      "walkHereBtn": "Đi bộ tới đây",
+      "npcTalkBtn": "Trò chuyện & Kết nối (-10 Năng lượng)",
+      "npcTalkedToday": "Đã trao đổi hôm nay",
+      "npcHireNowBtn": "Tuyển ngay ({fee})",
+      "coffeeVisitsLabel": "Lượt uống cà phê hôm nay",
+      "buyCoffeeBtn": "Uống Espresso ({cost} · +22 Năng lượng)",
+      "coworkingTitle": "Ứng viên đang có mặt",
+      "refreshSearchBtn": "Làm mới ứng viên ({cost})",
+      "openHrBtn": "Mở bảng Nhân sự & Tuyển dụng",
+      "noCandidatesHint": "Làm mới danh sách ứng viên để gặp thêm nhân tài tại khu coworking.",
+      "investorTrustLabel": "Niềm tin Nhà đầu tư",
+      "investorReputationLabel": "Uy tín Công ty",
+      "investorPitchedToday": "Lượt thuyết trình hôm nay",
+      "pitchInvestorBtn": "Thuyết trình gọi vốn (-14 Năng lượng)",
+      "openFinanceBtn": "Mở bảng Tài chính",
+      "eventsAttendedLabel": "Số kỳ Demo Day đã tổ chức",
+      "hostEventBtn": "Tổ chức Demo Day ({cost} · -14 Năng lượng)",
+      "openMarketBtn": "Mở Thị trường & Hợp đồng",
+      "ownedBadge": "Đã sở hữu",
+      "availableBadge": "Có thể mua",
+      "buyPropertyBtn": "Mua cơ sở ({cost})",
+      "monthlyRevLabel": "Doanh thu định kỳ",
+      "capacityBonusLabel": "Sức chứa đội ngũ",
+      "repBonusLabel": "Tăng uy tín",
+      "purchasedOnDay": "Đã mua vào Ngày {day}",
+      "mainStreetContactsTitle": "Người quen trên phố",
+      "billboardHint": "Đạt từ 32 Uy tín trở lên để treo biển quảng cáo {company} trên Đại lộ Phố Chính!",
+      "npcSectionTitle": "Nhân vật tại đây"
+    }
+  },
+  "weather": {
+    "label": "Thời tiết",
+    "autoShort": "Tự động",
+    "cycleTooltip": "Thời tiết: {state} (Nhấn để chuyển Nắng ấm / Nhiều mây / Mưa nhẹ)",
+    "states": {
+      "SUNNY": "Nắng ấm",
+      "OVERCAST": "Nhiều mây",
+      "RAINY": "Mưa nhẹ"
     }
   }
 }

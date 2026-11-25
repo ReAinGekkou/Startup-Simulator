@@ -3,6 +3,8 @@ import { createInitialRooms } from '@/src/game/data/officeLayout';
 import { syncPurchasedPerkFurniture } from '@/src/game/engine/pathfinding';
 import { evaluateEmployeeTraits } from '@/src/game/systems/employeeSystem';
 import { migrateLegacyStoryState } from '@/src/game/systems/chapterProgression';
+import { ensureOpenWorldState } from '@/src/game/systems/openWorldSystem';
+import { ensureWeatherState } from '@/src/game/systems/weatherSystem';
 import {
   createInitialObjectives,
   createInitialTutorialState,
@@ -150,6 +152,8 @@ export function migrateSaveState(state: GameState): GameState {
     },
   };
   syncTutorialAndObjectives(migrated);
+  ensureOpenWorldState(migrated);
+  ensureWeatherState(migrated);
   return migrated;
 }
 

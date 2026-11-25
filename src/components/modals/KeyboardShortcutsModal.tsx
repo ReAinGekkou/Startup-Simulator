@@ -28,7 +28,7 @@ export const KeyboardShortcutsModal: React.FC<KeyboardShortcutsModalProps> = ({ 
 
   const speedRows: ShortcutRow[] = [
     {
-      keys: [t('shortcutsModal.keySpace')],
+      keys: [t('shortcutsModal.keyP')],
       description: t('shortcutsModal.pauseResumeDesc'),
     },
     {
@@ -57,6 +57,10 @@ export const KeyboardShortcutsModal: React.FC<KeyboardShortcutsModalProps> = ({ 
   ];
 
   const mouseRows: ShortcutRow[] = [
+    {
+      keys: [t('shortcutsModal.keySpace')],
+      description: t('shortcutsModal.focusFounderDesc'),
+    },
     {
       keys: [t('shortcutsModal.keyLeftClick')],
       description: t('shortcutsModal.mouseWalkDesc'),

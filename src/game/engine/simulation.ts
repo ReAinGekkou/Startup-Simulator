@@ -6,9 +6,23 @@ import {
   canPlaceFurnitureAt,
   findAdjacentWalkableTile,
   findPath,
+  findWorldPath,
+  findNearestWalkable,
   getRoomSeatTile,
+  isNavWalkable,
+  stepContinuousPosition,
   syncPurchasedPerkFurniture,
 } from '@/src/game/engine/pathfinding';
+import {
+  buildFullWorldNavGrid,
+  handleWorldBuyProperty,
+  handleWorldCoffeeBreak,
+  handleWorldHostEvent,
+  handleWorldInteractNpc,
+  handleWorldPitchInvestor,
+  syncCoworkingCandidateNpcs,
+  syncOpenWorldDaily,
+} from '@/src/game/systems/openWorldSystem';
 import {
   computeEmployeeProductivity,
   createEmployeeFromCandidate,
@@ -44,6 +58,12 @@ import {
 } from '@/src/game/systems/celebrationSystem';
 import { isCelebratoryCinematic } from '@/src/game/systems/celebrationParticles';
 import {
+  advanceWeatherCycle,
+  cycleWeatherState,
+  ensureWeatherState,
+  setWeatherState,
+} from '@/src/game/systems/weatherSystem';
+import {
   createInitialTutorialState,
   evaluateRoomUnlocks,
   syncTutorialAndObjectives,
@@ -61,7 +81,14 @@ import {
   getTaskLocalized,
   getTraitLocalized,
 } from '@/src/localization';
-import { Achievement, GameCommand, GameState, GridPoint, TutorialStepId } from '@/src/types/game';
+import {
+  Achievement,
+  GameCommand,
+  GameState,
+  GridPoint,
+  RoomId,
+  TutorialStepId,
+} from '@/src/types/game';
 import { clamp, formatCurrency } from '@/src/utils/format';
 
 export interface CommandResult {
@@ -124,6 +151,210 @@ function moveAlongPath(
     path,
     facing,
     moving: true,
+  };
+}
+
+export function reserveFreeRoomSeat(
+  office: GameState['office'],
+  roomId: RoomId,
+  idx: number,
+  grid: boolean[][],
+  reservedTiles: Set<string>
+): GridPoint {
+  const room = office.rooms[roomId];
+  if (!room || !room.unlocked) {
+    return getRoomSeatTile(office, 'CEO_OFFICE', idx);
+  }
+
+  const roomFurniture = office.furniture.filter(
+    (f) =>
+      f.roomId === roomId &&
+      (f.templateId === 'WORKSTATION' ||
+        f.templateId === 'CEO_DESK' ||
+        f.templateId === 'MEETING_TABLE' ||
+        f.templateId === 'FINANCE_TERMINAL' ||
+        f.templateId === 'LEGAL_DESK' ||
+        f.templateId === 'HR_BOARD' ||
+        f.templateId === 'RECEPTION_DESK')
+  );
+
+  // First try reserving an unclaimed tile directly adjacent to a workstation/table in this room
+  for (let i = 0; i < roomFurniture.length; i++) {
+    const furn = roomFurniture[(idx + i) % roomFurniture.length];
+    const adj = findAdjacentWalkableTile(grid, furn);
+    if (adj && !reservedTiles.has(`${adj.x},${adj.y}`)) {
+      reservedTiles.add(`${adj.x},${adj.y}`);
+      return adj;
+    }
+  }
+
+  // Next scan room interior tiles for an unreserved walkable tile
+  const { x, y, w, h } = room.bounds;
+  const candidates: GridPoint[] = [];
+  for (let ry = y + 2; ry < y + h - 1; ry++) {
+    for (let rx = x + 2; rx < x + w - 1; rx++) {
+      if (grid[ry]?.[rx] && !reservedTiles.has(`${rx},${ry}`)) {
+        candidates.push({ x: rx, y: ry });
+      }
+    }
+  }
+  if (candidates.length > 0) {
+    const picked = candidates[idx % candidates.length];
+    reservedTiles.add(`${picked.x},${picked.y}`);
+    return picked;
+  }
+
+  const fallback = findNearestWalkable(grid, getRoomSeatTile(office, roomId, idx));
+  reservedTiles.add(`${fallback.x},${fallback.y}`);
+  return fallback;
+}
+
+export function resolveEmployeeLivingActivity(
+  emp: GameState['employees'][number],
+  idx: number,
+  state: GameState,
+  grid: boolean[][],
+  reservedTiles: Set<string>
+): {
+  desiredRoom: RoomId;
+  seat: GridPoint;
+  arrivalState: GameState['employees'][number]['state'];
+  thoughtIcon: string;
+} {
+  // 1. Leaving at end of workday
+  if (state.hourOfDay >= 17.65) {
+    const lobbyUnlocked = Boolean(state.office.rooms.LOBBY?.unlocked);
+    const desiredRoom: RoomId = lobbyUnlocked ? 'LOBBY' : 'CEO_OFFICE';
+    const exitCandidate = lobbyUnlocked
+      ? { x: 4 + (idx % 2), y: 21 }
+      : { x: 4 + (idx % 2), y: 11 };
+    const seat = findNearestWalkable(grid, exitCandidate);
+    reservedTiles.add(`${seat.x},${seat.y}`);
+    return {
+      desiredRoom,
+      seat,
+      arrivalState: 'OFF_DUTY',
+      thoughtIcon: '👋',
+    };
+  }
+
+  // 2. Break room recovery when fatigued or assigned REST_BREAK
+  const breakUnlocked = Boolean(state.office.rooms.BREAK_ROOM?.unlocked);
+  if (
+    breakUnlocked &&
+    (emp.assignedTask === 'REST_BREAK' ||
+      (emp.energy < 44 && state.hourOfDay > 10.5 && state.hourOfDay < 16.5))
+  ) {
+    const breakInteractive = state.office.furniture.filter(
+      (f) =>
+        f.roomId === 'BREAK_ROOM' &&
+        (f.templateId.startsWith('PERK_') ||
+          f.templateId === 'ESPRESSO_BAR' ||
+          f.templateId === 'ARCADE_CABINET' ||
+          f.templateId === 'LOUNGE_SOFA')
+    );
+    let seat = reserveFreeRoomSeat(state.office, 'BREAK_ROOM', idx, grid, reservedTiles);
+    let breakIcon = '☕';
+    if (breakInteractive.length > 0) {
+      const targetObj = breakInteractive[(idx + state.day) % breakInteractive.length];
+      const adj = findAdjacentWalkableTile(grid, targetObj);
+      if (adj && !reservedTiles.has(`${adj.x},${adj.y}`)) {
+        reservedTiles.add(`${adj.x},${adj.y}`);
+        seat = adj;
+      }
+      breakIcon =
+        targetObj.templateId === 'PERK_PING_PONG'
+          ? '🏓'
+          : targetObj.templateId === 'PERK_SNACK_PANTRY'
+            ? '🍎'
+            : targetObj.templateId === 'PERK_WELLNESS_SUITE'
+              ? '🧘'
+              : targetObj.templateId === 'ARCADE_CABINET'
+                ? '🕹️'
+                : '☕';
+    }
+    const socialInBreak =
+      emp.personality === 'SOCIAL' && state.hourOfDay >= 12.0 && state.hourOfDay <= 13.0;
+    return {
+      desiredRoom: 'BREAK_ROOM',
+      seat,
+      arrivalState: socialInBreak ? 'CHATTING' : 'RESTING',
+      thoughtIcon: socialInBreak ? '💬' : breakIcon,
+    };
+  }
+
+  // 3. Scheduled team sync in Meeting Room for managers, PMs, sales, and marketing
+  const meetingUnlocked = Boolean(state.office.rooms.MEETING_ROOM?.unlocked);
+  const inMeetingWindow =
+    (state.hourOfDay >= 10.25 && state.hourOfDay <= 11.45) ||
+    (state.hourOfDay >= 14.25 && state.hourOfDay <= 15.25);
+  const isMeetingRole =
+    emp.role === 'PRODUCT_MANAGER' ||
+    emp.role === 'MARKETING_SPECIALIST' ||
+    emp.role === 'SALES_REP' ||
+    emp.role === 'OPERATIONS_MANAGER' ||
+    emp.assignedTask === 'PLAN_ROADMAP' ||
+    emp.assignedTask === 'CLOSE_SALES';
+
+  if (meetingUnlocked && inMeetingWindow && isMeetingRole) {
+    const seat = reserveFreeRoomSeat(state.office, 'MEETING_ROOM', idx, grid, reservedTiles);
+    return {
+      desiredRoom: 'MEETING_ROOM',
+      seat,
+      arrivalState: 'MEETING',
+      thoughtIcon: '📋',
+    };
+  }
+
+  // 4. Midday casual socializing for social personalities
+  if (
+    emp.personality === 'SOCIAL' &&
+    state.hourOfDay >= 12.1 &&
+    state.hourOfDay <= 12.85 &&
+    state.office.rooms.LOBBY?.unlocked
+  ) {
+    const seat = reserveFreeRoomSeat(state.office, 'LOBBY', idx, grid, reservedTiles);
+    return {
+      desiredRoom: 'LOBBY',
+      seat,
+      arrivalState: 'CHATTING',
+      thoughtIcon: '💬',
+    };
+  }
+
+  // 5. Waiting briefly before morning ramp-up or resting if depleted without break room
+  if (emp.energy <= 8 && emp.assignedTask === 'REST_BREAK') {
+    const desiredRoom = getTaskRoom(emp.assignedTask, emp.homeRoom, state.office);
+    const seat = reserveFreeRoomSeat(state.office, desiredRoom, idx, grid, reservedTiles);
+    return {
+      desiredRoom,
+      seat,
+      arrivalState: 'IDLE',
+      thoughtIcon: '💭',
+    };
+  }
+
+  // 6. Primary role/task workstation
+  const desiredRoom = getTaskRoom(emp.assignedTask, emp.homeRoom, state.office);
+  const seat = reserveFreeRoomSeat(state.office, desiredRoom, idx, grid, reservedTiles);
+  const icon =
+    emp.stress > 75
+      ? '😓'
+      : emp.assignedTask === 'BUILD_PRODUCT'
+        ? '💻'
+        : emp.assignedTask === 'FIX_BUGS'
+          ? '🔧'
+          : emp.assignedTask === 'MARKET_GROWTH'
+            ? '📣'
+            : emp.assignedTask === 'CLOSE_SALES'
+              ? '🤝'
+              : '📊';
+
+  return {
+    desiredRoom,
+    seat,
+    arrivalState: 'WORKING',
+    thoughtIcon: icon,
   };
 }
 
@@ -223,10 +454,19 @@ export function tickSimulation(
   const state: GameState = prevState;
   const grid = buildWalkabilityGrid(state.office);
 
-  // Move founder smoothly even if speed is paused? Only move characters when PLAYING
+  // Move founder smoothly across full Connected City via held isometric WASD or click-to-move path
   if (state.screen === 'PLAYING') {
-    if (state.founder.path.length > 0) {
-      const moved = moveAlongPath(state.founder.position, state.founder.path, 4.2, dt);
+    const worldNav = buildFullWorldNavGrid(state);
+    const input = state.founder.inputVector;
+    if (input && (Math.abs(input.x) > 0.01 || Math.abs(input.y) > 0.01)) {
+      state.founder.path = [];
+      state.founder.targetTile = null;
+      const stepped = stepContinuousPosition(worldNav, state.founder.position, input, 4.8, dt);
+      state.founder.position = stepped.pos;
+      state.founder.facing = stepped.facing;
+      state.founder.state = 'WALKING';
+    } else if (state.founder.path.length > 0) {
+      const moved = moveAlongPath(state.founder.position, state.founder.path, 4.4, dt);
       state.founder.position = moved.pos;
       state.founder.path = moved.path;
       state.founder.facing = moved.facing;
@@ -234,11 +474,31 @@ export function tickSimulation(
     } else if (state.founder.state === 'WALKING') {
       state.founder.state = 'IDLE';
     }
+
+    // Nearby City NPCs naturally turn to face the Founder as they walk past
+    if (state.world?.npcs) {
+      for (const npc of state.world.npcs) {
+        const dx = state.founder.position.x - npc.position.x;
+        const dy = state.founder.position.y - npc.position.y;
+        const dist = Math.hypot(dx, dy);
+        if (dist <= 3.2) {
+          if (Math.abs(dx) >= Math.abs(dy)) {
+            npc.facing = dx >= 0 ? 'RIGHT' : 'LEFT';
+          } else {
+            npc.facing = dy >= 0 ? 'DOWN' : 'UP';
+          }
+        }
+      }
+    }
   }
 
-  // Step non-intrusive office celebration timer even while paused at 0x when workspace is unobstructed
+  // Ensure stateful global weather cycle is present and step smooth visual transitions even while paused
+  ensureWeatherState(state);
   if (state.screen === 'PLAYING') {
     syncCelebrationState(state, dt);
+    if (state.speed === 0 || state.activeEvent !== null || state.pendingMonthlyReport !== null || state.pendingDailyReport !== null || state.story?.activeCinematic !== null || state.story?.activeStoryEvent !== null) {
+      advanceWeatherCycle(state, 0, dt);
+    }
   }
 
   // Pause time progression during modals, cinematics, story events, or speed === 0
@@ -264,7 +524,9 @@ export function tickSimulation(
   // Advance clock (1x = ~1.1 in-game hours per real second -> ~9s per workday)
   const beforeHour = state.hourOfDay;
   const hoursPerSec = state.speed === 1 ? 1.1 : state.speed === 2 ? 2.2 : 4.2;
-  state.hourOfDay += hoursPerSec * dt;
+  const hoursDelta = hoursPerSec * dt;
+  state.hourOfDay += hoursDelta;
+  advanceWeatherCycle(state, hoursDelta, dt);
 
   // During active onboarding Steps 1-7 on Day 1, hold clock softly at 17:30 until Step 8 teaches End Day
   if (
@@ -279,75 +541,56 @@ export function tickSimulation(
     state.hourOfDay = 17.5;
   }
 
-  // Update employee autonomous movement & animations
+  // Update employee autonomous Living Office AI (Working, Meeting, Break, Socializing, Leaving, Idle)
+  const reservedTiles = new Set<string>();
+  state.employees.forEach((emp) => {
+    const dest = emp.targetTile ?? {
+      x: Math.round(emp.position.x),
+      y: Math.round(emp.position.y),
+    };
+    reservedTiles.add(`${dest.x},${dest.y}`);
+  });
+
   state.employees.forEach((emp, idx) => {
+    const activity = resolveEmployeeLivingActivity(emp, idx, state, grid, reservedTiles);
+
     if (emp.path.length > 0) {
       const moved = moveAlongPath(emp.position, emp.path, 2.8 + state.speed * 0.4, dt);
       emp.position = moved.pos;
       emp.path = moved.path;
       emp.facing = moved.facing;
-      emp.state = moved.moving
-        ? 'WALKING'
-        : emp.assignedTask === 'REST_BREAK'
-          ? 'RESTING'
-          : 'WORKING';
-    } else {
-      // Autonomous break check during midday (only use Break Room if unlocked)
-      const breakUnlocked = Boolean(state.office.rooms.BREAK_ROOM?.unlocked);
-      const desiredRoom =
-        breakUnlocked && emp.energy < 42 && state.hourOfDay > 11 && state.hourOfDay < 16.5
-          ? 'BREAK_ROOM'
-          : getTaskRoom(emp.assignedTask, emp.homeRoom, state.office);
-
-      let seat = getRoomSeatTile(state.office, desiredRoom, idx);
-      let breakIcon = '☕';
-
-      if (desiredRoom === 'BREAK_ROOM' && breakUnlocked) {
-        const breakInteractive = state.office.furniture.filter(
-          (f) =>
-            f.roomId === 'BREAK_ROOM' &&
-            (f.templateId.startsWith('PERK_') ||
-              f.templateId === 'ESPRESSO_BAR' ||
-              f.templateId === 'ARCADE_CABINET')
-        );
-        if (breakInteractive.length > 0) {
-          const targetObj = breakInteractive[(idx + state.day) % breakInteractive.length];
-          const adj = findAdjacentWalkableTile(grid, targetObj);
-          if (adj) seat = adj;
-          breakIcon =
-            targetObj.templateId === 'PERK_PING_PONG'
-              ? '🏓'
-              : targetObj.templateId === 'PERK_SNACK_PANTRY'
-                ? '🍎'
-                : targetObj.templateId === 'PERK_WELLNESS_SUITE'
-                  ? '🧘'
-                  : targetObj.templateId === 'ARCADE_CABINET'
-                    ? '🕹️'
-                    : '☕';
-        }
+      emp.state = moved.moving ? 'WALKING' : activity.arrivalState;
+      if (!moved.moving) {
+        emp.thoughtIcon = activity.thoughtIcon;
       }
-
+    } else {
+      const seat = activity.seat;
       const distToSeat = Math.hypot(emp.position.x - seat.x, emp.position.y - seat.y);
-      if (distToSeat > 0.8) {
+      if (distToSeat > 0.85) {
+        emp.targetTile = seat;
         emp.path = findPath(grid, emp.position, seat);
-        emp.state = emp.path.length > 0 ? 'WALKING' : desiredRoom === 'BREAK_ROOM' ? 'RESTING' : 'WORKING';
+        emp.state = emp.path.length > 0 ? 'WALKING' : activity.arrivalState;
       } else {
-        const isResting = desiredRoom === 'BREAK_ROOM' || emp.assignedTask === 'REST_BREAK';
-        emp.state = isResting ? 'RESTING' : 'WORKING';
-        emp.thoughtIcon =
-          isResting
-            ? breakIcon
-            : emp.stress > 75
-              ? '😓'
-              : emp.assignedTask === 'BUILD_PRODUCT'
-                ? '💻'
-                : emp.assignedTask === 'FIX_BUGS'
-                  ? '🔧'
-                  : emp.assignedTask === 'MARKET_GROWTH'
-                    ? '📣'
-                    : emp.assignedTask === 'CLOSE_SALES'
-                      ? '🤝'
-                      : '📊';
+        // Gentle local separation if two stationary employees overlap on same spot
+        const crowded = state.employees.some(
+          (other, oIdx) =>
+            oIdx < idx &&
+            other.state !== 'WALKING' &&
+            Math.hypot(other.position.x - emp.position.x, other.position.y - emp.position.y) < 0.55
+        );
+        if (crowded) {
+          const alt = reserveFreeRoomSeat(state.office, activity.desiredRoom, idx + 3, grid, reservedTiles);
+          if (Math.hypot(alt.x - emp.position.x, alt.y - emp.position.y) > 0.7) {
+            emp.targetTile = alt;
+            emp.path = findPath(grid, emp.position, alt);
+            if (emp.path.length > 0) {
+              emp.state = 'WALKING';
+              return;
+            }
+          }
+        }
+        emp.state = activity.arrivalState;
+        emp.thoughtIcon = activity.thoughtIcon;
       }
     }
   });
@@ -482,6 +725,15 @@ export function advanceDay(state: GameState): {
     state.candidates = generateCandidatePool(state.seed, state.totalDays, hrSkill / 100, 5);
   }
 
+  // 5b. Sync daily Open World NPCs & Business Properties passive revenue
+  const { propertyRevenue } = syncOpenWorldDaily(state);
+  if (propertyRevenue > 0) {
+    state.finance.cash += propertyRevenue;
+    state.finance.currentMonthRevenue += propertyRevenue;
+    state.finance.cumulativeRevenue += propertyRevenue;
+    state.finance.cumulativeProfit += propertyRevenue;
+  }
+
   // 6. Check milestones
   const unlocked = checkMilestones(state);
   const unlockedMilestones: string[] = [...unlocked];
@@ -523,6 +775,7 @@ export function advanceDay(state: GameState): {
 
   state.totalDays += 1;
   state.hourOfDay = 8.5;
+  advanceWeatherCycle(state, 4.0, 1.0);
 
   // 7b. Progressive Room Unlocks & Tutorial/Objectives sync
   const unlockedRooms = evaluateRoomUnlocks(state);
@@ -728,8 +981,9 @@ function executeCommandCore(state: GameState, cmd: GameCommand): CommandResult {
     }
 
     case 'MOVE_FOUNDER': {
-      const grid = buildWalkabilityGrid(state.office);
-      state.founder.path = findPath(grid, state.founder.position, cmd.target);
+      const worldNav = buildFullWorldNavGrid(state);
+      state.founder.inputVector = { x: 0, y: 0 };
+      state.founder.path = findWorldPath(worldNav, state.founder.position, cmd.target);
       state.founder.targetTile = cmd.target;
       if (state.founder.path.length > 0) {
         state.founder.state = 'WALKING';
@@ -737,11 +991,24 @@ function executeCommandCore(state: GameState, cmd: GameCommand): CommandResult {
       return { state };
     }
 
+    case 'SET_FOUNDER_INPUT': {
+      state.founder.inputVector = { x: cmd.dir.x, y: cmd.dir.y };
+      if (Math.abs(cmd.dir.x) > 0.01 || Math.abs(cmd.dir.y) > 0.01) {
+        state.founder.path = [];
+        state.founder.targetTile = null;
+        state.founder.state = 'WALKING';
+      } else if (state.founder.path.length === 0 && state.founder.state === 'WALKING') {
+        state.founder.state = 'IDLE';
+      }
+      return { state };
+    }
+
     case 'STEP_FOUNDER': {
-      const grid = buildWalkabilityGrid(state.office);
-      const nx = clamp(Math.round(state.founder.position.x + cmd.dx), 1, 34);
-      const ny = clamp(Math.round(state.founder.position.y + cmd.dy), 1, 22);
-      if (grid[ny]?.[nx]) {
+      const worldNav = buildFullWorldNavGrid(state);
+      state.founder.targetTile = null;
+      const nx = Math.round(state.founder.position.x + cmd.dx);
+      const ny = Math.round(state.founder.position.y + cmd.dy);
+      if (isNavWalkable(worldNav, nx, ny)) {
         state.founder.path = [{ x: nx, y: ny }];
         state.founder.state = 'WALKING';
       }
@@ -901,6 +1168,7 @@ function executeCommandCore(state: GameState, cmd: GameCommand): CommandResult {
         state.hiredRolesHistory.push(newEmp.role);
       }
       state.candidates.splice(candIdx, 1);
+      syncCoworkingCandidateNpcs(state);
       const roleTitle = getLevelTitleLocalized(newEmp.role, newEmp.level, locale);
       addNotification(
         state,
@@ -938,6 +1206,7 @@ function executeCommandCore(state: GameState, cmd: GameCommand): CommandResult {
         hrBonus,
         5
       );
+      syncCoworkingCandidateNpcs(state);
       return {
         state,
         feedback: vi ? 'Đã làm mới danh sách ứng viên.' : 'Refreshed candidate pool.',
@@ -2062,6 +2331,80 @@ function executeCommandCore(state: GameState, cmd: GameCommand): CommandResult {
     case 'DISMISS_CELEBRATION': {
       dismissActiveCelebration(state);
       return { state, sound: 'CLICK' };
+    }
+
+    case 'WORLD_COFFEE_BREAK': {
+      const res = handleWorldCoffeeBreak(state);
+      if (res.sound !== 'ERROR') addNotification(state, res.feedback, 'INFO');
+      return { state, feedback: res.feedback, sound: res.sound };
+    }
+
+    case 'WORLD_INTERACT_NPC': {
+      const res = handleWorldInteractNpc(state, cmd.npcId);
+      if (res.sound !== 'ERROR') addNotification(state, res.feedback, 'SUCCESS');
+      return { state, feedback: res.feedback, sound: res.sound };
+    }
+
+    case 'WORLD_PITCH_INVESTOR': {
+      const res = handleWorldPitchInvestor(state);
+      if (res.sound !== 'ERROR') addNotification(state, res.feedback, 'SUCCESS');
+      return { state, feedback: res.feedback, sound: res.sound };
+    }
+
+    case 'WORLD_HOST_EVENT': {
+      const res = handleWorldHostEvent(state);
+      if (res.sound !== 'ERROR') addNotification(state, res.feedback, 'SUCCESS');
+      return { state, feedback: res.feedback, sound: res.sound };
+    }
+
+    case 'WORLD_BUY_PROPERTY': {
+      const res = handleWorldBuyProperty(state, cmd.propertyId);
+      if (res.sound !== 'ERROR') addNotification(state, res.feedback, 'SUCCESS');
+      return { state, feedback: res.feedback, sound: res.sound };
+    }
+
+    case 'CYCLE_WEATHER': {
+      const next = cycleWeatherState(state);
+      const label = vi
+        ? next.current === 'SUNNY'
+          ? 'Nắng ấm'
+          : next.current === 'OVERCAST'
+            ? 'Nhiều mây'
+            : 'Mưa nhẹ'
+        : next.current === 'SUNNY'
+          ? 'Sunny'
+          : next.current === 'OVERCAST'
+            ? 'Overcast'
+            : 'Rainy';
+      return {
+        state,
+        feedback: vi
+          ? `Thời tiết toàn cầu: ${label}${next.autoCycle ? ' (Tự động)' : ''}.`
+          : `Global weather: ${label}${next.autoCycle ? ' (Auto)' : ''}.`,
+        sound: 'CLICK',
+      };
+    }
+
+    case 'SET_WEATHER': {
+      const next = setWeatherState(state, cmd.weather);
+      const label = vi
+        ? next.current === 'SUNNY'
+          ? 'Nắng ấm'
+          : next.current === 'OVERCAST'
+            ? 'Nhiều mây'
+            : 'Mưa nhẹ'
+        : next.current === 'SUNNY'
+          ? 'Sunny'
+          : next.current === 'OVERCAST'
+            ? 'Overcast'
+            : 'Rainy';
+      return {
+        state,
+        feedback: vi
+          ? `Thời tiết toàn cầu: ${label}${next.autoCycle ? ' (Tự động)' : ''}.`
+          : `Global weather: ${label}${next.autoCycle ? ' (Auto)' : ''}.`,
+        sound: 'CLICK',
+      };
     }
 
     default:

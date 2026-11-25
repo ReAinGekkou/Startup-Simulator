@@ -6,6 +6,7 @@ import {
   CheckCircle2,
   Circle,
   Clock,
+  Crown,
   Lock,
   Sparkles,
   Trophy,
@@ -296,6 +297,96 @@ export const MilestonesPanel: React.FC<MilestonesPanelProps> = ({
                 </button>
               </div>
             </div>
+
+            {/* Milestone Timeline Summary Statistics */}
+            <section
+              aria-label={t('milestones.timeline.statsLabel')}
+              className="grid grid-cols-1 sm:grid-cols-3 gap-3"
+            >
+              <div className="bg-[#FAF8F2] border border-[#303B38]/25 p-3.5 flex flex-col justify-between gap-2 min-w-0">
+                <div>
+                  <div className="text-[13px] text-[#303B38]/80">
+                    {t('milestones.timeline.completionLabel')}
+                  </div>
+                  <div className="font-mono-num text-[22px] font-bold text-[#303B38] leading-tight mt-0.5">
+                    {timeline.summary.completionPercent}%
+                  </div>
+                </div>
+                <div className="space-y-1.5">
+                  <svg
+                    className="w-full h-2 block border border-[#303B38]/25"
+                    aria-hidden="true"
+                  >
+                    <rect x="0" y="0" width="100%" height="8" fill="#EAE5D8" />
+                    <rect
+                      x="0"
+                      y="0"
+                      width={`${timeline.summary.completionPercent}%`}
+                      height="8"
+                      fill="#78978A"
+                    />
+                  </svg>
+                  <div className="text-[12px] font-mono-num text-[#303B38]/75">
+                    {t('milestones.timeline.completionSub', {
+                      completed: timeline.summary.completedCount,
+                      total: timeline.summary.totalCount,
+                    })}
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-[#FAF8F2] border border-[#303B38]/25 p-3.5 flex flex-col justify-between gap-2 min-w-0">
+                <div>
+                  <div className="text-[13px] text-[#303B38]/80">
+                    {t('milestones.timeline.avgDaysLabel')}
+                  </div>
+                  <div className="font-mono-num text-[22px] font-bold text-[#303B38] leading-tight mt-0.5">
+                    {timeline.summary.averageDaysPerMilestone !== null
+                      ? t('milestones.timeline.avgDaysValue', {
+                          days: new Intl.NumberFormat(locale, {
+                            maximumFractionDigits: 1,
+                          }).format(timeline.summary.averageDaysPerMilestone),
+                        })
+                      : t('milestones.timeline.avgDaysEmpty')}
+                  </div>
+                </div>
+                <div className="text-[12px] font-mono-num text-[#303B38]/75">
+                  {timeline.summary.averageDaysPerMilestone !== null
+                    ? t('milestones.timeline.avgDaysSub', {
+                        totalDays: timeline.summary.elapsedDays,
+                      })
+                    : t('milestones.timeline.avgDaysEmptySub')}
+                </div>
+              </div>
+
+              <div
+                className={`border p-3.5 flex flex-col justify-between gap-2 min-w-0 ${
+                  timeline.summary.mostChallenging
+                    ? 'bg-[#D9A66C]/18 border-[#303B38]'
+                    : 'bg-[#EAE5D8]/60 border-[#303B38]/25'
+                }`}
+              >
+                <div>
+                  <div className="flex items-center gap-1.5 text-[13px] font-bold text-[#303B38]/85">
+                    <Crown className="w-3.5 h-3.5 text-[#9A6826] shrink-0" aria-hidden="true" />
+                    <span>{t('milestones.timeline.challengingLabel')}</span>
+                  </div>
+                  <div className="font-bold text-[15px] text-[#303B38] leading-snug mt-1 break-words">
+                    {timeline.summary.mostChallenging
+                      ? timeline.summary.mostChallenging.title
+                      : t('milestones.timeline.challengingEmptyTitle')}
+                  </div>
+                </div>
+                <div className="text-[12px] font-mono-num text-[#303B38]/80">
+                  {timeline.summary.mostChallenging
+                    ? t('milestones.timeline.challengingMeta', {
+                        day: timeline.summary.mostChallenging.unlockedDay,
+                        span: timeline.summary.mostChallenging.daysToReach,
+                      })
+                    : t('milestones.timeline.challengingEmptySub')}
+                </div>
+              </div>
+            </section>
 
             {timeline.completedCount === 0 && timelineFilter === 'ALL' && (
               <div className="bg-[#FAF8F2] border border-[#303B38]/25 p-3.5 text-[14px] text-[#303B38]/85">

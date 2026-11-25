@@ -10,6 +10,8 @@ import {
 } from '@/src/game/systems/employeeSystem';
 import { createProductEntity } from '@/src/game/systems/productSystem';
 import { createInitialStoryState } from '@/src/game/systems/chapterProgression';
+import { ensureOpenWorldState } from '@/src/game/systems/openWorldSystem';
+import { ensureWeatherState } from '@/src/game/systems/weatherSystem';
 import {
   createInitialObjectives,
   createInitialTutorialState,
@@ -173,7 +175,7 @@ export function createNewGame(params: NewGameParams = DEFAULT_NEW_GAME_PARAMS): 
 
   const founderPos = getRoomSeatTile(office, 'CEO_OFFICE', 1);
 
-  return {
+  const initialState: GameState = {
     version: 1,
     seed,
     config: {
@@ -354,4 +356,7 @@ export function createNewGame(params: NewGameParams = DEFAULT_NEW_GAME_PARAMS): 
     victoryAchieved: false,
     sandboxContinued: false,
   };
+  ensureOpenWorldState(initialState);
+  ensureWeatherState(initialState);
+  return initialState;
 }

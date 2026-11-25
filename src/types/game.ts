@@ -81,6 +81,9 @@ export interface CharacterAppearance {
   hasGlasses: boolean;
 }
 
+export type CharacterMood = 'HAPPY' | 'NEUTRAL' | 'STRESSED' | 'SURPRISED' | 'THOUGHTFUL' | 'DETERMINED';
+
+
 export interface Founder {
   name: string;
   energy: number; // 0-100
@@ -93,6 +96,7 @@ export interface Founder {
   position: GridPoint; // continuous grid coords
   targetTile: GridPoint | null;
   path: GridPoint[];
+  inputVector?: GridPoint;
   facing: 'UP' | 'DOWN' | 'LEFT' | 'RIGHT';
   state: CharacterState;
   appearance: CharacterAppearance;
@@ -598,6 +602,68 @@ export interface GameConfig {
   gameMode: GameMode;
 }
 
+export type WorldLocationId =
+  | 'COMPANY_HQ'
+  | 'MAIN_STREET'
+  | 'COFFEE_SHOP'
+  | 'COWORKING_SPACE'
+  | 'INVESTOR_CENTER'
+  | 'EVENT_HALL'
+  | 'BUSINESS_PROPERTIES';
+
+export type WorldNpcKind = 'CUSTOMER' | 'CANDIDATE' | 'PARTNER' | 'INVESTOR' | 'HOST';
+
+export interface WorldNPC {
+  id: string;
+  name: string;
+  roleTitle: string;
+  kind: WorldNpcKind;
+  locationId: WorldLocationId;
+  position: GridPoint;
+  homeTile: GridPoint;
+  appearance: CharacterAppearance;
+  facing: 'UP' | 'DOWN' | 'LEFT' | 'RIGHT';
+  moodIcon: string;
+  lastInteractedDay: number;
+  linkedCandidateId?: string;
+}
+
+export interface BusinessPropertyState {
+  id: string;
+  name: string;
+  lotTile: GridPoint;
+  cost: number;
+  monthlyRevenue: number;
+  reputationBonus: number;
+  teamCapacityBonus: number;
+  owned: boolean;
+  purchasedDay: number | null;
+}
+
+export interface OpenWorldState {
+  npcs: WorldNPC[];
+  properties: BusinessPropertyState[];
+  lastCityRefreshDay: number;
+  coffeeVisitsToday: number;
+  investorPitchesToday: number;
+  eventsAttendedTotal: number;
+}
+
+export type GlobalWeatherState = 'SUNNY' | 'RAINY' | 'OVERCAST';
+
+export interface WeatherCycleState {
+  current: GlobalWeatherState;
+  previous: GlobalWeatherState;
+  /** Smooth 0..1 visual cross-fade from previous -> current */
+  transitionProgress: number;
+  /** When true, weather automatically cycles SUNNY -> OVERCAST -> RAINY -> SUNNY as simulated hours pass */
+  autoCycle: boolean;
+  /** Elapsed simulated hours spent in the current state */
+  hoursInState: number;
+  /** Total weather state transitions completed */
+  cycleCount: number;
+}
+
 export interface GameState {
   version: number;
   seed: number;
@@ -637,6 +703,8 @@ export interface GameState {
   gameOverReason: string | null;
   victoryAchieved: boolean;
   sandboxContinued: boolean;
+  world?: OpenWorldState;
+  weather?: WeatherCycleState;
 }
 
 export interface NewGameParams {
@@ -652,6 +720,7 @@ export type GameCommand =
   | { type: 'END_DAY' }
   | { type: 'MOVE_FOUNDER'; target: GridPoint }
   | { type: 'STEP_FOUNDER'; dx: number; dy: number }
+  | { type: 'SET_FOUNDER_INPUT'; dir: GridPoint }
   | { type: 'FOUNDER_INTERACT_EMPLOYEE'; employeeId: string; mode: 'MOTIVATE' | 'COACH' | 'CHECK_IN' }
   | { type: 'FOUNDER_REST' }
   | { type: 'FOUNDER_STRATEGY_SESSION' }
@@ -696,7 +765,14 @@ export type GameCommand =
   | { type: 'RESOLVE_STORY_EVENT'; choiceId: string }
   | { type: 'TRIGGER_ENDING_EVALUATION' }
   | { type: 'CONTINUE_SANDBOX' }
-  | { type: 'DISMISS_CELEBRATION' };
+  | { type: 'DISMISS_CELEBRATION' }
+  | { type: 'WORLD_COFFEE_BREAK' }
+  | { type: 'WORLD_INTERACT_NPC'; npcId: string }
+  | { type: 'WORLD_PITCH_INVESTOR' }
+  | { type: 'WORLD_HOST_EVENT' }
+  | { type: 'WORLD_BUY_PROPERTY'; propertyId: string }
+  | { type: 'CYCLE_WEATHER' }
+  | { type: 'SET_WEATHER'; weather: GlobalWeatherState | 'AUTO' };
 
 export interface SaveSlotMeta {
   slotId: string;

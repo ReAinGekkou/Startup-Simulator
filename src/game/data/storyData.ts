@@ -1,4 +1,5 @@
 import {
+  CharacterMood,
   CinematicSceneId,
   EndingId,
   GameState,
@@ -35,6 +36,7 @@ export interface CinematicBeat {
   isTitleCard?: boolean;
   isEndingSummary?: boolean;
   cameraPan?: 'LEFT_TO_RIGHT' | 'ZOOM_IN' | 'ZOOM_OUT' | 'GENTLE_DRIFT';
+  mood?: CharacterMood;
 }
 
 export interface StoryChapterMeta {

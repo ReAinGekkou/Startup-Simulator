@@ -1,8 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { CheckCircle2 } from 'lucide-react';
 import { ActiveModal } from '@/src/components/GameHUD';
 import { CameraActionHandle, ScreenRect, WorldTutorialTarget } from '@/src/components/OfficeCanvas';
 import { useLocalization } from '@/src/hooks/useLocalization';
+import { useResizeObserver } from '@/src/hooks/useResizeObserver';
 import { GameState, TutorialStepId } from '@/src/types/game';
 import { TutorialArrow, TutorialArrowDirection } from './TutorialArrow';
 
@@ -91,11 +93,24 @@ export const TutorialManager: React.FC<TutorialManagerProps> = ({
   const { t } = useLocalization();
   const [resolved, setResolved] = useState<ResolvedTutorialTarget | null>(null);
   const [milestoneBanner, setMilestoneBanner] = useState<string | null>(null);
+  const [portalNode, setPortalNode] = useState<HTMLElement | null>(null);
+
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    let node = document.getElementById('tutorial-overlay-root');
+    if (!node) {
+      node = document.createElement('div');
+      node.id = 'tutorial-overlay-root';
+      document.body.appendChild(node);
+    }
+    setPortalNode(node);
+  }, []);
 
   const prevStepRef = useRef<TutorialStepId | null>(null);
   const prevCompletedRef = useRef<boolean>(Boolean(state.tutorial?.completed));
   const bannerTimerRef = useRef<number | null>(null);
   const lastScrolledKeyRef = useRef<string>('');
+  const updatePositionRef = useRef<() => void>(() => {});
 
   const tut = state.tutorial;
   const tutorialRunning =
@@ -195,6 +210,21 @@ export const TutorialManager: React.FC<TutorialManagerProps> = ({
       };
     };
 
+    const menuNavTarget = (
+      navId: 'nav-employees' | 'nav-products' | 'nav-market' | 'nav-finance',
+      tooltip: string,
+      sectionLabel: string
+    ): ResolvedTutorialTarget | null => {
+      return (
+        uiTarget(navId, 'right', tooltip) ??
+        uiTarget(
+          'management-menu-btn',
+          'down',
+          t('tutorialArrow.openMenuFor', { section: sectionLabel })
+        )
+      );
+    };
+
     switch (step) {
       case 1: {
         if (activeModal) {
@@ -208,7 +238,7 @@ export const TutorialManager: React.FC<TutorialManagerProps> = ({
           );
           if (empWorld) return empWorld;
         }
-        return uiTarget('nav-employees', 'left', t('tutorialArrow.step1Nav'));
+        return menuNavTarget('nav-employees', t('tutorialArrow.step1Nav'), t('hud.nav.employees'));
       }
 
       case 2: {
@@ -234,7 +264,11 @@ export const TutorialManager: React.FC<TutorialManagerProps> = ({
 
       case 3: {
         if (activeModal !== 'PRODUCTS') {
-          return uiTarget('nav-products', 'left', t('tutorialArrow.step3OpenProducts'));
+          return menuNavTarget(
+            'nav-products',
+            t('tutorialArrow.step3OpenProducts'),
+            t('hud.nav.products')
+          );
         }
         const nameHit = findVisibleElementRect('product-name-input');
         if (nameHit) {
@@ -267,12 +301,20 @@ export const TutorialManager: React.FC<TutorialManagerProps> = ({
           const drawerHit = uiTarget('drawer-task-select', 'down', t('tutorialArrow.step4TaskSelect'));
           if (drawerHit) return drawerHit;
         }
-        return uiTarget('nav-employees', 'left', t('tutorialArrow.step4OpenEmployees'));
+        return menuNavTarget(
+          'nav-employees',
+          t('tutorialArrow.step4OpenEmployees'),
+          t('hud.nav.employees')
+        );
       }
 
       case 5: {
         if (activeModal !== 'PRODUCTS') {
-          return uiTarget('nav-products', 'left', t('tutorialArrow.step5OpenProducts'));
+          return menuNavTarget(
+            'nav-products',
+            t('tutorialArrow.step5OpenProducts'),
+            t('hud.nav.products')
+          );
         }
         return (
           uiTarget('product-launch-mvp-btn', 'down', t('tutorialArrow.step5LaunchMvp')) ??
@@ -282,13 +324,21 @@ export const TutorialManager: React.FC<TutorialManagerProps> = ({
 
       case 6: {
         if (activeModal !== 'MARKET') {
-          return uiTarget('nav-market', 'left', t('tutorialArrow.step6OpenMarket'));
+          return menuNavTarget(
+            'nav-market',
+            t('tutorialArrow.step6OpenMarket'),
+            t('hud.nav.market')
+          );
         }
         return uiTarget('market-launch-campaign-btn', 'down', t('tutorialArrow.step6LaunchCampaign'));
       }
 
       case 7: {
-        return uiTarget('nav-finance', 'left', t('tutorialArrow.step7OpenFinance'));
+        return menuNavTarget(
+          'nav-finance',
+          t('tutorialArrow.step7OpenFinance'),
+          t('hud.nav.finance')
+        );
       }
 
       case 8: {
@@ -354,6 +404,8 @@ export const TutorialManager: React.FC<TutorialManagerProps> = ({
       });
     };
 
+    updatePositionRef.current = updateNow;
+
     const tick = () => {
       updateNow();
       rafId = window.requestAnimationFrame(tick);
@@ -365,21 +417,74 @@ export const TutorialManager: React.FC<TutorialManagerProps> = ({
     const onViewportChange = () => updateNow();
     window.addEventListener('resize', onViewportChange);
     window.addEventListener('scroll', onViewportChange, true);
-    const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(onViewportChange) : null;
-    if (ro && typeof document !== 'undefined') {
-      ro.observe(document.body);
-    }
 
     return () => {
       alive = false;
+      updatePositionRef.current = () => {};
       window.cancelAnimationFrame(rafId);
       window.removeEventListener('resize', onViewportChange);
       window.removeEventListener('scroll', onViewportChange, true);
-      ro?.disconnect();
     };
   }, [resolveCurrentTarget, tutorialRunning]);
 
-  return (
+  const observedResizeTargets = useMemo<Element[]>(() => {
+    if (!tutorialRunning || typeof document === 'undefined') return [];
+    const targets: Element[] = [document.body];
+    if (resolved?.kind === 'UI') {
+      const targetId = resolved.targetKey.split(':').pop();
+      const targetEl = targetId
+        ? document.querySelector(`[data-tutorial-target="${targetId}"]`)
+        : null;
+      if (targetEl) {
+        targets.push(targetEl);
+        const scrollParent = targetEl.closest('[data-modal-scroll-body="true"]');
+        if (scrollParent && scrollParent !== targetEl && scrollParent !== document.body) {
+          targets.push(scrollParent);
+        }
+      }
+    }
+    return targets;
+  }, [resolved?.kind, resolved?.targetKey, tutorialRunning]);
+
+  useResizeObserver(observedResizeTargets, {
+    enabled: tutorialRunning,
+    trackSize: false,
+    onResize: () => {
+      updatePositionRef.current();
+    },
+  });
+
+  // Diagnostic tool: log getBoundingClientRect vs visual overlay position for active tutorial targets
+  useEffect(() => {
+    if (!resolved || typeof document === 'undefined') return;
+    const targetId = resolved.targetKey.split(':').pop();
+    const el = targetId ? document.querySelector(`[data-tutorial-target="${targetId}"]`) : null;
+    const clientRect = el ? el.getBoundingClientRect() : null;
+
+    console.debug('[TutorialDiagnostic] Target vs Overlay Alignment:', {
+      step: tut?.currentStep,
+      targetKey: resolved.targetKey,
+      kind: resolved.kind,
+      elementClientRect: clientRect
+        ? {
+            left: Math.round(clientRect.left * 10) / 10,
+            top: Math.round(clientRect.top * 10) / 10,
+            width: Math.round(clientRect.width * 10) / 10,
+            height: Math.round(clientRect.height * 10) / 10,
+          }
+        : 'World / Canvas Object',
+      overlayVisualPosition: {
+        left: Math.round(resolved.rect.left * 10) / 10,
+        top: Math.round(resolved.rect.top * 10) / 10,
+        width: Math.round(resolved.rect.width * 10) / 10,
+        height: Math.round(resolved.rect.height * 10) / 10,
+      },
+      deltaX: clientRect ? Math.round((resolved.rect.left - clientRect.left) * 10) / 10 : 0,
+      deltaY: clientRect ? Math.round((resolved.rect.top - clientRect.top) * 10) / 10 : 0,
+    });
+  }, [resolved, tut?.currentStep]);
+
+  const content = (
     <>
       {tutorialRunning && resolved && (
         <TutorialArrow
@@ -412,4 +517,7 @@ export const TutorialManager: React.FC<TutorialManagerProps> = ({
       )}
     </>
   );
+
+  if (!portalNode) return null;
+  return createPortal(content, portalNode);
 };

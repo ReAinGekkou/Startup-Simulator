@@ -2674,4 +2674,521 @@ test('42. Milestone completion integrates gentle MILESTONE_CHIME audio cues sync
   assert.ok(tickRes.unlockedMilestones.length >= 1, 'Expected tickSimulation to report unlocked milestones at day end');
 });
 
+test('43. Milestone Timeline summary statistics compute completion %, average days per milestone, and Most Challenging Milestone badge accurately', async () => {
+  const { buildMilestoneTimeline } = await import('../systems/milestoneTimeline.ts');
+  const i18n = await import('../../localization/i18n.ts');
+
+  const state = createNewGame(DEFAULT_NEW_GAME_PARAMS);
+
+  // 1. Fresh game with 0 completed milestones
+  const initial = buildMilestoneTimeline(state, 'en-US');
+  assert.equal(initial.summary.totalCount, 8);
+  assert.equal(initial.summary.completedCount, 0);
+  assert.equal(initial.summary.completionPercent, 0);
+  assert.equal(initial.summary.averageDaysPerMilestone, null);
+  assert.equal(initial.summary.mostChallenging, null);
+
+  // 2. Complete 2 milestones via real progression (HQ expansion on Day 3, First MVP on Day 7)
+  state.finance.cash = 100_000;
+  state.totalDays = 3;
+  state.day = 3;
+  const afterHq = executeCommand(state, { type: 'EXPAND_OFFICE' }).state;
+  afterHq.totalDays = 7;
+  afterHq.day = 7;
+  afterHq.products[0].developmentProgress = 100;
+  const afterMvp = executeCommand(afterHq, {
+    type: 'LAUNCH_PRODUCT_MVP',
+    productId: afterHq.products[0].id,
+  }).state;
+
+  const midEn = buildMilestoneTimeline(afterMvp, 'en-US');
+  const midVi = buildMilestoneTimeline(afterMvp, 'vi-VN');
+  assert.equal(midEn.summary.completedCount, 3);
+  assert.equal(midEn.summary.completionPercent, 38);
+  assert.equal(midEn.summary.elapsedDays, 7);
+  assert.equal(midEn.summary.averageDaysPerMilestone, 2.3);
+  assert.ok(midEn.summary.mostChallenging);
+  assert.equal(midEn.summary.mostChallenging.milestoneId, 'ms_office_expansion');
+  assert.equal(midEn.summary.mostChallenging.unlockedDay, 3);
+  assert.equal(midEn.summary.mostChallenging.daysToReach, 3);
+  assert.notEqual(midVi.summary.mostChallenging?.title, midEn.summary.mostChallenging.title);
+
+  // 3. Complete all 8 milestones -> 100% completion and Recognized Tech Company selected as Most Challenging
+  afterMvp.totalDays = 64;
+  afterMvp.milestones.forEach((ms, idx) => {
+    ms.unlocked = true;
+    ms.unlockedDay = (idx + 1) * 8;
+  });
+  const full = buildMilestoneTimeline(afterMvp, 'en-US');
+  assert.equal(full.summary.completedCount, 8);
+  assert.equal(full.summary.completionPercent, 100);
+  assert.equal(full.summary.averageDaysPerMilestone, 8);
+  assert.equal(full.summary.mostChallenging?.milestoneId, 'ms_tech_leader');
+  assert.equal(full.summary.mostChallenging?.unlockedDay, 64);
+
+  // 4. Localized labels exist in both en-US and vi-VN
+  assert.equal(i18n.t('milestones.timeline.completionLabel', undefined, 'en-US'), 'Total Completion');
+  assert.equal(i18n.t('milestones.timeline.completionLabel', undefined, 'vi-VN'), 'Tỷ lệ hoàn thành');
+  assert.equal(i18n.t('milestones.timeline.challengingLabel', undefined, 'en-US'), 'Most Challenging Milestone');
+  assert.equal(i18n.t('milestones.timeline.challengingLabel', undefined, 'vi-VN'), 'Cột mốc thử thách nhất');
+});
+
+test('44. Phase 1 Isometric Foundation: projection round-trips, screen inverse, depth sorting, and iso character hitboxes', async () => {
+  const {
+    worldToIso,
+    isoToWorld,
+    worldToScreen,
+    screenToWorld,
+    getIsoDepth,
+    hitTestIsoCharacters,
+  } = await import('../engine/isoMath.ts');
+
+  // 1. World <-> Isometric round-trip accuracy across arbitrary points
+  const samples = [
+    { x: 0, y: 0 },
+    { x: 4.5, y: 6.25 },
+    { x: 18.75, y: 15.4 },
+    { x: -6.5, y: 28.1 },
+  ];
+  for (const pt of samples) {
+    const iso = worldToIso(pt.x, pt.y);
+    const back = isoToWorld(iso.x, iso.y);
+    assert.ok(Math.abs(back.x - pt.x) < 1e-6);
+    assert.ok(Math.abs(back.y - pt.y) < 1e-6);
+  }
+
+  // 2. Screen <-> World inverse at arbitrary pan & zoom
+  const cam = { x: 185, y: 410, zoom: 1.35 };
+  const sp = worldToScreen(12.4, 9.8, 1280, 720, cam);
+  const backWorld = screenToWorld(sp.x, sp.y, 1280, 720, cam);
+  assert.ok(Math.abs(backWorld.x - 12.4) < 1e-6);
+  assert.ok(Math.abs(backWorld.y - 9.8) < 1e-6);
+
+  // 3. Depth sorting places foreground south-east tiles after north-west tiles
+  assert.ok(getIsoDepth(10, 12) > getIsoDepth(10, 8));
+  assert.ok(getIsoDepth(18, 15) > getIsoDepth(4, 6));
+
+  // 4. Isometric character hitbox selects front-most sprite when overlapping on screen
+  const backChar = { id: 'back_emp', position: { x: 10, y: 10 } };
+  const frontChar = { id: 'front_emp', position: { x: 10.2, y: 10.2 } };
+  const frontScreen = worldToScreen(10.7, 10.7, 1280, 720, cam, 10);
+  const hit = hitTestIsoCharacters([backChar, frontChar], frontScreen.x, frontScreen.y, 1280, 720, cam);
+  assert.equal(hit, 'front_emp');
+});
+
+test('45. Phase 2 Free Camera: zoom-around-cursor keeps world point pinned and clamps within world bounds', async () => {
+  const {
+    zoomAroundScreenPoint,
+    screenToWorld,
+    worldToScreen,
+    getWorldIsoBounds,
+    clampIsoCamera,
+  } = await import('../engine/isoMath.ts');
+
+  const initialCam = { x: 120, y: 340, zoom: 0.9 };
+  const cursorX = 820;
+  const cursorY = 410;
+  const worldBefore = screenToWorld(cursorX, cursorY, 1280, 720, initialCam);
+
+  // Zoom in around cursor
+  const zoomedCam = zoomAroundScreenPoint(initialCam, 1.45, cursorX, cursorY, 1280, 720);
+  const worldAfter = screenToWorld(cursorX, cursorY, 1280, 720, zoomedCam);
+  assert.ok(Math.abs(worldAfter.x - worldBefore.x) < 1e-6);
+  assert.ok(Math.abs(worldAfter.y - worldBefore.y) < 1e-6);
+
+  const screenCheck = worldToScreen(worldBefore.x, worldBefore.y, 1280, 720, zoomedCam);
+  assert.ok(Math.abs(screenCheck.x - cursorX) < 1e-6);
+  assert.ok(Math.abs(screenCheck.y - cursorY) < 1e-6);
+
+  // Camera bounds clamping prevents escaping world bounds
+  const bounds = getWorldIsoBounds(0, 36, 0, 24);
+  const farOut = clampIsoCamera({ x: 99999, y: -99999, zoom: 10 }, bounds);
+  assert.equal(farOut.zoom, 2.2);
+  assert.ok(farOut.x <= bounds.maxIsoX + 120);
+  assert.ok(farOut.y >= bounds.minIsoY - 120);
+});
+
+test('46. Phase 3 Hybrid Character Control: isometric WASD direction vectors, click-to-move cancellation, A* pathing, and wall collision', async () => {
+  const { getIsoMovementVector } = await import('../engine/isoMath.ts');
+
+  // 1. Isometric WASD maps W to screen up (-x, -y) and D to screen right (+x, -y)
+  const upVec = getIsoMovementVector({ up: true, down: false, left: false, right: false });
+  assert.ok(upVec.x < 0 && upVec.y < 0);
+  const rightVec = getIsoMovementVector({ up: false, down: false, left: false, right: true });
+  assert.ok(rightVec.x > 0 && rightVec.y < 0);
+
+  // 2. Click-to-move sets A* path; pressing WASD cancels active click path and moves continuously with wall collision
+  let state = createNewGame(DEFAULT_NEW_GAME_PARAMS);
+  state = executeCommand(state, { type: 'MOVE_FOUNDER', target: { x: 20, y: 11 } }).state;
+  assert.ok(state.founder.path.length > 5);
+
+  const beforeX = state.founder.position.x;
+  const beforeY = state.founder.position.y;
+  state = executeCommand(state, { type: 'SET_FOUNDER_INPUT', dir: { x: 1, y: 0 } }).state;
+  assert.equal(state.founder.path.length, 0);
+  assert.equal(state.founder.targetTile, null);
+
+  state = tickSimulation(state, 0.05).state;
+  assert.ok(state.founder.position.x > beforeX);
+  assert.equal(state.founder.position.y, beforeY);
+  assert.equal(state.founder.state, 'WALKING');
+
+  // 3. Collision blocks moving through exterior north wall (y=0)
+  state.founder.position = { x: 5, y: 1.1 };
+  state = executeCommand(state, { type: 'SET_FOUNDER_INPUT', dir: { x: 0, y: -1 } }).state;
+  for (let i = 0; i < 10; i++) {
+    state = tickSimulation(state, 0.05).state;
+  }
+  assert.ok(state.founder.position.y >= 1.0);
+});
+
+test('47. Phase 4 Living Office: employee activity states, seat reservation de-duplication, and end-of-day OFF_DUTY transition', async () => {
+  const { resolveEmployeeLivingActivity } = await import('../engine/simulation.ts');
+
+  const state = createNewGame(DEFAULT_NEW_GAME_PARAMS);
+  state.office.rooms.MEETING_ROOM.unlocked = true;
+  state.office.rooms.BREAK_ROOM.unlocked = true;
+  state.office.rooms.LOBBY.unlocked = true;
+  const grid = buildWalkabilityGrid(state.office);
+
+  // 1. Unique reserved seats for all employees in shared Engineering room
+  const reserved = new Set<string>();
+  const pickedSeats = state.employees.map((e, idx) =>
+    resolveEmployeeLivingActivity(e, idx, state, grid, reserved).seat
+  );
+  const uniqueKeys = new Set(pickedSeats.map((s) => `${s.x},${s.y}`));
+  assert.equal(uniqueKeys.size, state.employees.length);
+
+  // 2. Meeting window sends Marketing/Sales/PM roles to MEETING state
+  state.hourOfDay = 10.5;
+  const mkt = state.employees.find((e) => e.role === 'MARKETING_SPECIALIST');
+  assert.ok(mkt);
+  const meetAct = resolveEmployeeLivingActivity(mkt, 1, state, grid, new Set());
+  assert.equal(meetAct.arrivalState, 'MEETING');
+  assert.equal(meetAct.desiredRoom, 'MEETING_ROOM');
+
+  // 3. Fatigued employee enters Break Room RESTING state
+  state.hourOfDay = 13.5;
+  state.employees[0].energy = 25;
+  const breakAct = resolveEmployeeLivingActivity(state.employees[0], 0, state, grid, new Set());
+  assert.equal(breakAct.arrivalState, 'RESTING');
+  assert.equal(breakAct.desiredRoom, 'BREAK_ROOM');
+
+  // 4. End of workday transitions employees to OFF_DUTY heading toward Lobby
+  state.hourOfDay = 17.8;
+  const offAct = resolveEmployeeLivingActivity(state.employees[0], 0, state, grid, new Set());
+  assert.equal(offAct.arrivalState, 'OFF_DUTY');
+  assert.equal(offAct.desiredRoom, 'LOBBY');
+});
+
+test('48. Phase 5 Connected City: all 7 districts form one continuous world with Day 1 walkable routes', async () => {
+  const { WORLD_LOCATIONS } = await import('../data/cityWorld.ts');
+  const { buildFullWorldNavGrid } = await import('../systems/openWorldSystem.ts');
+  const { findWorldPath } = await import('../engine/pathfinding.ts');
+  const i18n = await import('../../localization/i18n.ts');
+
+  const expectedDistricts = [
+    'COMPANY_HQ',
+    'MAIN_STREET',
+    'COFFEE_SHOP',
+    'COWORKING_SPACE',
+    'INVESTOR_CENTER',
+    'EVENT_HALL',
+    'BUSINESS_PROPERTIES',
+  ] as const;
+
+  assert.deepEqual(Object.keys(WORLD_LOCATIONS).sort(), [...expectedDistricts].sort());
+
+  let state = createNewGame(DEFAULT_NEW_GAME_PARAMS);
+  const worldNav = buildFullWorldNavGrid(state);
+
+  // Starting inside Day 1 CEO_OFFICE (4, 6), every city district entrance must be continuously reachable
+  const start = { x: 4, y: 6 };
+  for (const id of expectedDistricts) {
+    const entrance = WORLD_LOCATIONS[id].entranceTile;
+    const route = findWorldPath(worldNav, start, entrance);
+    assert.ok(route.length > 0, `Expected continuous path from CEO_OFFICE to ${id}`);
+    const last = route[route.length - 1];
+    assert.equal(last.x, entrance.x);
+    assert.equal(last.y, entrance.y);
+
+    // Verify localized labels exist in both en-US and vi-VN
+    assert.ok(i18n.t(`world.locations.${id}.shortName`, undefined, 'en-US').length > 0);
+    assert.ok(i18n.t(`world.locations.${id}.shortName`, undefined, 'vi-VN').length > 0);
+  }
+
+  // Click-to-move sets path onto Main Street outside HQ
+  state = executeCommand(state, { type: 'MOVE_FOUNDER', target: { x: 16, y: 26 } }).state;
+  assert.ok(state.founder.path.length > 10);
+  assert.deepEqual(state.founder.targetTile, { x: 16, y: 26 });
+});
+
+test('49. Phase 6 Open World Business Integration: NPCs, Cafe, Coworking, Investors, and Event Hall connect to real simulation state', async () => {
+  let state = createNewGame(DEFAULT_NEW_GAME_PARAMS);
+  state = executeCommand(state, {
+    type: 'COMPLETE_CINEMATIC',
+    cinematicId: 'INTRO',
+    skipped: true,
+  }).state;
+  state = executeCommand(state, { type: 'SKIP_TUTORIAL' }).state;
+
+  assert.ok(state.world);
+  assert.ok(state.world.npcs.length >= 6);
+
+  // 1. Bean & Byte espresso restores +22 energy and caps at 2 visits/day
+  state.founder.energy = 40;
+  const cashBeforeCoffee = state.finance.cash;
+  state = executeCommand(state, { type: 'WORLD_COFFEE_BREAK' }).state;
+  assert.equal(state.founder.energy, 62);
+  assert.equal(state.finance.cash, cashBeforeCoffee - 18);
+  assert.equal(state.world?.coffeeVisitsToday, 1);
+  state = executeCommand(state, { type: 'WORLD_COFFEE_BREAK' }).state;
+  assert.equal(state.world?.coffeeVisitsToday, 2);
+  const thirdCoffee = executeCommand(state, { type: 'WORLD_COFFEE_BREAK' });
+  assert.equal(thirdCoffee.sound, 'ERROR');
+  assert.equal(thirdCoffee.state.world?.coffeeVisitsToday, 2);
+
+  // 2. Partner NPC generates a real B2B pipeline contract in state.contracts
+  const beforeContracts = state.contracts.length;
+  state = executeCommand(state, {
+    type: 'WORLD_INTERACT_NPC',
+    npcId: 'npc_partner_claire',
+  }).state;
+  assert.equal(state.contracts.length, beforeContracts + 1);
+  assert.equal(state.contracts[0].status, 'PIPELINE');
+
+  // 3. Customer NPC boosts real product marketDemand / customers
+  const demandBefore = state.products[0].marketDemand;
+  state = executeCommand(state, {
+    type: 'WORLD_INTERACT_NPC',
+    npcId: 'npc_customer_tuan',
+  }).state;
+  assert.ok(state.products[0].marketDemand > demandBefore);
+
+  // 4. Hiring candidate at Foundry Commons removes old coworking NPC & re-syncs pool
+  const candNpc = state.world?.npcs.find((n) => n.kind === 'CANDIDATE');
+  assert.ok(candNpc?.linkedCandidateId);
+  const empCountBefore = state.employees.length;
+  state = executeCommand(state, {
+    type: 'HIRE_CANDIDATE',
+    candidateId: candNpc.linkedCandidateId,
+  }).state;
+  assert.equal(state.employees.length, empCountBefore + 1);
+  assert.ok(!state.world?.npcs.some((n) => n.linkedCandidateId === candNpc.linkedCandidateId));
+
+  // 5. Harbor Capital Investor Center pitch increases investorTrust once/day
+  const trustBefore = state.founder.investorTrust;
+  state = executeCommand(state, { type: 'WORLD_PITCH_INVESTOR' }).state;
+  assert.equal(state.founder.investorTrust, trustBefore + 4);
+  assert.equal(state.world?.investorPitchesToday, 1);
+  const secondPitch = executeCommand(state, { type: 'WORLD_PITCH_INVESTOR' });
+  assert.equal(secondPitch.sound, 'ERROR');
+
+  // 6. Civic Event Hall Demo Day adds activeUsers and increments eventsAttendedTotal
+  const usersBefore = state.products[0].activeUsers;
+  state = executeCommand(state, { type: 'WORLD_HOST_EVENT' }).state;
+  assert.equal(state.world?.eventsAttendedTotal, 1);
+  assert.ok(state.products[0].activeUsers >= usersBefore + 25);
+});
+
+test('50. Phase 7 Business Properties & Save Compatibility: property ownership boosts revenue/capacity and v1 saves migrate cleanly', async () => {
+  const { estimateMonthlyBurn } = await import('../systems/financeSystem.ts');
+
+  let state = createNewGame(DEFAULT_NEW_GAME_PARAMS);
+  state = executeCommand(state, {
+    type: 'COMPLETE_CINEMATIC',
+    cinematicId: 'INTRO',
+    skipped: true,
+  }).state;
+  state = executeCommand(state, { type: 'SKIP_TUTORIAL' }).state;
+  state.finance.cash = 40000;
+
+  const baseCap = state.office.maxEmployees;
+  const baseProjRev = estimateMonthlyBurn(state).projectedRevenue;
+
+  // Buy Harbor Regional Sales Hub (+2 team seats, +$2200/mo revenue, +5 rep)
+  state = executeCommand(state, {
+    type: 'WORLD_BUY_PROPERTY',
+    propertyId: 'prop_sales_hub',
+  }).state;
+  const hub = state.world?.properties.find((p) => p.id === 'prop_sales_hub');
+  assert.equal(hub?.owned, true);
+  assert.equal(hub?.purchasedDay, state.totalDays);
+  assert.equal(state.office.maxEmployees, baseCap + 2);
+  assert.ok(estimateMonthlyBurn(state).projectedRevenue >= baseProjRev + 2200);
+
+  // Advance day adds daily passive property revenue trickle cleanly
+  const cumRevBefore = state.finance.cumulativeRevenue;
+  state = executeCommand(state, { type: 'END_DAY' }).state;
+  assert.ok(state.finance.cumulativeRevenue >= cumRevBefore + Math.round(2200 / 30));
+
+  // Legacy save without world field migrates seamlessly without corrupting HQ state
+  const legacyV1 = createNewGame({
+    ...DEFAULT_NEW_GAME_PARAMS,
+    companyName: 'LegacyCo',
+  }) as unknown as Record<string, unknown>;
+  delete legacyV1.world;
+  legacyV1.version = 1;
+  const migrated = migrateSaveState(legacyV1 as unknown as Parameters<typeof migrateSaveState>[0]);
+  assert.equal(migrated.config.companyName, 'LegacyCo');
+  assert.equal(migrated.employees.length, 3);
+  assert.ok(migrated.world);
+  assert.ok(migrated.world.npcs.length >= 6);
+  assert.equal(migrated.world.properties.length, 3);
+});
+
+test('51. Global weather system cycles SUNNY -> OVERCAST -> RAINY -> SUNNY, renders interior & city exterior, and preserves legacy saves', async () => {
+  const {
+    WEATHER_CYCLE_HOURS,
+    advanceWeatherCycle,
+    getEffectiveWeatherSnapshot,
+  } = await import('../systems/weatherSystem.ts');
+  const { renderOfficeScene } = await import('../renderer/pixelRenderer.ts');
+
+  let state = createNewGame(DEFAULT_NEW_GAME_PARAMS);
+  state = executeCommand(state, {
+    type: 'COMPLETE_CINEMATIC',
+    cinematicId: 'INTRO',
+    skipped: true,
+  }).state;
+  state = executeCommand(state, { type: 'SKIP_TUTORIAL' }).state;
+
+  // 1. New games start in SUNNY with autoCycle active
+  assert.equal(state.weather?.current, 'SUNNY');
+  assert.equal(state.weather?.autoCycle, true);
+  assert.equal(state.weather?.transitionProgress, 1);
+  const initialSnap = getEffectiveWeatherSnapshot(state);
+  assert.equal(initialSnap.globalState, 'SUNNY');
+  assert.ok(initialSnap.sunlightIntensity > 0.7);
+  assert.equal(initialSnap.rainIntensity, 0);
+
+  // 2. Advancing simulated hours automatically cycles SUNNY -> OVERCAST -> RAINY -> SUNNY
+  advanceWeatherCycle(state, WEATHER_CYCLE_HOURS, 1.0);
+  assert.equal(state.weather?.current, 'OVERCAST');
+  advanceWeatherCycle(state, WEATHER_CYCLE_HOURS, 1.0);
+  assert.equal(state.weather?.current, 'RAINY');
+  advanceWeatherCycle(state, WEATHER_CYCLE_HOURS, 1.0);
+  assert.equal(state.weather?.current, 'SUNNY');
+  assert.ok((state.weather?.cycleCount ?? 0) >= 3);
+
+  // 3. CYCLE_WEATHER & SET_WEATHER commands transition smoothly and toggle autoCycle
+  state = executeCommand(state, { type: 'CYCLE_WEATHER' }).state;
+  assert.equal(state.weather?.current, 'OVERCAST');
+  assert.equal(state.weather?.autoCycle, false);
+  assert.equal(state.weather?.transitionProgress, 0);
+
+  // Smooth cross-fade mid-transition between SUNNY and OVERCAST
+  if (state.weather) {
+    state.weather.transitionProgress = 0.5;
+  }
+  const midBlend = getEffectiveWeatherSnapshot(state);
+  assert.ok(midBlend.sunlightIntensity > 0.1 && midBlend.overcastIntensity > 0.2);
+
+  // Even when paused (speed = 0), tickSimulation advances transitionProgress cleanly
+  state.speed = 0;
+  for (let i = 0; i < 20; i++) {
+    tickSimulation(state, 0.05);
+  }
+  assert.equal(state.weather?.transitionProgress, 1);
+
+  state = executeCommand(state, { type: 'CYCLE_WEATHER' }).state;
+  assert.equal(state.weather?.current, 'RAINY');
+  assert.equal(state.weather?.autoCycle, false);
+  assert.equal(getEffectiveWeatherSnapshot(state).rainIntensity, 0);
+  for (let i = 0; i < 20; i++) {
+    tickSimulation(state, 0.05);
+  }
+  const rainySnap = getEffectiveWeatherSnapshot(state);
+  assert.equal(rainySnap.globalState, 'RAINY');
+  assert.ok(rainySnap.rainIntensity > 0.7);
+
+  // Cycling from RAINY wraps back to SUNNY and restores autoCycle = true
+  state = executeCommand(state, { type: 'CYCLE_WEATHER' }).state;
+  assert.equal(state.weather?.current, 'SUNNY');
+  assert.equal(state.weather?.autoCycle, true);
+
+  // Explicit SET_WEATHER overrides directly
+  state = executeCommand(state, { type: 'SET_WEATHER', weather: 'RAINY' }).state;
+  assert.equal(state.weather?.current, 'RAINY');
+  assert.equal(state.weather?.autoCycle, false);
+  state = executeCommand(state, { type: 'SET_WEATHER', weather: 'AUTO' }).state;
+  assert.equal(state.weather?.autoCycle, true);
+
+  // 4. Renderer updates backdrop, lighting, exterior street puddles, & overlays across all 3 states
+  const recordedBackdrops: string[] = [];
+  let totalFullScreenFills = 0;
+  let captureNextBackdrop = false;
+  const noop = () => {};
+  const mockGrad = { addColorStop: noop };
+  const mockCtx = {
+    imageSmoothingEnabled: false,
+    fillStyle: '#000000',
+    strokeStyle: '#000000',
+    lineWidth: 1,
+    globalAlpha: 1,
+    font: '12px Arial',
+    textAlign: 'left',
+    save: noop,
+    restore: noop,
+    translate: noop,
+    scale: noop,
+    beginPath: noop,
+    closePath: noop,
+    moveTo: noop,
+    lineTo: noop,
+    arc: noop,
+    ellipse: noop,
+    fill: noop,
+    stroke: noop,
+    rect: noop,
+    strokeRect: noop,
+    fillText: noop,
+    measureText: (txt: string) => ({ width: txt.length * 7 }),
+    createRadialGradient: () => mockGrad,
+    createLinearGradient: () => mockGrad,
+    fillRect: (x: number, y: number, w: number, h: number) => {
+      if (x === 0 && y === 0 && w === 1280 && h === 720 && typeof mockCtx.fillStyle === 'string') {
+        totalFullScreenFills += 1;
+        if (captureNextBackdrop) {
+          recordedBackdrops.push(mockCtx.fillStyle);
+          captureNextBackdrop = false;
+        }
+      }
+    },
+  } as unknown as CanvasRenderingContext2D;
+
+  const baseInteraction = {
+    hoveredTile: null,
+    hoveredEntityId: null,
+    selectedRoomId: null,
+    selectedEmployeeId: null,
+    movingFurnitureId: null,
+    placingTemplateId: null,
+  };
+  const cityCam = { x: 0, y: 520, zoom: 0.75 };
+
+  for (const wState of ['SUNNY', 'OVERCAST', 'RAINY'] as const) {
+    state = executeCommand(state, { type: 'SET_WEATHER', weather: wState }).state;
+    if (state.weather) state.weather.transitionProgress = 1;
+    captureNextBackdrop = true;
+    renderOfficeScene(mockCtx, 1280, 720, state, cityCam, baseInteraction, [], 12.5, false);
+    captureNextBackdrop = true;
+    renderOfficeScene(mockCtx, 1280, 720, state, cityCam, baseInteraction, [], 12.5, true);
+  }
+  const uniqueBackdrops = new Set(recordedBackdrops);
+  assert.equal(uniqueBackdrops.size, 3);
+  assert.ok(totalFullScreenFills > 6);
+
+  // 5. Legacy save without weather field migrates cleanly
+  const legacyV1 = createNewGame(DEFAULT_NEW_GAME_PARAMS) as unknown as Record<string, unknown>;
+  delete legacyV1.weather;
+  const migrated = migrateSaveState(legacyV1 as unknown as Parameters<typeof migrateSaveState>[0]);
+  assert.equal(migrated.weather?.current, 'SUNNY');
+  assert.equal(migrated.weather?.autoCycle, true);
+});
+
+
+
+
+
 

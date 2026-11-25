@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { ChevronRight, Sparkles } from 'lucide-react';
 import { PixelAvatar } from '@/src/components/PixelAvatar';
 import { useLocalization } from '@/src/hooks/useLocalization';
-import { CharacterAppearance } from '@/src/types/game';
+import { soundService } from '@/src/services/soundService';
+import { CharacterAppearance, CharacterMood } from '@/src/types/game';
 
 export type DialogueTextSpeed = 'SLOW' | 'NORMAL' | 'FAST';
 
@@ -12,7 +13,7 @@ interface DialogueBoxProps {
   subtext?: string;
   avatar?: CharacterAppearance | null;
   isFounder?: boolean;
-  moodTone?: 'HAPPY' | 'NEUTRAL' | 'STRESSED';
+  moodTone?: CharacterMood;
   textSpeed: DialogueTextSpeed;
   autoAdvance: boolean;
   showSubtitles: boolean;
@@ -20,6 +21,7 @@ interface DialogueBoxProps {
   isLastBeat?: boolean;
   onAdvance: () => void;
 }
+
 
 const CHAR_DELAY_MS: Record<DialogueTextSpeed, number> = {
   SLOW: 34,
@@ -43,6 +45,20 @@ export const DialogueBox: React.FC<DialogueBoxProps> = ({
 }) => {
   const { t } = useLocalization();
   const [visibleChars, setVisibleChars] = useState(0);
+  const [displayMood, setDisplayMood] = useState(moodTone);
+  const [displayAvatar, setDisplayAvatar] = useState(avatar);
+  const [isFading, setIsFading] = useState(false);
+
+  useEffect(() => {
+    if (moodTone === displayMood && avatar === displayAvatar) return;
+    setIsFading(true);
+    const timer = window.setTimeout(() => {
+      setDisplayMood(moodTone);
+      setDisplayAvatar(avatar);
+      setIsFading(false);
+    }, 180);
+    return () => window.clearTimeout(timer);
+  }, [moodTone, avatar, displayMood, displayAvatar]);
 
   useEffect(() => {
     setVisibleChars(0);
@@ -54,7 +70,12 @@ export const DialogueBox: React.FC<DialogueBoxProps> = ({
           window.clearInterval(id);
           return prev;
         }
-        return prev + 1;
+        const next = prev + 1;
+        const char = text[next - 1];
+        if (char && char.trim() !== '') {
+          soundService.play('TYPEWRITER_CLICK');
+        }
+        return next;
       });
     }, delay);
     return () => window.clearInterval(id);
@@ -94,17 +115,17 @@ export const DialogueBox: React.FC<DialogueBoxProps> = ({
       className="w-full max-w-2xl mx-auto bg-[#F3F0E7]/96 border-2 border-[#303B38] px-4 py-3.5 sm:px-5 sm:py-4 shadow-md cursor-pointer select-none"
     >
       <div className="flex items-start gap-3.5">
-        {avatar ? (
-          <div className="shrink-0 hidden sm:block">
+        {displayAvatar ? (
+          <div className={`shrink-0 hidden sm:block transition-all duration-200 transform ${isFading ? 'opacity-0 scale-95' : 'opacity-100 scale-100'}`}>
             <PixelAvatar
-              appearance={avatar}
+              appearance={displayAvatar}
               size={52}
               isFounder={isFounder}
-              moodTone={moodTone}
+              moodTone={displayMood}
             />
           </div>
         ) : (
-          <div className="w-10 h-10 bg-[#D9A66C]/35 border border-[#303B38]/30 hidden sm:flex items-center justify-center shrink-0 mt-0.5">
+          <div className={`w-10 h-10 bg-[#D9A66C]/35 border border-[#303B38]/30 hidden sm:flex items-center justify-center shrink-0 mt-0.5 transition-all duration-200 transform ${isFading ? 'opacity-0 scale-95' : 'opacity-100 scale-100'}`}>
             <Sparkles className="w-5 h-5 text-[#303B38]" aria-hidden="true" />
           </div>
         )}

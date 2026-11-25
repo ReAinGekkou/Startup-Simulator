@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   AlertTriangle,
   ArrowDown,
@@ -7,26 +7,33 @@ import {
   ArrowUp,
   Award,
   Bell,
-  BookOpen,
   Building2,
   CalendarDays,
   CheckCircle2,
   ChevronDown,
   ChevronUp,
+  Cloud,
+  CloudRain,
   Coffee,
+  Compass,
   FastForward,
   Landmark,
-  Package,
+  Laptop,
+  LayoutGrid,
+  LocateFixed,
+  MapPin,
+  Mic,
+  Minus,
   Pause,
   Play,
-  Save,
+  Plus,
+  RotateCcw,
   Settings,
   SkipForward,
   Sparkles,
+  Store,
+  Sun,
   Target,
-  TrendingUp,
-  Trophy,
-  Users,
   Volume2,
   VolumeX,
   X,
@@ -40,9 +47,16 @@ import {
   getObjectiveLocalized,
   getTutorialStepLocalized,
 } from '@/src/localization/i18n';
-import { Achievement, GameCommand, GameState, SimulationSpeed } from '@/src/types/game';
+import {
+  Achievement,
+  GameCommand,
+  GameState,
+  SimulationSpeed,
+  WorldLocationId,
+} from '@/src/types/game';
+import { ManagementMenu } from './ManagementMenu';
 import { ObjectivesChecklist } from './ObjectivesChecklist';
-import { Tooltip } from './Tooltip';
+import type { CameraActionHandle } from './OfficeCanvas';
 import { TutorialGuide } from './TutorialGuide';
 
 export type ActiveModal =
@@ -62,6 +76,7 @@ export interface ShortcutFeedback {
   actionKey:
     | 'PAUSE'
     | 'RESUME'
+    | 'FOCUS_FOUNDER'
     | 'SPEED_1'
     | 'SPEED_2'
     | 'SPEED_3'
@@ -89,8 +104,15 @@ interface GameHUDProps {
   welcomeBannerOpen?: boolean;
   onDismissWelcomeBanner?: () => void;
   shortcutFeedback?: ShortcutFeedback | null;
+  speedShortcutPulseId?: number;
   movingMode: boolean;
   hasDrawerOpen: boolean;
+  selectedLocationId?: WorldLocationId | null;
+  selectedRoomId?: string | null;
+  followFounder?: boolean;
+  cameraActionRef?: React.MutableRefObject<CameraActionHandle | null>;
+  onSelectDistrict?: (locationId: WorldLocationId) => void;
+  onCycleWeather?: () => void;
   onCancelMoving: () => void;
   onDismissAchievementToast: () => void;
   onDismissNotification?: () => void;
@@ -101,6 +123,19 @@ interface GameHUDProps {
   onOpenModal: (modal: ActiveModal) => void;
   onDispatch: (cmd: GameCommand) => void;
 }
+
+const DISTRICT_ITEMS: Array<{
+  id: WorldLocationId;
+  Icon: React.ComponentType<{ className?: string }>;
+}> = [
+  { id: 'COMPANY_HQ', Icon: Building2 },
+  { id: 'MAIN_STREET', Icon: MapPin },
+  { id: 'COFFEE_SHOP', Icon: Coffee },
+  { id: 'COWORKING_SPACE', Icon: Laptop },
+  { id: 'INVESTOR_CENTER', Icon: Landmark },
+  { id: 'EVENT_HALL', Icon: Mic },
+  { id: 'BUSINESS_PROPERTIES', Icon: Store },
+];
 
 function getCompanyStatusSymbol(
   state: GameState
@@ -130,8 +165,15 @@ export const GameHUD: React.FC<GameHUDProps> = ({
   welcomeBannerOpen = false,
   onDismissWelcomeBanner,
   shortcutFeedback,
+  speedShortcutPulseId = 0,
   movingMode,
   hasDrawerOpen,
+  selectedLocationId = null,
+  selectedRoomId = null,
+  followFounder = false,
+  cameraActionRef,
+  onSelectDistrict,
+  onCycleWeather,
   onCancelMoving,
   onDismissAchievementToast,
   onDismissNotification,
@@ -145,13 +187,51 @@ export const GameHUD: React.FC<GameHUDProps> = ({
   const { locale, t, formatCurrency, formatHour } = useLocalization();
   const [alertsOpen, setAlertsOpen] = useState(false);
   const [objectivesOpen, setObjectivesOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [mapOpen, setMapOpen] = useState(false);
+  const mapPopoverRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    if (activeModal || hasDrawerOpen) {
+    if (activeModal) {
       setAlertsOpen(false);
       setObjectivesOpen(false);
+      setMenuOpen(false);
+      setMapOpen(false);
     }
-  }, [activeModal, hasDrawerOpen]);
+  }, [activeModal]);
+
+  useEffect(() => {
+    if (hasDrawerOpen) {
+      setAlertsOpen(false);
+      setObjectivesOpen(false);
+      setMenuOpen(false);
+      setMapOpen(false);
+    }
+  }, [hasDrawerOpen]);
+
+  useEffect(() => {
+    if (!mapOpen) return;
+    const onPointerDown = (e: PointerEvent) => {
+      const target = e.target as HTMLElement | null;
+      if (!target) return;
+      if (target.closest('[data-city-map-trigger="true"]')) return;
+      if (mapPopoverRef.current && !mapPopoverRef.current.contains(target)) {
+        setMapOpen(false);
+      }
+    };
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.stopPropagation();
+        setMapOpen(false);
+      }
+    };
+    window.addEventListener('pointerdown', onPointerDown);
+    window.addEventListener('keydown', onKeyDown);
+    return () => {
+      window.removeEventListener('pointerdown', onPointerDown);
+      window.removeEventListener('keydown', onKeyDown);
+    };
+  }, [mapOpen]);
 
   const statusSymbol = getCompanyStatusSymbol(state);
   const isLowCash = statusSymbol === 'WARNING';
@@ -229,66 +309,9 @@ export const GameHUD: React.FC<GameHUDProps> = ({
     };
   })();
 
-  const primaryNav: Array<{
-    id: 'OFFICE_VIEW' | 'EMPLOYEES' | 'PRODUCTS' | 'FINANCE' | 'MARKET';
-    label: string;
-    tooltipKey: string;
-    icon: React.ComponentType<{ className?: string }>;
-    modal: ActiveModal;
-    badge?: string;
-  }> = [
-    {
-      id: 'OFFICE_VIEW',
-      label: t('hud.nav.office'),
-      tooltipKey: 'tooltips.navOffice',
-      icon: Building2,
-      modal: null,
-    },
-    {
-      id: 'EMPLOYEES',
-      label: t('hud.nav.employees'),
-      tooltipKey: 'tooltips.navEmployees',
-      icon: Users,
-      modal: 'EMPLOYEES',
-      badge: `${state.employees.length}`,
-    },
-    {
-      id: 'PRODUCTS',
-      label: t('hud.nav.products'),
-      tooltipKey: 'tooltips.navProducts',
-      icon: Package,
-      modal: 'PRODUCTS',
-      badge: `${state.products.length}`,
-    },
-    {
-      id: 'FINANCE',
-      label: t('hud.nav.finance'),
-      tooltipKey: 'tooltips.navFinance',
-      icon: Landmark,
-      modal: 'FINANCE',
-    },
-    {
-      id: 'MARKET',
-      label: t('hud.nav.market'),
-      tooltipKey: 'tooltips.navMarket',
-      icon: TrendingUp,
-      modal: 'MARKET',
-    },
-  ];
-
-  const handleNavClick = (item: (typeof primaryNav)[number]) => {
-    if (item.id === 'OFFICE_VIEW') {
-      onOpenModal(null);
-      return;
-    }
-    const opening = activeModal !== item.modal;
-    onOpenModal(opening ? item.modal : null);
-    if (opening && item.id === 'FINANCE') {
-      onDispatch({ type: 'REPORT_TUTORIAL_ACTION', action: 'REVIEW_FINANCE' });
-    }
-  };
-
   const handleTaskQuickAction = () => {
+    setMenuOpen(false);
+    setMapOpen(false);
     if (taskGuide.targetModal === 'END_DAY') {
       onEndDay();
     } else if (taskGuide.targetModal === 'FIND_EMPLOYEE') {
@@ -347,111 +370,209 @@ export const GameHUD: React.FC<GameHUDProps> = ({
     }
   };
 
+  const activeWeather = state.weather?.current ?? 'SUNNY';
+  const WeatherIcon =
+    activeWeather === 'RAINY'
+      ? CloudRain
+      : activeWeather === 'OVERCAST'
+        ? Cloud
+        : Sun;
+  const weatherStateName = t(`weather.states.${activeWeather}`);
+  const weatherTooltip = t('weather.cycleTooltip', { state: weatherStateName });
+
+  const hideGuidanceOverlays = Boolean(
+    activeModal ||
+      state.story?.activeCinematic ||
+      state.story?.activeStoryEvent ||
+      state.activeEvent ||
+      state.pendingMonthlyReport ||
+      state.pendingDailyReport
+  );
+
   return (
-    <div className="fixed inset-0 pointer-events-none flex flex-col z-10 text-[#303B38]">
-      {/* TOP BAR */}
-      <header className="pointer-events-auto bg-[#F3F0E7] border-b-2 border-[#303B38]/25 px-3 sm:px-4 py-2 flex flex-wrap items-center justify-between gap-2.5 shrink-0">
-        {/* Left: Money + Day + Employees + Company Status */}
-        <div className="flex flex-wrap items-center gap-2.5 sm:gap-4 min-w-0">
-          <div className="min-w-0 hidden lg:block">
-            <div className="text-[17px] font-bold text-[#303B38] truncate max-w-[180px] leading-tight">
-              {state.config.companyName}
+    <div className="fixed inset-0 pointer-events-none flex flex-col justify-between z-10 p-2 sm:p-3 text-[#303B38]">
+      {/* LAYER B — TOP MINIMAL HUD (Top-Left, Top-Center, Top-Right) */}
+      <header className="flex flex-wrap md:grid md:grid-cols-[1fr_auto_1fr] items-start justify-between gap-2 shrink-0">
+        {/* TOP-LEFT: Company Name + Day & Month + Weather */}
+        <div className="pointer-events-auto justify-self-start flex items-stretch gap-1.5 min-w-0 max-w-full">
+          <div className="bg-[#F3F0E7]/94 border-2 border-[#303B38] px-3 py-1.5 shadow-[2px_2px_0px_rgba(48,59,56,0.18)] min-w-0 flex flex-col justify-center">
+            <div className="flex items-center gap-2 min-w-0">
+              <span className="text-[14px] sm:text-[15px] font-bold text-[#303B38] truncate max-w-[140px] sm:max-w-[190px] leading-tight">
+                {state.config.companyName}
+              </span>
+              {statusSymbol === 'WARNING' && (
+                <AlertTriangle
+                  className="w-3.5 h-3.5 text-[#D68B7B] shrink-0"
+                  aria-label={t('hud.status.WARNING')}
+                />
+              )}
             </div>
-            <div className="text-[13px] text-[#303B38]/80 font-mono-num whitespace-nowrap">
-              {t('hud.dayMonthTime', {
-                day: state.day,
-                month: state.month,
-                time: formatHour(state.hourOfDay),
-              })}
+            <div className="flex items-center gap-1.5 text-[12px] sm:text-[13px] text-[#303B38]/85 font-mono-num whitespace-nowrap leading-tight mt-0.5">
+              <CalendarDays className="w-3.5 h-3.5 text-[#D9A66C] shrink-0 hidden sm:inline" aria-hidden="true" />
+              <span>
+                {t('hud.dayMonthTime', {
+                  day: state.day,
+                  month: state.month,
+                  time: formatHour(state.hourOfDay),
+                })}
+              </span>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 sm:gap-3 lg:pl-4 lg:border-l border-[#303B38]/20">
-            <Tooltip hintKey="tooltips.cashBalance" placement="bottom">
-              <button
-                type="button"
-                onClick={() => onOpenModal(activeModal === 'FINANCE' ? null : 'FINANCE')}
-                className={`text-left px-2.5 py-1 border cursor-pointer transition-colors ${
-                  isLowCash
-                    ? 'bg-[#D68B7B]/20 border-[#D68B7B] hover:bg-[#D68B7B]/30'
-                    : 'bg-[#FAF8F2] border-[#303B38]/20 hover:bg-[#EAE5D8]'
-                }`}
-              >
-                <div className="text-[13px] text-[#303B38]/80 leading-none">
-                  {t('hud.cashBalance')}
-                </div>
-                <div className="text-[17px] sm:text-[19px] font-bold font-mono-num text-[#303B38] leading-tight mt-0.5 whitespace-nowrap">
-                  {formatCurrency(state.finance.cash)}
-                </div>
-              </button>
-            </Tooltip>
-
-            <div className="lg:hidden flex items-center gap-1.5 bg-[#FAF8F2] border border-[#303B38]/20 px-2.5 py-1.5 min-h-[40px] text-[13px] font-bold font-mono-num whitespace-nowrap">
-              <CalendarDays className="w-4 h-4 text-[#D9A66C] shrink-0" aria-hidden="true" />
-              <span>{t('hud.dayShort', { day: state.day })}</span>
-              <span className="hidden sm:inline text-[#303B38]/70">· {formatHour(state.hourOfDay)}</span>
-            </div>
-
-            <Tooltip hintKey="tooltips.navEmployees" placement="bottom" wrapperClassName="hidden sm:inline-flex">
-              <button
-                type="button"
-                onClick={() => onOpenModal(activeModal === 'EMPLOYEES' ? null : 'EMPLOYEES')}
-                className="flex items-center gap-1.5 bg-[#FAF8F2] hover:bg-[#EAE5D8] border border-[#303B38]/20 px-2.5 py-1.5 min-h-[40px] text-[13px] font-bold text-[#303B38] cursor-pointer whitespace-nowrap"
-              >
-                <Users className="w-4 h-4 text-[#78978A] shrink-0" aria-hidden="true" />
-                <span className="font-mono-num">
-                  {t('hud.employeesCount', { count: state.employees.length })}
-                </span>
-              </button>
-            </Tooltip>
-
-            <Tooltip hintKey="tooltips.companyStatus" placement="bottom" wrapperClassName="hidden xl:inline-flex">
-              <div
-                tabIndex={0}
-                className={`flex items-center gap-1.5 border px-2.5 py-1.5 min-h-[40px] cursor-help ${
-                  isLowCash
-                    ? 'bg-[#D68B7B]/20 border-[#D68B7B]'
-                    : statusSymbol === 'PROFIT'
-                      ? 'bg-[#78978A]/20 border-[#78978A]'
-                      : 'bg-[#EAE5D8] border-[#303B38]/25'
-                }`}
-              >
-                {statusSymbol === 'WARNING' ? (
-                  <AlertTriangle className="w-4 h-4 text-[#303B38]" aria-hidden="true" />
-                ) : statusSymbol === 'PROFIT' ? (
-                  <CheckCircle2 className="w-4 h-4 text-[#303B38]" aria-hidden="true" />
-                ) : (
-                  <Sparkles className="w-4 h-4 text-[#303B38]" aria-hidden="true" />
-                )}
-                <span className="text-[13px] font-bold text-[#303B38] whitespace-nowrap">
-                  {t(`hud.status.${statusSymbol}`)}
-                </span>
-              </div>
-            </Tooltip>
-          </div>
+          {onCycleWeather && (
+            <button
+              type="button"
+              onClick={onCycleWeather}
+              aria-label={weatherTooltip}
+              title={weatherTooltip}
+              className="min-h-[42px] min-w-[42px] px-2.5 flex items-center justify-center gap-1.5 bg-[#F3F0E7]/94 hover:bg-[#EAE5D8] border-2 border-[#303B38] shadow-[2px_2px_0px_rgba(48,59,56,0.18)] text-[12px] font-bold text-[#303B38] cursor-pointer transition-colors shrink-0"
+            >
+              <WeatherIcon className="w-4 h-4 text-[#78978A] shrink-0" aria-hidden="true" />
+              <span className="hidden lg:inline whitespace-nowrap">{weatherStateName}</span>
+            </button>
+          )}
         </div>
 
-        {/* Right: Notification Bell, Speed & End Day */}
-        <div className="flex items-center gap-2 shrink-0">
+        {/* TOP-CENTER: Current Cash Balance */}
+        <div className="pointer-events-auto justify-self-center">
+          <button
+            type="button"
+            onClick={() => {
+              onDispatch({ type: 'REPORT_TUTORIAL_ACTION', action: 'REVIEW_FINANCE' });
+              onOpenModal(activeModal === 'FINANCE' ? null : 'FINANCE');
+            }}
+            title={t('tooltips.cashBalance')}
+            className={`min-h-[44px] px-3.5 py-1 border-2 border-[#303B38] shadow-[2px_2px_0px_rgba(48,59,56,0.18)] cursor-pointer transition-colors flex flex-col items-center justify-center ${
+              isLowCash
+                ? 'bg-[#F5E0DB]/96 hover:bg-[#EDD0C9]'
+                : 'bg-[#FAF8F2]/95 hover:bg-[#EAE5D8]'
+            }`}
+          >
+            <span className="text-[11px] font-bold uppercase tracking-wider text-[#303B38]/70 leading-none">
+              {t('hud.cashBalance')}
+            </span>
+            <span className="text-[16px] sm:text-[18px] font-bold font-mono-num text-[#303B38] leading-tight mt-0.5 whitespace-nowrap">
+              {formatCurrency(state.finance.cash)}
+            </span>
+          </button>
+        </div>
+
+        {/* TOP-RIGHT: Pause / Simulation Speed + Notifications + End Day */}
+        <div className="pointer-events-auto justify-self-end w-full sm:w-auto flex items-center justify-end gap-1.5">
+          <div
+            className="flex items-center bg-[#F3F0E7]/94 border-2 border-[#303B38] shadow-[2px_2px_0px_rgba(48,59,56,0.18)] p-0.5"
+            role="group"
+            aria-label={t('hud.speedAria')}
+          >
+            <button
+              type="button"
+              onClick={() => onSetSpeed(0)}
+              aria-label={t('hud.pauseTitle')}
+              title={t('hud.pauseTitle')}
+              aria-pressed={state.speed === 0}
+              className={`relative min-w-[36px] min-h-[36px] flex items-center justify-center px-1.5 text-[13px] font-bold cursor-pointer transition-colors ${
+                state.speed === 0
+                  ? 'bg-[#78978A] text-[#303B38]'
+                  : 'text-[#303B38] hover:bg-[#EAE5D8]'
+              }`}
+            >
+              {(shortcutFeedback?.speedTarget === 0 || (speedShortcutPulseId > 0 && state.speed === 0)) && (
+                <span
+                  key={`pulse-0-${shortcutFeedback?.id ?? speedShortcutPulseId}`}
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0 border-2 border-[#303B38] animate-speed-pulse"
+                />
+              )}
+              <Pause className="w-3.5 h-3.5" aria-hidden="true" />
+            </button>
+            <button
+              type="button"
+              onClick={() => onSetSpeed(1)}
+              aria-label={t('hud.speed1Title')}
+              title={t('hud.speed1Title')}
+              aria-pressed={state.speed === 1}
+              className={`relative min-w-[38px] min-h-[36px] flex items-center justify-center px-1.5 text-[13px] font-mono-num font-bold cursor-pointer transition-colors ${
+                state.speed === 1
+                  ? 'bg-[#78978A] text-[#303B38]'
+                  : 'text-[#303B38] hover:bg-[#EAE5D8]'
+              }`}
+            >
+              {shortcutFeedback?.speedTarget === 1 && (
+                <span
+                  key={`pulse-1-${shortcutFeedback.id}`}
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0 border-2 border-[#303B38] animate-speed-pulse"
+                />
+              )}
+              <Play className="w-3 h-3 mr-0.5 inline" aria-hidden="true" />
+              1x
+            </button>
+            <button
+              type="button"
+              onClick={() => onSetSpeed(2)}
+              aria-label={t('hud.speed2Title')}
+              title={t('hud.speed2Title')}
+              aria-pressed={state.speed === 2}
+              className={`relative min-w-[36px] min-h-[36px] flex items-center justify-center px-1.5 text-[13px] font-mono-num font-bold cursor-pointer transition-colors ${
+                state.speed === 2
+                  ? 'bg-[#78978A] text-[#303B38]'
+                  : 'text-[#303B38] hover:bg-[#EAE5D8]'
+              }`}
+            >
+              {shortcutFeedback?.speedTarget === 2 && (
+                <span
+                  key={`pulse-2-${shortcutFeedback.id}`}
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0 border-2 border-[#303B38] animate-speed-pulse"
+                />
+              )}
+              2x
+            </button>
+            <button
+              type="button"
+              onClick={() => onSetSpeed(3)}
+              aria-label={t('hud.speed3Title')}
+              title={t('hud.speed3Title')}
+              aria-pressed={state.speed === 3}
+              className={`relative min-w-[38px] min-h-[36px] flex items-center justify-center px-1.5 text-[13px] font-mono-num font-bold cursor-pointer transition-colors ${
+                state.speed === 3
+                  ? 'bg-[#78978A] text-[#303B38]'
+                  : 'text-[#303B38] hover:bg-[#EAE5D8]'
+              }`}
+            >
+              {shortcutFeedback?.speedTarget === 3 && (
+                <span
+                  key={`pulse-3-${shortcutFeedback.id}`}
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0 border-2 border-[#303B38] animate-speed-pulse"
+                />
+              )}
+              <FastForward className="w-3 h-3 mr-0.5 inline" aria-hidden="true" />
+              3x
+            </button>
+          </div>
+
           <div className="relative">
             <button
               type="button"
               onClick={() => {
                 setAlertsOpen((v) => !v);
                 setObjectivesOpen(false);
+                setMenuOpen(false);
+                setMapOpen(false);
               }}
               aria-expanded={alertsOpen}
               aria-label={t('hud.notificationsBtn')}
-              className={`min-h-[40px] min-w-[40px] flex items-center gap-1.5 px-2.5 py-1.5 border text-[13px] font-bold cursor-pointer transition-colors ${
+              title={t('hud.notificationsBtn')}
+              className={`min-h-[42px] min-w-[42px] flex items-center justify-center gap-1.5 px-2.5 border-2 border-[#303B38] shadow-[2px_2px_0px_rgba(48,59,56,0.18)] text-[13px] font-bold cursor-pointer transition-colors ${
                 alertsOpen
-                  ? 'bg-[#D9A66C] border-[#303B38] text-[#303B38]'
-                  : 'bg-[#FAF8F2] hover:bg-[#EAE5D8] border-[#303B38]/30 text-[#303B38]'
+                  ? 'bg-[#D9A66C] text-[#303B38]'
+                  : 'bg-[#F3F0E7]/94 hover:bg-[#EAE5D8] text-[#303B38]'
               }`}
             >
               <Bell className="w-4 h-4 shrink-0" aria-hidden="true" />
-              <span className="hidden md:inline">{t('hud.notificationsBtn')}</span>
               {recentFeed.length > 0 && (
-                <span className="px-1.5 py-0.5 text-[12px] leading-none font-mono-num bg-[#EAE5D8] border border-[#303B38]/25">
+                <span className="px-1.5 py-0.5 text-[11px] leading-none font-mono-num bg-[#EAE5D8] border border-[#303B38]/30">
                   {recentFeed.length}
                 </span>
               )}
@@ -461,7 +582,7 @@ export const GameHUD: React.FC<GameHUDProps> = ({
               <div
                 role="region"
                 aria-label={t('hud.notificationsTitle')}
-                className="absolute right-0 mt-1.5 w-72 sm:w-80 bg-[#F3F0E7] border-2 border-[#303B38] shadow-md z-40"
+                className="absolute right-0 mt-1.5 w-72 sm:w-80 bg-[#F3F0E7] border-2 border-[#303B38] shadow-[4px_4px_0px_rgba(48,59,56,0.22)] z-40"
               >
                 <div className="px-3 py-2 bg-[#FAF8F2] border-b border-[#303B38]/20 flex items-center justify-between gap-2">
                   <span className="text-[14px] font-bold text-[#303B38]">
@@ -499,294 +620,66 @@ export const GameHUD: React.FC<GameHUDProps> = ({
             )}
           </div>
 
-          <div
-            className="flex items-center bg-[#FAF8F2] border border-[#303B38]/30 p-0.5"
-            role="group"
-            aria-label={t('hud.speedAria')}
+          <button
+            type="button"
+            data-tutorial-target="end-day-btn"
+            onClick={onEndDay}
+            title={t('hud.endDayTitle')}
+            className={`min-h-[42px] flex items-center gap-1.5 px-3 border-2 border-[#303B38] shadow-[2px_2px_0px_rgba(48,59,56,0.18)] text-[13px] font-bold cursor-pointer whitespace-nowrap transition-colors ${
+              tutorialMeta?.targetArea === 'END_DAY'
+                ? 'bg-[#D9A66C] ring-2 ring-[#D9A66C] text-[#303B38]'
+                : 'bg-[#FAF8F2]/95 hover:bg-[#EAE5D8] text-[#303B38]'
+            }`}
           >
-            <Tooltip hintKey="tooltips.speedPause" placement="bottom">
-              <button
-                type="button"
-                onClick={() => onSetSpeed(0)}
-                aria-label={t('hud.pauseTitle')}
-                aria-pressed={state.speed === 0}
-                className={`relative min-w-[38px] min-h-[38px] flex items-center justify-center px-2 text-[14px] font-bold cursor-pointer transition-colors ${
-                  state.speed === 0
-                    ? 'bg-[#78978A] text-[#303B38]'
-                    : 'text-[#303B38] hover:bg-[#EAE5D8]'
-                }`}
-              >
-                {shortcutFeedback?.speedTarget === 0 && (
-                  <span
-                    key={`pulse-0-${shortcutFeedback.id}`}
-                    aria-hidden="true"
-                    className="pointer-events-none absolute inset-0 border-2 border-[#303B38] animate-speed-pulse"
-                  />
-                )}
-                <Pause className="w-4 h-4" aria-hidden="true" />
-              </button>
-            </Tooltip>
-            <Tooltip hintKey="tooltips.speed1x" placement="bottom">
-              <button
-                type="button"
-                onClick={() => onSetSpeed(1)}
-                aria-label={t('hud.speed1Title')}
-                aria-pressed={state.speed === 1}
-                className={`relative min-w-[40px] min-h-[38px] flex items-center justify-center px-2 text-[14px] font-mono-num font-bold cursor-pointer transition-colors ${
-                  state.speed === 1
-                    ? 'bg-[#78978A] text-[#303B38]'
-                    : 'text-[#303B38] hover:bg-[#EAE5D8]'
-                }`}
-              >
-                {shortcutFeedback?.speedTarget === 1 && (
-                  <span
-                    key={`pulse-1-${shortcutFeedback.id}`}
-                    aria-hidden="true"
-                    className="pointer-events-none absolute inset-0 border-2 border-[#303B38] animate-speed-pulse"
-                  />
-                )}
-                <Play className="w-3.5 h-3.5 mr-0.5 inline" aria-hidden="true" />
-                1x
-              </button>
-            </Tooltip>
-            <Tooltip hintKey="tooltips.speed2x" placement="bottom">
-              <button
-                type="button"
-                onClick={() => onSetSpeed(2)}
-                aria-label={t('hud.speed2Title')}
-                aria-pressed={state.speed === 2}
-                className={`relative min-w-[38px] min-h-[38px] flex items-center justify-center px-2 text-[14px] font-mono-num font-bold cursor-pointer transition-colors ${
-                  state.speed === 2
-                    ? 'bg-[#78978A] text-[#303B38]'
-                    : 'text-[#303B38] hover:bg-[#EAE5D8]'
-                }`}
-              >
-                {shortcutFeedback?.speedTarget === 2 && (
-                  <span
-                    key={`pulse-2-${shortcutFeedback.id}`}
-                    aria-hidden="true"
-                    className="pointer-events-none absolute inset-0 border-2 border-[#303B38] animate-speed-pulse"
-                  />
-                )}
-                2x
-              </button>
-            </Tooltip>
-            <Tooltip hintKey="tooltips.speed3x" placement="bottom">
-              <button
-                type="button"
-                onClick={() => onSetSpeed(3)}
-                aria-label={t('hud.speed3Title')}
-                aria-pressed={state.speed === 3}
-                className={`relative min-w-[40px] min-h-[38px] flex items-center justify-center px-2 text-[14px] font-mono-num font-bold cursor-pointer transition-colors ${
-                  state.speed === 3
-                    ? 'bg-[#78978A] text-[#303B38]'
-                    : 'text-[#303B38] hover:bg-[#EAE5D8]'
-                }`}
-              >
-                {shortcutFeedback?.speedTarget === 3 && (
-                  <span
-                    key={`pulse-3-${shortcutFeedback.id}`}
-                    aria-hidden="true"
-                    className="pointer-events-none absolute inset-0 border-2 border-[#303B38] animate-speed-pulse"
-                  />
-                )}
-                <FastForward className="w-3.5 h-3.5 mr-0.5 inline" aria-hidden="true" />
-                3x
-              </button>
-            </Tooltip>
-          </div>
-
-          <Tooltip hintKey="tooltips.endDay" placement="bottom">
-            <button
-              type="button"
-              data-tutorial-target="end-day-btn"
-              onClick={onEndDay}
-              className={`min-h-[40px] flex items-center gap-1.5 px-3 py-1.5 text-[14px] font-bold cursor-pointer whitespace-nowrap transition-colors border ${
-                tutorialMeta?.targetArea === 'END_DAY'
-                  ? 'bg-[#D9A66C] border-[#303B38] ring-2 ring-[#303B38] text-[#303B38]'
-                  : 'bg-[#FAF8F2] hover:bg-[#EAE5D8] border-[#303B38]/35 text-[#303B38]'
-              }`}
-            >
-              <SkipForward className="w-4 h-4" aria-hidden="true" />
-              <span>{t('hud.endDay')}</span>
-            </button>
-          </Tooltip>
+            <SkipForward className="w-4 h-4 shrink-0" aria-hidden="true" />
+            <span>{t('hud.endDay')}</span>
+          </button>
         </div>
       </header>
 
-      {/* MIDDLE ROW */}
-      <div className="flex-1 flex min-h-0 relative">
-        {/* LEFT NAVIGATION */}
-        <nav
-          aria-label={t('hud.nav.office')}
-          className="hidden md:flex pointer-events-auto w-44 lg:w-48 bg-[#F3F0E7]/96 border-r-2 border-[#303B38]/20 flex-col justify-between p-2.5 shrink-0"
-        >
-          <div className="space-y-1.5">
-            {primaryNav.map((item) => {
-              const Icon = item.icon;
-              const isSelected =
-                item.id === 'OFFICE_VIEW'
-                  ? activeModal === null
-                  : activeModal === item.modal;
-              const isTutorialTarget =
-                (tutorialMeta?.recommendedTab === 'EMPLOYEES' && item.id === 'EMPLOYEES') ||
-                (tutorialMeta?.recommendedTab === 'PRODUCTS' && item.id === 'PRODUCTS') ||
-                (tutorialMeta?.recommendedTab === 'MARKET' && item.id === 'MARKET') ||
-                (tutorialMeta?.recommendedTab === 'FINANCE' && item.id === 'FINANCE');
-
-              return (
-                <Tooltip
-                  key={item.id}
-                  hintKey={item.tooltipKey}
-                  placement="right"
-                  wrapperClassName="block w-full"
-                >
-                  <button
-                    type="button"
-                    data-tutorial-target={`nav-${item.id.toLowerCase()}`}
-                    onClick={() => handleNavClick(item)}
-                    className={`w-full min-h-[42px] flex items-center justify-between gap-2 px-3 py-2 text-[14px] font-bold cursor-pointer transition-colors border ${
-                      isSelected
-                        ? 'bg-[#78978A] border-[#303B38] text-[#303B38]'
-                        : isTutorialTarget
-                          ? 'bg-[#FAF8F2] border-2 border-[#D9A66C] text-[#303B38]'
-                          : 'bg-[#FAF8F2] hover:bg-[#EAE5D8] border-[#303B38]/20 text-[#303B38]'
-                    }`}
-                  >
-                    <span className="flex items-center gap-2 min-w-0">
-                      <Icon className="w-4 h-4 shrink-0" aria-hidden="true" />
-                      <span className="truncate">{item.label}</span>
-                    </span>
-                    {item.badge && (
-                      <span className="text-[13px] font-mono-num font-bold px-1.5 py-0.5 bg-[#F3F0E7] border border-[#303B38]/25 text-[#303B38]">
-                        {item.badge}
-                      </span>
-                    )}
-                  </button>
-                </Tooltip>
-              );
-            })}
-          </div>
-
-          <div className="pt-2.5 border-t border-[#303B38]/20 space-y-1">
-            <Tooltip hintKey="tooltips.navUpgrades" placement="right" wrapperClassName="block w-full">
-              <button
-                type="button"
-                onClick={() => onOpenModal(activeModal === 'OFFICE' ? null : 'OFFICE')}
-                className={`w-full min-h-[38px] flex items-center gap-2 px-2.5 py-1.5 text-[13px] font-bold cursor-pointer border text-left ${
-                  activeModal === 'OFFICE'
-                    ? 'bg-[#78978A] border-[#303B38]/40 text-[#303B38]'
-                    : 'bg-transparent hover:bg-[#EAE5D8] border-transparent text-[#303B38]'
-                }`}
+      {/* MIDDLE UNOBSTRUCTED CANVAS ZONE — TRANSIENT BANNERS & TUTORIAL CARD ONLY */}
+      <div className="flex-1 min-h-0 relative py-2 flex flex-col justify-between pointer-events-none">
+        <div className="flex flex-col gap-2">
+          {welcomeBannerOpen && !hideGuidanceOverlays && (
+            <div className="w-full flex justify-center shrink-0">
+              <div
+                role="status"
+                aria-live="polite"
+                className="pointer-events-auto bg-[#FAF8F2]/96 border-2 border-[#303B38] text-[#303B38] pl-3 pr-2 py-2 flex items-center gap-2.5 shadow-[3px_3px_0px_rgba(48,59,56,0.18)] max-w-md"
               >
-                <Sparkles className="w-4 h-4 shrink-0" aria-hidden="true" />
-                <span className="truncate">{t('hud.nav.upgrades')}</span>
-              </button>
-            </Tooltip>
-            <Tooltip hintKey="tooltips.navMilestones" placement="right" wrapperClassName="block w-full">
-              <button
-                type="button"
-                onClick={() => onOpenModal(activeModal === 'MILESTONES' ? null : 'MILESTONES')}
-                className={`w-full min-h-[38px] flex items-center gap-2 px-2.5 py-1.5 text-[13px] font-bold cursor-pointer border text-left ${
-                  activeModal === 'MILESTONES'
-                    ? 'bg-[#78978A] border-[#303B38]/40 text-[#303B38]'
-                    : 'bg-transparent hover:bg-[#EAE5D8] border-transparent text-[#303B38]'
-                }`}
-              >
-                <Trophy className="w-4 h-4 shrink-0" aria-hidden="true" />
-                <span className="truncate">{t('hud.nav.milestones')}</span>
-              </button>
-            </Tooltip>
-            <Tooltip hintKey="tooltips.navSaveLoad" placement="right" wrapperClassName="block w-full">
-              <button
-                type="button"
-                onClick={() => onOpenModal(activeModal === 'SAVE_LOAD' ? null : 'SAVE_LOAD')}
-                className={`w-full min-h-[38px] flex items-center gap-2 px-2.5 py-1.5 text-[13px] font-bold cursor-pointer border text-left ${
-                  activeModal === 'SAVE_LOAD'
-                    ? 'bg-[#78978A] border-[#303B38]/40 text-[#303B38]'
-                    : 'bg-transparent hover:bg-[#EAE5D8] border-transparent text-[#303B38]'
-                }`}
-              >
-                <Save className="w-4 h-4 shrink-0" aria-hidden="true" />
-                <span className="truncate">{t('hud.nav.saveLoad')}</span>
-              </button>
-            </Tooltip>
-            {!tutorialActive && (
-              <Tooltip hintKey="tooltips.navTutorial" placement="right" wrapperClassName="block w-full">
+                <div className="w-8 h-8 bg-[#78978A]/35 border border-[#303B38]/30 flex items-center justify-center shrink-0">
+                  <Sparkles className="w-4 h-4 text-[#303B38]" aria-hidden="true" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="text-[14px] font-bold leading-snug">
+                    {t('hud.welcomeBanner.title')}
+                  </div>
+                  <div className="text-[13px] text-[#303B38]/80 leading-snug">
+                    {t('hud.welcomeBanner.subtitle')}
+                  </div>
+                </div>
                 <button
                   type="button"
-                  onClick={() => onDispatch({ type: 'RESUME_TUTORIAL' })}
-                  className="w-full min-h-[38px] flex items-center gap-2 px-2.5 py-1.5 text-[13px] font-bold cursor-pointer hover:bg-[#EAE5D8] text-[#303B38] text-left"
+                  onClick={onDismissWelcomeBanner}
+                  aria-label={t('hud.dismiss')}
+                  className="min-w-[32px] min-h-[32px] flex items-center justify-center text-[#303B38]/75 hover:bg-[#EAE5D8] cursor-pointer shrink-0"
                 >
-                  <BookOpen className="w-4 h-4 shrink-0" aria-hidden="true" />
-                  <span className="truncate">{t('hud.nav.tutorial')}</span>
+                  <X className="w-4 h-4" />
                 </button>
-              </Tooltip>
-            )}
-            <Tooltip hintKey="tooltips.navSettings" placement="right" wrapperClassName="block w-full">
-              <button
-                type="button"
-                onClick={() => onOpenModal(activeModal === 'SETTINGS' ? null : 'SETTINGS')}
-                className={`w-full min-h-[38px] flex items-center gap-2 px-2.5 py-1.5 text-[13px] font-bold cursor-pointer border text-left ${
-                  activeModal === 'SETTINGS'
-                    ? 'bg-[#78978A] border-[#303B38]/40 text-[#303B38]'
-                    : 'bg-transparent hover:bg-[#EAE5D8] border-transparent text-[#303B38]'
-                }`}
-              >
-                <Settings className="w-4 h-4 shrink-0" aria-hidden="true" />
-                <span className="truncate">{t('hud.nav.settings')}</span>
-              </button>
-            </Tooltip>
-          </div>
-        </nav>
-
-        {/* CENTER OVERLAYS */}
-        <div className="flex-1 relative min-w-0 p-3 flex flex-col justify-between gap-2">
-          <div className="flex flex-col gap-2">
-            {welcomeBannerOpen &&
-              !activeModal &&
-              !state.story?.activeCinematic &&
-              !state.story?.activeStoryEvent && (
-              <div className="w-full flex justify-center pointer-events-none shrink-0">
-                <div
-                  role="status"
-                  aria-live="polite"
-                  className="pointer-events-auto bg-[#FAF8F2]/96 border-2 border-[#303B38] text-[#303B38] pl-3 pr-2 py-2 flex items-center gap-2.5 shadow-sm max-w-lg"
-                >
-                  <div className="w-8 h-8 bg-[#78978A]/35 border border-[#303B38]/30 flex items-center justify-center shrink-0">
-                    <Sparkles className="w-4 h-4 text-[#303B38]" aria-hidden="true" />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <div className="text-[14px] font-bold leading-snug">
-                      {t('hud.welcomeBanner.title')}
-                    </div>
-                    <div className="text-[13px] text-[#303B38]/80 leading-snug">
-                      {t('hud.welcomeBanner.subtitle')}
-                    </div>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={onDismissWelcomeBanner}
-                    aria-label={t('hud.dismiss')}
-                    title={t('hud.dismiss')}
-                    className="min-w-[32px] min-h-[32px] flex items-center justify-center text-[#303B38]/75 hover:bg-[#EAE5D8] cursor-pointer shrink-0"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-                </div>
               </div>
-            )}
+            </div>
+          )}
 
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-start justify-between gap-2 sm:gap-3">
-              {/* Single Non-Stacking Notification / Placement Slot */}
-              <div className="flex flex-col items-start gap-2 pt-1 min-w-0">
+          <div className="flex flex-col sm:flex-row items-start justify-between gap-2">
+            {/* Single Non-Stacking Notification / Placement Slot */}
+            <div className="flex flex-col items-start gap-2 min-w-0">
               {movingMode && (
-                <div className="pointer-events-auto bg-[#F3F0E7] border-2 border-[#303B38] text-[#303B38] text-[14px] px-4 py-2 flex items-center gap-3 shadow-sm">
+                <div className="pointer-events-auto bg-[#F3F0E7] border-2 border-[#303B38] text-[#303B38] text-[14px] px-3.5 py-2 flex items-center gap-3 shadow-[3px_3px_0px_rgba(48,59,56,0.18)]">
                   <span>{t('hud.placementMode')}</span>
                   <button
                     type="button"
                     onClick={onCancelMoving}
-                    className="min-h-[36px] bg-[#78978A] border border-[#303B38]/35 text-[#303B38] px-3 py-1 text-[13px] font-bold cursor-pointer"
+                    className="min-h-[36px] bg-[#78978A] border border-[#303B38] text-[#303B38] px-3 py-1 text-[13px] font-bold cursor-pointer"
                   >
                     {t('common.cancel')}
                   </button>
@@ -797,7 +690,7 @@ export const GameHUD: React.FC<GameHUDProps> = ({
                 <div
                   role="status"
                   aria-live="polite"
-                  className="pointer-events-auto bg-[#F3F0E7] border-2 border-[#303B38] px-3.5 py-2 flex items-center gap-3 max-w-sm shadow-sm"
+                  className="pointer-events-auto bg-[#F3F0E7]/96 border-2 border-[#303B38] px-3.5 py-2 flex items-center gap-3 max-w-sm shadow-[3px_3px_0px_rgba(48,59,56,0.18)]"
                 >
                   <button
                     type="button"
@@ -833,7 +726,7 @@ export const GameHUD: React.FC<GameHUDProps> = ({
                   <div
                     role="status"
                     aria-live="polite"
-                    className={`pointer-events-auto bg-[#F3F0E7]/96 border-2 text-[#303B38] pl-3 pr-2 py-2 flex items-start gap-2.5 shadow-sm max-w-xs sm:max-w-sm ${
+                    className={`pointer-events-auto bg-[#F3F0E7]/96 border-2 text-[#303B38] pl-3 pr-2 py-2 flex items-start gap-2.5 shadow-[3px_3px_0px_rgba(48,59,56,0.18)] max-w-xs sm:max-w-sm ${
                       toastTone === 'MORALE' ? 'border-[#D9A66C]' : 'border-[#303B38]'
                     }`}
                   >
@@ -874,138 +767,263 @@ export const GameHUD: React.FC<GameHUDProps> = ({
                   </div>
                 )
               )}
-              </div>
-
-              {/* Top-Right Guidance Slot: single active TutorialGuide OR compact Objectives chip */}
-              {!activeModal &&
-                !state.story?.activeCinematic &&
-                !state.story?.activeStoryEvent &&
-                !state.activeEvent &&
-                !state.pendingMonthlyReport &&
-                !state.pendingDailyReport &&
-                tutorialActive &&
-                !hasDrawerOpen ? (
-                <div className="ml-auto flex flex-col items-end gap-1.5 max-w-full">
-                  <TutorialGuide state={state} onDispatch={onDispatch} onNavigate={onOpenModal} />
-                </div>
-              ) : (
-                !activeModal &&
-                !state.story?.activeCinematic &&
-                !state.story?.activeStoryEvent &&
-                !hasDrawerOpen &&
-                !tutorialActive &&
-                objs.length > 0 && (
-                  <div className="ml-auto flex flex-col items-end gap-1.5">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setObjectivesOpen((v) => !v);
-                        setAlertsOpen(false);
-                      }}
-                      aria-expanded={objectivesOpen}
-                      className="pointer-events-auto min-h-[38px] bg-[#F3F0E7]/95 hover:bg-[#EAE5D8] border border-[#303B38]/35 px-3 py-1.5 flex items-center gap-2 text-[13px] font-bold text-[#303B38] shadow-sm cursor-pointer"
-                    >
-                      <Target className="w-4 h-4 text-[#D9A66C] shrink-0" aria-hidden="true" />
-                      <span>{t('hud.objectiveChip')}</span>
-                      <span className="font-mono-num px-1.5 py-0.5 bg-[#EAE5D8] border border-[#303B38]/20">
-                        {doneCount}/{objs.length}
-                      </span>
-                      {objectivesOpen ? (
-                        <ChevronUp className="w-4 h-4 shrink-0" aria-hidden="true" />
-                      ) : (
-                        <ChevronDown className="w-4 h-4 shrink-0" aria-hidden="true" />
-                      )}
-                    </button>
-
-                    {objectivesOpen && (
-                      <ObjectivesChecklist objectives={state.objectives} hiddenOnSmall={false} />
-                    )}
-                  </div>
-                )
-              )}
             </div>
+
+            {/* Active Tutorial Guide (only when active and no drawer/modal obscures it) */}
+            {!hideGuidanceOverlays && tutorialActive && !hasDrawerOpen && (
+              <div className="ml-auto flex flex-col items-end gap-1.5 max-w-full">
+                <TutorialGuide state={state} onDispatch={onDispatch} onNavigate={onOpenModal} />
+              </div>
+            )}
           </div>
         </div>
       </div>
 
-      {/* MOBILE NAVIGATION STRIP */}
-      <nav
-        aria-label={t('hud.nav.office')}
-        className="md:hidden pointer-events-auto bg-[#F3F0E7] border-t border-[#303B38]/25 px-2 py-1.5 flex items-center gap-1.5 overflow-x-auto shrink-0"
-      >
-        {primaryNav.map((item) => {
-          const Icon = item.icon;
-          const isSelected =
-            item.id === 'OFFICE_VIEW'
-              ? activeModal === null
-              : activeModal === item.modal;
-          return (
-            <button
-              key={item.id}
-              type="button"
-              data-tutorial-target={`nav-${item.id.toLowerCase()}`}
-              onClick={() => handleNavClick(item)}
-              className={`min-h-[42px] flex items-center gap-1.5 px-3 py-1.5 text-[14px] font-bold whitespace-nowrap shrink-0 border cursor-pointer ${
-                isSelected
-                  ? 'bg-[#78978A] border-[#303B38]/40 text-[#303B38]'
-                  : 'bg-[#FAF8F2] border-[#303B38]/25 text-[#303B38]'
-              }`}
-            >
-              <Icon className="w-4 h-4" aria-hidden="true" />
-              <span>{item.label}</span>
-            </button>
-          );
-        })}
-        <button
-          type="button"
-          onClick={() => onOpenModal(activeModal === 'OFFICE' ? null : 'OFFICE')}
-          className="min-h-[42px] flex items-center gap-1.5 px-3 py-1.5 text-[14px] font-bold whitespace-nowrap shrink-0 bg-[#FAF8F2] border border-[#303B38]/25 text-[#303B38] cursor-pointer"
-        >
-          <Sparkles className="w-4 h-4" aria-hidden="true" />
-          <span>{t('hud.nav.upgradesShort')}</span>
-        </button>
-        <button
-          type="button"
-          onClick={() => onOpenModal(activeModal === 'SETTINGS' ? null : 'SETTINGS')}
-          aria-label={t('hud.nav.settings')}
-          className="min-h-[42px] min-w-[42px] flex items-center justify-center px-3 py-1.5 bg-[#FAF8F2] border border-[#303B38]/25 text-[#303B38] shrink-0 cursor-pointer"
-        >
-          <Settings className="w-4 h-4" aria-hidden="true" />
-        </button>
-      </nav>
-
-      {/* BOTTOM TASK PANEL */}
-      <footer className="pointer-events-auto bg-[#FAF8F2] border-t-2 border-[#303B38]/25 px-3 sm:px-4 py-2 flex flex-col sm:flex-row sm:items-center justify-between gap-2 shrink-0">
-        <div className="min-w-0 flex-1 flex flex-wrap items-center gap-2">
-          <span className="text-[13px] font-bold bg-[#D9A66C]/35 border border-[#303B38]/25 px-2 py-0.5 text-[#303B38] shrink-0">
-            {taskGuide.progressLabel}
-          </span>
-          <span className="text-[14px] font-bold text-[#303B38] truncate">
-            {taskGuide.objectiveTitle}
-          </span>
-          {!tutorialActive && (
-            <span className="hidden md:inline text-[14px] text-[#303B38]/85 truncate">
-              — {taskGuide.actionText}
-            </span>
+      {/* LAYER B — BOTTOM MINIMAL HUD (Bottom-Left Objective + Bottom-Right Controls & Layer D Menu) */}
+      <footer className="flex items-end justify-between gap-2 shrink-0">
+        {/* BOTTOM-LEFT: Current Objective & Progress */}
+        <div className="pointer-events-auto relative min-w-0 max-w-[min(22rem,calc(100vw-11.5rem))] sm:max-w-[23rem]">
+          {objectivesOpen && !tutorialActive && objs.length > 0 && (
+            <div className="absolute left-0 bottom-full mb-2 z-30">
+              <ObjectivesChecklist objectives={state.objectives} hiddenOnSmall={false} />
+            </div>
           )}
+
+          <div className="bg-[#F3F0E7]/94 border-2 border-[#303B38] shadow-[2px_2px_0px_rgba(48,59,56,0.18)] px-3 py-2 flex items-center gap-2.5 min-w-0">
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-2 min-w-0">
+                <span className="text-[11px] font-bold font-mono-num bg-[#D9A66C]/35 border border-[#303B38]/30 px-1.5 py-0.5 text-[#303B38] shrink-0">
+                  {taskGuide.progressLabel}
+                </span>
+                <span className="text-[13px] sm:text-[14px] font-bold text-[#303B38] truncate">
+                  {taskGuide.objectiveTitle}
+                </span>
+              </div>
+              <p className="hidden sm:block text-[12px] text-[#303B38]/80 truncate mt-0.5">
+                {taskGuide.actionText}
+              </p>
+            </div>
+
+            {!tutorialActive && objs.length > 0 && (
+              <button
+                type="button"
+                onClick={() => {
+                  setObjectivesOpen((v) => !v);
+                  setAlertsOpen(false);
+                  setMenuOpen(false);
+                  setMapOpen(false);
+                }}
+                aria-expanded={objectivesOpen}
+                aria-label={t('hud.checklistBtn')}
+                title={t('hud.checklistBtn')}
+                className={`min-h-[36px] min-w-[36px] px-2 flex items-center justify-center gap-1 border text-[12px] font-bold cursor-pointer shrink-0 ${
+                  objectivesOpen
+                    ? 'bg-[#78978A] border-[#303B38]'
+                    : 'bg-[#FAF8F2] hover:bg-[#EAE5D8] border-[#303B38]/30'
+                }`}
+              >
+                <Target className="w-3.5 h-3.5 text-[#303B38]" aria-hidden="true" />
+                {objectivesOpen ? (
+                  <ChevronDown className="w-3.5 h-3.5" aria-hidden="true" />
+                ) : (
+                  <ChevronUp className="w-3.5 h-3.5" aria-hidden="true" />
+                )}
+              </button>
+            )}
+          </div>
         </div>
 
-        <button
-          type="button"
-          onClick={handleTaskQuickAction}
-          className="min-h-[40px] flex items-center justify-center gap-2 px-3.5 py-1.5 bg-[#78978A] hover:bg-[#6A897C] border border-[#303B38]/40 text-[14px] font-bold text-[#303B38] cursor-pointer whitespace-nowrap shrink-0"
-        >
-          <span>
-            {taskGuide.targetModal === 'END_DAY'
-              ? t('hud.quickAction.endDay', { day: state.day })
-              : taskGuide.targetModal === 'FIND_EMPLOYEE'
-                ? t('hud.quickAction.findEmployee')
-                : taskGuide.targetModal === 'OFFICE'
-                  ? t('hud.quickAction.exploreOffice')
-                  : t(`hud.quickAction.goTo${taskGuide.targetModal}`)}
-          </span>
-          <ArrowRight className="w-4 h-4" aria-hidden="true" />
-        </button>
+        {/* BOTTOM-RIGHT: Contextual Action + Camera/City + Management Menu (Layer D) */}
+        <div className="pointer-events-auto relative flex flex-col items-end gap-2 shrink-0">
+          {menuOpen && (
+            <div className="absolute right-0 bottom-full mb-2 z-30">
+              <ManagementMenu
+                open={menuOpen}
+                state={state}
+                activeModal={activeModal}
+                tutorialActive={tutorialActive}
+                recommendedTab={
+                  tutorialMeta?.recommendedTab && tutorialMeta.recommendedTab !== 'OFFICE'
+                    ? tutorialMeta.recommendedTab
+                    : null
+                }
+                tutorialStep={tutorialActive ? state.tutorial.currentStep : null}
+                onClose={() => setMenuOpen(false)}
+                onOpenModal={onOpenModal}
+                onDispatch={onDispatch}
+              />
+            </div>
+          )}
+
+          {mapOpen && (
+            <div
+              ref={mapPopoverRef}
+              role="dialog"
+              aria-label={t('world.districtBarLabel')}
+              className="absolute right-0 bottom-full mb-2 z-30 w-[min(17.5rem,calc(100vw-24px))] bg-[#F3F0E7] border-2 border-[#303B38] shadow-[4px_4px_0px_rgba(48,59,56,0.22)] text-[#303B38]"
+            >
+              <div className="px-3 py-2 bg-[#FAF8F2] border-b border-[#303B38]/20 flex items-center justify-between gap-2">
+                <span className="text-[13px] font-bold text-[#303B38]">
+                  {t('hud.mapTitle')}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setMapOpen(false)}
+                  aria-label={t('common.close')}
+                  className="min-w-[30px] min-h-[30px] flex items-center justify-center hover:bg-[#EAE5D8] cursor-pointer"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+              <div className="p-2 space-y-1 max-h-[52dvh] overflow-y-auto">
+                {DISTRICT_ITEMS.map(({ id, Icon }) => {
+                  const isActive =
+                    selectedLocationId === id ||
+                    (id === 'COMPANY_HQ' && Boolean(selectedRoomId) && !selectedLocationId);
+                  return (
+                    <button
+                      key={id}
+                      type="button"
+                      onClick={() => {
+                        cameraActionRef?.current?.focusLocation(id);
+                        onSelectDistrict?.(id);
+                        setMapOpen(false);
+                      }}
+                      className={`w-full min-h-[40px] px-3 py-1.5 flex items-center gap-2.5 border text-[13px] font-bold text-left cursor-pointer transition-colors ${
+                        isActive
+                          ? 'bg-[#78978A] border-[#303B38] text-[#303B38]'
+                          : 'bg-[#FAF8F2] hover:bg-[#EAE5D8] border-[#303B38]/20 text-[#303B38]'
+                      }`}
+                    >
+                      <Icon className="w-4 h-4 shrink-0" aria-hidden="true" />
+                      <span className="truncate">{t(`world.locations.${id}.name`)}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          <div className="flex items-center gap-1.5">
+            {/* Contextual Action Prompt */}
+            {!hasDrawerOpen && !activeModal && (
+              <button
+                type="button"
+                onClick={handleTaskQuickAction}
+                className="hidden md:flex min-h-[42px] items-center gap-1.5 px-3 bg-[#78978A] hover:bg-[#6A897C] border-2 border-[#303B38] shadow-[2px_2px_0px_rgba(48,59,56,0.18)] text-[13px] font-bold text-[#303B38] cursor-pointer whitespace-nowrap"
+              >
+                <span>
+                  {taskGuide.targetModal === 'END_DAY'
+                    ? t('hud.quickAction.endDay', { day: state.day })
+                    : taskGuide.targetModal === 'FIND_EMPLOYEE'
+                      ? t('hud.quickAction.findEmployee')
+                      : taskGuide.targetModal === 'OFFICE'
+                        ? t('hud.quickAction.exploreOffice')
+                        : t(`hud.quickAction.goTo${taskGuide.targetModal}`)}
+                </span>
+                <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
+              </button>
+            )}
+
+            {/* Camera Mini-Controls */}
+            <div
+              role="toolbar"
+              aria-label={t('camera.toolbarLabel')}
+              className="hidden sm:flex items-center gap-1 bg-[#F3F0E7]/94 border-2 border-[#303B38] shadow-[2px_2px_0px_rgba(48,59,56,0.18)] p-0.5"
+            >
+              <button
+                type="button"
+                onClick={() => {
+                  const next = !followFounder;
+                  cameraActionRef?.current?.setFollowFounder(next);
+                  if (next) cameraActionRef?.current?.focusFounder();
+                }}
+                aria-pressed={followFounder}
+                aria-label={t('camera.followFounder')}
+                title={t('camera.followFounder')}
+                className={`min-h-[36px] min-w-[36px] flex items-center justify-center cursor-pointer transition-colors ${
+                  followFounder
+                    ? 'bg-[#78978A] text-[#303B38]'
+                    : 'hover:bg-[#EAE5D8] text-[#303B38]'
+                }`}
+              >
+                <LocateFixed className="w-4 h-4" aria-hidden="true" />
+              </button>
+              <button
+                type="button"
+                onClick={() => cameraActionRef?.current?.zoomIn()}
+                aria-label={t('camera.zoomIn')}
+                title={t('camera.zoomIn')}
+                className="min-h-[36px] min-w-[36px] flex items-center justify-center hover:bg-[#EAE5D8] text-[#303B38] cursor-pointer"
+              >
+                <Plus className="w-4 h-4" aria-hidden="true" />
+              </button>
+              <button
+                type="button"
+                onClick={() => cameraActionRef?.current?.zoomOut()}
+                aria-label={t('camera.zoomOut')}
+                title={t('camera.zoomOut')}
+                className="min-h-[36px] min-w-[36px] flex items-center justify-center hover:bg-[#EAE5D8] text-[#303B38] cursor-pointer"
+              >
+                <Minus className="w-4 h-4" aria-hidden="true" />
+              </button>
+              <button
+                type="button"
+                onClick={() => cameraActionRef?.current?.resetView()}
+                aria-label={t('camera.resetView')}
+                title={t('camera.resetView')}
+                className="min-h-[36px] min-w-[36px] flex items-center justify-center hover:bg-[#EAE5D8] text-[#303B38] cursor-pointer"
+              >
+                <RotateCcw className="w-4 h-4" aria-hidden="true" />
+              </button>
+            </div>
+
+            {/* City Districts Map Trigger */}
+            <button
+              type="button"
+              data-city-map-trigger="true"
+              onClick={() => {
+                setMapOpen((v) => !v);
+                setMenuOpen(false);
+                setAlertsOpen(false);
+                setObjectivesOpen(false);
+              }}
+              aria-expanded={mapOpen}
+              aria-label={t('hud.mapBtn')}
+              title={t('world.districtBarLabel')}
+              className={`min-h-[42px] min-w-[42px] px-2.5 flex items-center justify-center gap-1.5 border-2 border-[#303B38] shadow-[2px_2px_0px_rgba(48,59,56,0.18)] text-[13px] font-bold cursor-pointer transition-colors ${
+                mapOpen
+                  ? 'bg-[#78978A] text-[#303B38]'
+                  : 'bg-[#F3F0E7]/94 hover:bg-[#EAE5D8] text-[#303B38]'
+              }`}
+            >
+              <Compass className="w-4 h-4 shrink-0" aria-hidden="true" />
+              <span className="hidden sm:inline">{t('hud.mapBtn')}</span>
+            </button>
+
+            {/* Layer D Expandable Management Menu Trigger */}
+            <button
+              type="button"
+              data-tutorial-target="management-menu-btn"
+              data-management-menu-trigger="true"
+              onClick={() => {
+                setMenuOpen((v) => !v);
+                setMapOpen(false);
+                setAlertsOpen(false);
+                setObjectivesOpen(false);
+              }}
+              aria-expanded={menuOpen}
+              className={`min-h-[42px] px-3 flex items-center justify-center gap-2 border-2 border-[#303B38] shadow-[2px_2px_0px_rgba(48,59,56,0.18)] text-[13px] font-bold cursor-pointer transition-colors ${
+                menuOpen
+                  ? 'bg-[#D9A66C] text-[#303B38]'
+                  : 'bg-[#FAF8F2]/95 hover:bg-[#EAE5D8] text-[#303B38]'
+              }`}
+            >
+              <LayoutGrid className="w-4 h-4 shrink-0" aria-hidden="true" />
+              <span>{t('hud.menuBtn')}</span>
+            </button>
+          </div>
+        </div>
       </footer>
 
       {/* KEYBOARD SHORTCUT VISUAL CONFIRMATION */}

@@ -19,7 +19,7 @@ export const SubtitlePanel: React.FC<SubtitlePanelProps> = ({ hasBottomBar = tru
       aria-live="polite"
       aria-label={t('voice.subtitleBarLabel')}
       className={`pointer-events-none fixed left-1/2 -translate-x-1/2 z-40 w-[min(460px,calc(100%-24px))] ${
-        hasBottomBar ? 'bottom-[74px]' : 'bottom-4'
+        hasBottomBar ? 'bottom-[5.25rem] md:bottom-[4.5rem]' : 'bottom-4'
       }`}
     >
       <div className="pointer-events-auto border-2 border-[#303B38] bg-[#FAF8F2]/95 px-3.5 py-2 text-[#303B38] shadow-sm flex items-start justify-between gap-3">
