@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FileCheck2, Handshake, Megaphone } from 'lucide-react';
+import { ChevronDown, FileCheck2, Handshake, Megaphone } from 'lucide-react';
 import { MARKETING_CHANNELS } from '@/src/game/data/products';
 import { useLocalization } from '@/src/hooks/useLocalization';
 import { getChannelLocalized, getProductCategoryLocalized } from '@/src/localization/i18n';
@@ -41,12 +41,12 @@ export const MarketPanel: React.FC<MarketPanelProps> = ({ state, onDispatch, onC
               <Megaphone className="w-5 h-5" />
               {t('market.channelsTitle')}
             </h3>
-            <div className="flex flex-wrap items-center gap-2 text-[14px]">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:flex lg:flex-wrap lg:items-center gap-2 text-[14px] min-w-0">
               <select
                 aria-label={t('drawer.assignedProduct')}
                 value={selectedProductId}
                 onChange={(e) => setSelectedProductId(e.target.value)}
-                className="min-h-[44px] bg-[#FAF8F2] border border-[#303B38]/35 px-3 py-2 text-[#303B38]"
+                className="min-h-[44px] w-full lg:w-auto min-w-0 bg-[#FAF8F2] border border-[#303B38]/35 px-3 py-2 text-[#303B38]"
               >
                 {state.products.map((p) => (
                   <option key={p.id} value={p.id}>
@@ -62,14 +62,14 @@ export const MarketPanel: React.FC<MarketPanelProps> = ({ state, onDispatch, onC
                 aria-label={t('market.segmentSmb')}
                 value={segment}
                 onChange={(e) => setSegment(e.target.value as CustomerSegment)}
-                className="min-h-[44px] bg-[#FAF8F2] border border-[#303B38]/35 px-3 py-2 text-[#303B38]"
+                className="min-h-[44px] w-full lg:w-auto min-w-0 bg-[#FAF8F2] border border-[#303B38]/35 px-3 py-2 text-[#303B38]"
               >
                 <option value="CONSUMERS">{t('market.segmentConsumers')}</option>
                 <option value="SMB">{t('market.segmentSmb')}</option>
                 <option value="ENTERPRISE">{t('market.segmentEnterprise')}</option>
               </select>
-              <label className="flex items-center gap-2 text-[14px] text-[#303B38] font-mono-num bg-[#FAF8F2] border border-[#303B38]/25 px-3 min-h-[44px]">
-                <span>{t('market.dailyBudget', { budget: formatCurrency(budget) })}</span>
+              <label className="sm:col-span-2 lg:flex-initial flex items-center justify-between gap-2 text-[14px] text-[#303B38] font-mono-num bg-[#FAF8F2] border border-[#303B38]/25 px-3 min-h-[44px] min-w-0">
+                <span className="shrink-0">{t('market.dailyBudget', { budget: formatCurrency(budget) })}</span>
                 <input
                   type="range"
                   min={50}
@@ -77,7 +77,7 @@ export const MarketPanel: React.FC<MarketPanelProps> = ({ state, onDispatch, onC
                   step={10}
                   value={budget}
                   onChange={(e) => setBudget(Number(e.target.value))}
-                  className="accent-[#78978A] cursor-pointer"
+                  className="accent-[#78978A] cursor-pointer min-w-0 w-28 sm:w-32"
                 />
               </label>
             </div>
@@ -216,8 +216,9 @@ export const MarketPanel: React.FC<MarketPanelProps> = ({ state, onDispatch, onC
 
         {/* Competitors (Progressive Disclosure) */}
         <details className="bg-[#FAF8F2] border border-[#303B38]/25 p-4">
-          <summary className="cursor-pointer font-bold text-[15px] text-[#303B38] select-none">
-            {t('market.detailsToggle')}
+          <summary className="min-h-[40px] cursor-pointer font-bold text-[15px] text-[#303B38] select-none flex items-center justify-between gap-2 list-none">
+            <span>{t('market.detailsToggle')}</span>
+            <ChevronDown className="w-4 h-4 text-[#303B38]/75 shrink-0" aria-hidden="true" />
           </summary>
           <div className="mt-3 pt-3 border-t border-[#303B38]/15">
             <h3 className="font-bold text-[17px] text-[#303B38] mb-2.5">

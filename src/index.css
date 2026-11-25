@@ -32,6 +32,22 @@ body,
   -webkit-font-smoothing: antialiased;
 }
 
+button:focus-visible,
+[role="button"]:focus-visible,
+a:focus-visible,
+select:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+summary:focus-visible,
+[tabindex="0"]:focus-visible {
+  outline: 2px solid var(--accent-wood);
+  outline-offset: 2px;
+}
+
+details > summary::-webkit-details-marker {
+  display: none;
+}
+
 .font-pixel {
   font-family: Arial, Helvetica, sans-serif;
   letter-spacing: 0.01em;

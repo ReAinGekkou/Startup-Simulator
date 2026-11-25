@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Plus, Rocket, Sparkles, Wrench, Zap } from 'lucide-react';
+import { ChevronDown, Plus, Rocket, Sparkles, Wrench, Zap } from 'lucide-react';
 import { FEATURE_TEMPLATES, PRODUCT_CATEGORIES } from '@/src/game/data/products';
 import { useLocalization } from '@/src/hooks/useLocalization';
 import { getFeatureLocalized, getProductCategoryLocalized } from '@/src/localization/i18n';
@@ -139,7 +139,11 @@ export const ProductPanel: React.FC<ProductPanelProps> = ({ state, onDispatch, o
         const firstLaunchProdId = state.products.find(
           (p) => p.stage !== 'MVP_LIVE' && p.stage !== 'MATURE' && p.developmentProgress >= 100
         )?.id;
-        return (
+        return state.products.length === 0 ? (
+          <div className="bg-[#FAF8F2] border border-[#303B38]/20 p-6 text-center text-[15px] text-[#303B38]/80">
+            {t('drawer.noProductHint')}
+          </div>
+        ) : (
           <div className="space-y-4">
             {state.products.map((prod) => {
               const isLive = prod.stage === 'MVP_LIVE' || prod.stage === 'MATURE';
@@ -237,13 +241,7 @@ export const ProductPanel: React.FC<ProductPanelProps> = ({ state, onDispatch, o
               )}
 
               {/* Core Product Metrics */}
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 border-t border-b border-[#303B38]/20 py-3">
-                <div>
-                  <div className="text-[13px] text-[#303B38]/80">{t('products.mvpProgress')}</div>
-                  <div className="font-mono-num text-[20px] text-[#303B38] font-bold">
-                    {Math.round(prod.developmentProgress)}%
-                  </div>
-                </div>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 border-t border-b border-[#303B38]/20 py-3">
                 <div>
                   <div className="text-[13px] text-[#303B38]/80">{t('products.quality')}</div>
                   <div className="font-mono-num text-[20px] text-[#303B38] font-bold">
@@ -275,9 +273,10 @@ export const ProductPanel: React.FC<ProductPanelProps> = ({ state, onDispatch, o
               </div>
 
               {/* Collapsible Pricing + Feature Queue */}
-              <details className="border-t border-[#303B38]/15 pt-2.5">
-                <summary className="cursor-pointer font-bold text-[14px] text-[#303B38] select-none">
-                  {t('products.detailsToggle')}
+              <details className="border-t border-[#303B38]/15 pt-2">
+                <summary className="min-h-[40px] cursor-pointer font-bold text-[14px] text-[#303B38] select-none flex items-center justify-between gap-2 list-none">
+                  <span>{t('products.detailsToggle')}</span>
+                  <ChevronDown className="w-4 h-4 text-[#303B38]/75 shrink-0" aria-hidden="true" />
                 </summary>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-3">
                   <div>
@@ -325,7 +324,7 @@ export const ProductPanel: React.FC<ProductPanelProps> = ({ state, onDispatch, o
                               price: prod.pricePerCustomer - 5,
                             })
                           }
-                          className="min-h-[38px] px-3 py-1 bg-[#EAE5D8] hover:bg-[#78978A]/35 border border-[#303B38]/30 text-[14px] font-bold text-[#303B38] cursor-pointer"
+                          className="min-h-[42px] min-w-[44px] px-3 py-1 bg-[#EAE5D8] hover:bg-[#78978A]/35 border border-[#303B38]/30 text-[14px] font-bold text-[#303B38] cursor-pointer"
                         >
                           -5
                         </button>
@@ -341,7 +340,7 @@ export const ProductPanel: React.FC<ProductPanelProps> = ({ state, onDispatch, o
                               price: prod.pricePerCustomer + 5,
                             })
                           }
-                          className="min-h-[38px] px-3 py-1 bg-[#EAE5D8] hover:bg-[#78978A]/35 border border-[#303B38]/30 text-[14px] font-bold text-[#303B38] cursor-pointer"
+                          className="min-h-[42px] min-w-[44px] px-3 py-1 bg-[#EAE5D8] hover:bg-[#78978A]/35 border border-[#303B38]/30 text-[14px] font-bold text-[#303B38] cursor-pointer"
                         >
                           +5
                         </button>

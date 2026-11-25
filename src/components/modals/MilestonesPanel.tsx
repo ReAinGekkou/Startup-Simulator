@@ -4,6 +4,7 @@ import {
   BookOpen,
   CalendarDays,
   CheckCircle2,
+  ChevronDown,
   Circle,
   Clock,
   Crown,
@@ -569,12 +570,13 @@ export const MilestonesPanel: React.FC<MilestonesPanelProps> = ({
           </div>
         )}
 
-        {/* Recent Log */}
-        <div className="border-t border-[#303B38]/20 pt-4">
-          <h3 className="font-bold text-[20px] text-[#303B38] mb-2">
-            {t('milestones.activityLog')}
-          </h3>
-          <div className="space-y-1.5 max-h-44 overflow-y-auto text-[14px] bg-[#FAF8F2] border border-[#303B38]/20 p-3">
+        {/* Recent Log (Progressive Disclosure) */}
+        <details className="bg-[#FAF8F2] border border-[#303B38]/25 p-4">
+          <summary className="min-h-[40px] cursor-pointer font-bold text-[16px] text-[#303B38] select-none flex items-center justify-between gap-2 list-none">
+            <span>{t('milestones.activityLog')}</span>
+            <ChevronDown className="w-4 h-4 text-[#303B38]/75 shrink-0" aria-hidden="true" />
+          </summary>
+          <div className="mt-3 pt-3 border-t border-[#303B38]/15 space-y-1.5 max-h-48 overflow-y-auto text-[14px]">
             {state.notifications.slice(0, 12).map((n) => (
               <div key={n.id} className="flex gap-2.5 text-[#303B38]">
                 <span className="font-mono-num text-[#303B38]/75 shrink-0">
@@ -587,7 +589,7 @@ export const MilestonesPanel: React.FC<MilestonesPanelProps> = ({
               </div>
             ))}
           </div>
-        </div>
+        </details>
       </div>
     </ModalFrame>
   );

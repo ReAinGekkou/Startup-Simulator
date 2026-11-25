@@ -438,7 +438,8 @@ function drawIsoFurnitureItem(
   hasErgonomicChairs: boolean,
   inUse: boolean,
   isHovered: boolean,
-  isMoving: boolean
+  isMoving: boolean,
+  isSelected = false
 ) {
   const { x: tx, y: ty } = item.tile;
   const w = item.width;
@@ -575,16 +576,20 @@ function drawIsoFurnitureItem(
     }
   }
 
-  if (isHovered || isMoving) {
+  if (isHovered || isSelected || isMoving) {
     fillIsoTile(
       ctx,
       tx,
       ty,
       w,
       h,
-      isMoving ? 'rgba(120, 151, 138, 0.25)' : 'rgba(217, 166, 108, 0.18)',
-      isMoving ? '#78978A' : '#303B38',
-      2
+      isMoving
+        ? 'rgba(120, 151, 138, 0.25)'
+        : isSelected
+          ? 'rgba(217, 166, 108, 0.22)'
+          : 'rgba(217, 166, 108, 0.16)',
+      isMoving ? '#78978A' : isSelected ? '#D9A66C' : '#303B38',
+      isSelected ? 2.4 : 2
     );
   }
 
@@ -888,6 +893,26 @@ export function renderOfficeScene(
         'rgba(120, 151, 138, 0.08)',
         `rgba(120, 151, 138, ${pulse.toFixed(3)})`,
         3
+      );
+    }
+  }
+
+  if (
+    interaction.hoveredRoomId &&
+    interaction.hoveredRoomId !== interaction.selectedRoomId &&
+    !interaction.hoveredEntityId
+  ) {
+    const hr = state.office.rooms[interaction.hoveredRoomId];
+    if (hr && hr.unlocked) {
+      fillIsoTile(
+        ctx,
+        hr.bounds.x + 0.22,
+        hr.bounds.y + 0.22,
+        hr.bounds.w - 0.44,
+        hr.bounds.h - 0.44,
+        'rgba(120, 151, 138, 0.04)',
+        'rgba(48, 59, 56, 0.35)',
+        1.5
       );
     }
   }
@@ -1206,10 +1231,9 @@ export function renderOfficeScene(
           state.office.techTier,
           hasErgonomicChairs,
           isFurnitureInUse(item, state),
-          roomUnlocked &&
-            (interaction.hoveredEntityId === item.id ||
-              interaction.selectedFurnitureId === item.id),
-          interaction.movingFurnitureId === item.id
+          roomUnlocked && interaction.hoveredEntityId === item.id,
+          interaction.movingFurnitureId === item.id,
+          roomUnlocked && interaction.selectedFurnitureId === item.id
         ),
     });
   }

@@ -9,16 +9,20 @@ interface EmployeeChatterFeedProps {
   messages: ChatterMessage[];
   onSelectEmployee: (employeeId: string) => void;
   hideOnMobile?: boolean;
+  hideOnCompactOverlay?: boolean;
 }
 
 export const EmployeeChatterFeed: React.FC<EmployeeChatterFeedProps> = ({
   messages,
   onSelectEmployee,
   hideOnMobile = false,
+  hideOnCompactOverlay = false,
 }) => {
   const { locale, t, formatHour } = useLocalization();
   const { speak } = useVoiceOver();
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(() =>
+    typeof window !== 'undefined' ? window.innerWidth < 640 : false
+  );
 
   if (messages.length === 0) return null;
 
@@ -27,8 +31,12 @@ export const EmployeeChatterFeed: React.FC<EmployeeChatterFeedProps> = ({
   return (
     <section
       aria-label={t('chatter.title')}
-      className={`fixed left-2 sm:left-3 bottom-[5.25rem] sm:bottom-[5.75rem] z-10 w-64 sm:w-72 pointer-events-none flex-col gap-1.5 ${
-        hideOnMobile ? 'hidden md:flex' : 'flex'
+      className={`fixed left-2 sm:left-3 bottom-[5.25rem] sm:bottom-[5.75rem] z-10 w-60 sm:w-72 pointer-events-none flex-col gap-1.5 ${
+        hideOnCompactOverlay
+          ? 'hidden xl:flex'
+          : hideOnMobile
+            ? 'hidden md:flex'
+            : 'flex'
       }`}
     >
       <div className="pointer-events-auto flex items-center justify-between bg-[#FAF8F2]/95 border border-[#303B38]/30 px-3 py-1.5 min-h-[38px]">

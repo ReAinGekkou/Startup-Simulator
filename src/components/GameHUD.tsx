@@ -122,6 +122,7 @@ interface GameHUDProps {
   onEndDay: () => void;
   onOpenModal: (modal: ActiveModal) => void;
   onDispatch: (cmd: GameCommand) => void;
+  onObjectivesOpenChange?: (open: boolean) => void;
 }
 
 const DISTRICT_ITEMS: Array<{
@@ -183,13 +184,20 @@ export const GameHUD: React.FC<GameHUDProps> = ({
   onEndDay,
   onOpenModal,
   onDispatch,
+  onObjectivesOpenChange,
 }) => {
   const { locale, t, formatCurrency, formatHour } = useLocalization();
   const [alertsOpen, setAlertsOpen] = useState(false);
   const [objectivesOpen, setObjectivesOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [mapOpen, setMapOpen] = useState(false);
+  const [cameraOpen, setCameraOpen] = useState(false);
   const mapPopoverRef = useRef<HTMLDivElement | null>(null);
+  const cameraPopoverRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    onObjectivesOpenChange?.(objectivesOpen);
+  }, [objectivesOpen, onObjectivesOpenChange]);
 
   useEffect(() => {
     if (activeModal) {
@@ -197,6 +205,7 @@ export const GameHUD: React.FC<GameHUDProps> = ({
       setObjectivesOpen(false);
       setMenuOpen(false);
       setMapOpen(false);
+      setCameraOpen(false);
     }
   }, [activeModal]);
 
@@ -206,23 +215,37 @@ export const GameHUD: React.FC<GameHUDProps> = ({
       setObjectivesOpen(false);
       setMenuOpen(false);
       setMapOpen(false);
+      setCameraOpen(false);
     }
   }, [hasDrawerOpen]);
 
   useEffect(() => {
-    if (!mapOpen) return;
+    if (!mapOpen && !cameraOpen) return;
     const onPointerDown = (e: PointerEvent) => {
       const target = e.target as HTMLElement | null;
       if (!target) return;
-      if (target.closest('[data-city-map-trigger="true"]')) return;
-      if (mapPopoverRef.current && !mapPopoverRef.current.contains(target)) {
+      if (
+        mapOpen &&
+        !target.closest('[data-city-map-trigger="true"]') &&
+        mapPopoverRef.current &&
+        !mapPopoverRef.current.contains(target)
+      ) {
         setMapOpen(false);
+      }
+      if (
+        cameraOpen &&
+        !target.closest('[data-mobile-camera-trigger="true"]') &&
+        cameraPopoverRef.current &&
+        !cameraPopoverRef.current.contains(target)
+      ) {
+        setCameraOpen(false);
       }
     };
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         e.stopPropagation();
         setMapOpen(false);
+        setCameraOpen(false);
       }
     };
     window.addEventListener('pointerdown', onPointerDown);
@@ -231,7 +254,7 @@ export const GameHUD: React.FC<GameHUDProps> = ({
       window.removeEventListener('pointerdown', onPointerDown);
       window.removeEventListener('keydown', onKeyDown);
     };
-  }, [mapOpen]);
+  }, [mapOpen, cameraOpen]);
 
   const statusSymbol = getCompanyStatusSymbol(state);
   const isLowCash = statusSymbol === 'WARNING';
@@ -392,12 +415,12 @@ export const GameHUD: React.FC<GameHUDProps> = ({
   return (
     <div className="fixed inset-0 pointer-events-none flex flex-col justify-between z-10 p-2 sm:p-3 text-[#303B38]">
       {/* LAYER B — TOP MINIMAL HUD (Top-Left, Top-Center, Top-Right) */}
-      <header className="flex flex-wrap md:grid md:grid-cols-[1fr_auto_1fr] items-start justify-between gap-2 shrink-0">
+      <header className="flex flex-wrap lg:grid lg:grid-cols-[1fr_auto_1fr] items-start justify-between gap-2 shrink-0">
         {/* TOP-LEFT: Company Name + Day & Month + Weather */}
         <div className="pointer-events-auto justify-self-start flex items-stretch gap-1.5 min-w-0 max-w-full">
-          <div className="bg-[#F3F0E7]/94 border-2 border-[#303B38] px-3 py-1.5 shadow-[2px_2px_0px_rgba(48,59,56,0.18)] min-w-0 flex flex-col justify-center">
+          <div className="bg-[#F3F0E7]/94 border-2 border-[#303B38] px-2.5 sm:px-3 py-1 sm:py-1.5 shadow-[2px_2px_0px_rgba(48,59,56,0.18)] min-w-0 flex flex-col justify-center">
             <div className="flex items-center gap-2 min-w-0">
-              <span className="text-[14px] sm:text-[15px] font-bold text-[#303B38] truncate max-w-[140px] sm:max-w-[190px] leading-tight">
+              <span className="text-[14px] sm:text-[15px] font-bold text-[#303B38] truncate max-w-[130px] sm:max-w-[190px] leading-tight">
                 {state.config.companyName}
               </span>
               {statusSymbol === 'WARNING' && (
@@ -425,7 +448,7 @@ export const GameHUD: React.FC<GameHUDProps> = ({
               onClick={onCycleWeather}
               aria-label={weatherTooltip}
               title={weatherTooltip}
-              className="min-h-[42px] min-w-[42px] px-2.5 flex items-center justify-center gap-1.5 bg-[#F3F0E7]/94 hover:bg-[#EAE5D8] border-2 border-[#303B38] shadow-[2px_2px_0px_rgba(48,59,56,0.18)] text-[12px] font-bold text-[#303B38] cursor-pointer transition-colors shrink-0"
+              className="min-h-[42px] min-w-[42px] px-2 sm:px-2.5 flex items-center justify-center gap-1.5 bg-[#F3F0E7]/94 hover:bg-[#EAE5D8] border-2 border-[#303B38] shadow-[2px_2px_0px_rgba(48,59,56,0.18)] text-[12px] font-bold text-[#303B38] cursor-pointer transition-colors shrink-0"
             >
               <WeatherIcon className="w-4 h-4 text-[#78978A] shrink-0" aria-hidden="true" />
               <span className="hidden lg:inline whitespace-nowrap">{weatherStateName}</span>
@@ -442,7 +465,7 @@ export const GameHUD: React.FC<GameHUDProps> = ({
               onOpenModal(activeModal === 'FINANCE' ? null : 'FINANCE');
             }}
             title={t('tooltips.cashBalance')}
-            className={`min-h-[44px] px-3.5 py-1 border-2 border-[#303B38] shadow-[2px_2px_0px_rgba(48,59,56,0.18)] cursor-pointer transition-colors flex flex-col items-center justify-center ${
+            className={`min-h-[42px] sm:min-h-[44px] px-3 sm:px-3.5 py-1 border-2 border-[#303B38] shadow-[2px_2px_0px_rgba(48,59,56,0.18)] cursor-pointer transition-colors flex flex-col items-center justify-center ${
               isLowCash
                 ? 'bg-[#F5E0DB]/96 hover:bg-[#EDD0C9]'
                 : 'bg-[#FAF8F2]/95 hover:bg-[#EAE5D8]'
@@ -451,14 +474,14 @@ export const GameHUD: React.FC<GameHUDProps> = ({
             <span className="text-[11px] font-bold uppercase tracking-wider text-[#303B38]/70 leading-none">
               {t('hud.cashBalance')}
             </span>
-            <span className="text-[16px] sm:text-[18px] font-bold font-mono-num text-[#303B38] leading-tight mt-0.5 whitespace-nowrap">
+            <span className="text-[15px] sm:text-[18px] font-bold font-mono-num text-[#303B38] leading-tight mt-0.5 whitespace-nowrap">
               {formatCurrency(state.finance.cash)}
             </span>
           </button>
         </div>
 
         {/* TOP-RIGHT: Pause / Simulation Speed + Notifications + End Day */}
-        <div className="pointer-events-auto justify-self-end w-full sm:w-auto flex items-center justify-end gap-1.5">
+        <div className="pointer-events-auto justify-self-end w-full sm:w-auto sm:ml-auto lg:ml-0 flex items-center justify-end gap-1.5">
           <div
             className="flex items-center bg-[#F3F0E7]/94 border-2 border-[#303B38] shadow-[2px_2px_0px_rgba(48,59,56,0.18)] p-0.5"
             role="group"
@@ -560,6 +583,7 @@ export const GameHUD: React.FC<GameHUDProps> = ({
                 setObjectivesOpen(false);
                 setMenuOpen(false);
                 setMapOpen(false);
+                setCameraOpen(false);
               }}
               aria-expanded={alertsOpen}
               aria-label={t('hud.notificationsBtn')}
@@ -782,16 +806,16 @@ export const GameHUD: React.FC<GameHUDProps> = ({
       {/* LAYER B — BOTTOM MINIMAL HUD (Bottom-Left Objective + Bottom-Right Controls & Layer D Menu) */}
       <footer className="flex items-end justify-between gap-2 shrink-0">
         {/* BOTTOM-LEFT: Current Objective & Progress */}
-        <div className="pointer-events-auto relative min-w-0 max-w-[min(22rem,calc(100vw-11.5rem))] sm:max-w-[23rem]">
+        <div className="pointer-events-auto relative min-w-0 max-w-[min(22rem,calc(100vw-13.25rem))] sm:max-w-[23rem]">
           {objectivesOpen && !tutorialActive && objs.length > 0 && (
             <div className="absolute left-0 bottom-full mb-2 z-30">
               <ObjectivesChecklist objectives={state.objectives} hiddenOnSmall={false} />
             </div>
           )}
 
-          <div className="bg-[#F3F0E7]/94 border-2 border-[#303B38] shadow-[2px_2px_0px_rgba(48,59,56,0.18)] px-3 py-2 flex items-center gap-2.5 min-w-0">
+          <div className="bg-[#F3F0E7]/94 border-2 border-[#303B38] shadow-[2px_2px_0px_rgba(48,59,56,0.18)] px-2.5 sm:px-3 py-1.5 sm:py-2 flex items-center gap-2 min-w-0">
             <div className="min-w-0 flex-1">
-              <div className="flex items-center gap-2 min-w-0">
+              <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
                 <span className="text-[11px] font-bold font-mono-num bg-[#D9A66C]/35 border border-[#303B38]/30 px-1.5 py-0.5 text-[#303B38] shrink-0">
                   {taskGuide.progressLabel}
                 </span>
@@ -804,6 +828,34 @@ export const GameHUD: React.FC<GameHUDProps> = ({
               </p>
             </div>
 
+            {!hasDrawerOpen && !activeModal && (
+              <button
+                type="button"
+                onClick={handleTaskQuickAction}
+                aria-label={
+                  taskGuide.targetModal === 'END_DAY'
+                    ? t('hud.quickAction.endDay', { day: state.day })
+                    : taskGuide.targetModal === 'FIND_EMPLOYEE'
+                      ? t('hud.quickAction.findEmployee')
+                      : taskGuide.targetModal === 'OFFICE'
+                        ? t('hud.quickAction.exploreOffice')
+                        : t(`hud.quickAction.goTo${taskGuide.targetModal}`)
+                }
+                title={
+                  taskGuide.targetModal === 'END_DAY'
+                    ? t('hud.quickAction.endDay', { day: state.day })
+                    : taskGuide.targetModal === 'FIND_EMPLOYEE'
+                      ? t('hud.quickAction.findEmployee')
+                      : taskGuide.targetModal === 'OFFICE'
+                        ? t('hud.quickAction.exploreOffice')
+                        : t(`hud.quickAction.goTo${taskGuide.targetModal}`)
+                }
+                className="md:hidden min-h-[38px] min-w-[38px] flex items-center justify-center bg-[#78978A] hover:bg-[#6A897C] border border-[#303B38] text-[#303B38] cursor-pointer shrink-0"
+              >
+                <ArrowRight className="w-4 h-4" aria-hidden="true" />
+              </button>
+            )}
+
             {!tutorialActive && objs.length > 0 && (
               <button
                 type="button"
@@ -812,11 +864,12 @@ export const GameHUD: React.FC<GameHUDProps> = ({
                   setAlertsOpen(false);
                   setMenuOpen(false);
                   setMapOpen(false);
+                  setCameraOpen(false);
                 }}
                 aria-expanded={objectivesOpen}
                 aria-label={t('hud.checklistBtn')}
                 title={t('hud.checklistBtn')}
-                className={`min-h-[36px] min-w-[36px] px-2 flex items-center justify-center gap-1 border text-[12px] font-bold cursor-pointer shrink-0 ${
+                className={`min-h-[38px] min-w-[38px] px-1.5 flex items-center justify-center gap-1 border text-[12px] font-bold cursor-pointer shrink-0 ${
                   objectivesOpen
                     ? 'bg-[#78978A] border-[#303B38]'
                     : 'bg-[#FAF8F2] hover:bg-[#EAE5D8] border-[#303B38]/30'
@@ -852,6 +905,64 @@ export const GameHUD: React.FC<GameHUDProps> = ({
                 onOpenModal={onOpenModal}
                 onDispatch={onDispatch}
               />
+            </div>
+          )}
+
+          {cameraOpen && (
+            <div
+              ref={cameraPopoverRef}
+              role="toolbar"
+              aria-label={t('camera.toolbarLabel')}
+              className="sm:hidden absolute right-0 bottom-full mb-2 z-30 flex items-center gap-1 bg-[#F3F0E7] border-2 border-[#303B38] shadow-[4px_4px_0px_rgba(48,59,56,0.22)] p-1"
+            >
+              <button
+                type="button"
+                onClick={() => {
+                  const next = !followFounder;
+                  cameraActionRef?.current?.setFollowFounder(next);
+                  if (next) cameraActionRef?.current?.focusFounder();
+                }}
+                aria-pressed={followFounder}
+                aria-label={t('camera.followFounder')}
+                title={t('camera.followFounder')}
+                className={`min-h-[42px] min-w-[42px] flex items-center justify-center cursor-pointer transition-colors ${
+                  followFounder
+                    ? 'bg-[#78978A] text-[#303B38]'
+                    : 'bg-[#FAF8F2] hover:bg-[#EAE5D8] text-[#303B38]'
+                }`}
+              >
+                <LocateFixed className="w-4 h-4" aria-hidden="true" />
+              </button>
+              <button
+                type="button"
+                onClick={() => cameraActionRef?.current?.zoomIn()}
+                aria-label={t('camera.zoomIn')}
+                title={t('camera.zoomIn')}
+                className="min-h-[42px] min-w-[42px] flex items-center justify-center bg-[#FAF8F2] hover:bg-[#EAE5D8] text-[#303B38] cursor-pointer"
+              >
+                <Plus className="w-4 h-4" aria-hidden="true" />
+              </button>
+              <button
+                type="button"
+                onClick={() => cameraActionRef?.current?.zoomOut()}
+                aria-label={t('camera.zoomOut')}
+                title={t('camera.zoomOut')}
+                className="min-h-[42px] min-w-[42px] flex items-center justify-center bg-[#FAF8F2] hover:bg-[#EAE5D8] text-[#303B38] cursor-pointer"
+              >
+                <Minus className="w-4 h-4" aria-hidden="true" />
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  cameraActionRef?.current?.resetView();
+                  setCameraOpen(false);
+                }}
+                aria-label={t('camera.resetView')}
+                title={t('camera.resetView')}
+                className="min-h-[42px] min-w-[42px] flex items-center justify-center bg-[#FAF8F2] hover:bg-[#EAE5D8] text-[#303B38] cursor-pointer"
+              >
+                <RotateCcw className="w-4 h-4" aria-hidden="true" />
+              </button>
             </div>
           )}
 
@@ -925,6 +1036,29 @@ export const GameHUD: React.FC<GameHUDProps> = ({
               </button>
             )}
 
+            {/* Mobile Camera Popover Trigger */}
+            <button
+              type="button"
+              data-mobile-camera-trigger="true"
+              onClick={() => {
+                setCameraOpen((v) => !v);
+                setMapOpen(false);
+                setMenuOpen(false);
+                setAlertsOpen(false);
+                setObjectivesOpen(false);
+              }}
+              aria-expanded={cameraOpen}
+              aria-label={t('camera.toolbarLabel')}
+              title={t('camera.toolbarLabel')}
+              className={`sm:hidden min-h-[42px] min-w-[42px] flex items-center justify-center border-2 border-[#303B38] shadow-[2px_2px_0px_rgba(48,59,56,0.18)] cursor-pointer transition-colors ${
+                cameraOpen || followFounder
+                  ? 'bg-[#78978A] text-[#303B38]'
+                  : 'bg-[#F3F0E7]/94 hover:bg-[#EAE5D8] text-[#303B38]'
+              }`}
+            >
+              <LocateFixed className="w-4 h-4 shrink-0" aria-hidden="true" />
+            </button>
+
             {/* Camera Mini-Controls */}
             <div
               role="toolbar"
@@ -987,6 +1121,7 @@ export const GameHUD: React.FC<GameHUDProps> = ({
                 setMenuOpen(false);
                 setAlertsOpen(false);
                 setObjectivesOpen(false);
+                setCameraOpen(false);
               }}
               aria-expanded={mapOpen}
               aria-label={t('hud.mapBtn')}
@@ -1011,6 +1146,7 @@ export const GameHUD: React.FC<GameHUDProps> = ({
                 setMapOpen(false);
                 setAlertsOpen(false);
                 setObjectivesOpen(false);
+                setCameraOpen(false);
               }}
               aria-expanded={menuOpen}
               className={`min-h-[42px] px-3 flex items-center justify-center gap-2 border-2 border-[#303B38] shadow-[2px_2px_0px_rgba(48,59,56,0.18)] text-[13px] font-bold cursor-pointer transition-colors ${

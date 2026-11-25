@@ -322,13 +322,13 @@ export const EmployeePanel: React.FC<EmployeePanelProps> = ({ state, onDispatch,
                   <div
                     role="toolbar"
                     aria-label={emp.name}
-                    className="pt-3 border-t border-[#303B38]/20 flex flex-wrap items-stretch gap-2 min-w-0"
+                    className="pt-3 border-t border-[#303B38]/20 flex flex-wrap items-end justify-between gap-3 min-w-0"
                   >
-                    {/* Sub-container 1: Task / Product Assignment */}
+                    {/* Task / Product Assignment */}
                     <div
                       role="group"
                       aria-label={t('employees.assignmentGroupLabel')}
-                      className="w-full sm:w-auto sm:flex-1 sm:min-w-[260px] max-w-full bg-[#F3F0E7]/70 border border-[#303B38]/15 p-2 flex flex-wrap items-end gap-2 min-w-0 box-border"
+                      className="w-full sm:w-auto sm:flex-1 sm:min-w-[260px] max-w-full flex flex-wrap items-end gap-2.5 min-w-0 box-border"
                     >
                       <div className="min-w-0 flex-1 basis-[160px] max-w-full">
                         <label
@@ -395,11 +395,11 @@ export const EmployeePanel: React.FC<EmployeePanelProps> = ({ state, onDispatch,
                       )}
                     </div>
 
-                    {/* Sub-container 2: Training / Promotion / Bonus */}
+                    {/* Training / Promotion / Bonus */}
                     <div
                       role="group"
                       aria-label={t('employees.developmentGroupLabel')}
-                      className="w-full sm:w-auto max-w-full bg-[#F3F0E7]/70 border border-[#303B38]/15 p-2 flex flex-col justify-between gap-2 min-w-0 box-border"
+                      className="w-full sm:w-auto max-w-full flex flex-col justify-between gap-1.5 min-w-0 box-border"
                     >
                       <div className="text-[13px] font-bold text-[#303B38]/80 leading-none">
                         {t('employees.developmentGroupLabel')}
@@ -467,11 +467,11 @@ export const EmployeePanel: React.FC<EmployeePanelProps> = ({ state, onDispatch,
                       </div>
                     </div>
 
-                    {/* Sub-container 3: Details & Roster Management */}
+                    {/* Details & Roster Management */}
                     <div
                       role="group"
                       aria-label={t('employees.rosterGroupLabel')}
-                      className="w-full sm:w-auto max-w-full bg-[#F3F0E7]/70 border border-[#303B38]/15 p-2 flex flex-col justify-between gap-2 min-w-0 box-border"
+                      className="w-full sm:w-auto max-w-full flex flex-col justify-between gap-1.5 min-w-0 box-border"
                     >
                       <div className="text-[13px] font-bold text-[#303B38]/80 leading-none">
                         {t('employees.rosterGroupLabel')}

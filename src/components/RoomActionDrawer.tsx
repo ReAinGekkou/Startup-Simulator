@@ -2,6 +2,7 @@ import React from 'react';
 import {
   Award,
   Briefcase,
+  ChevronDown,
   Coffee,
   Footprints,
   Lock,
@@ -92,13 +93,28 @@ export const RoomActionDrawer: React.FC<RoomActionDrawerProps> = ({
       ? localizedFurn.name
       : localizedRoom?.name ?? room?.name;
 
-  const headerSubtitle = emp
-    ? getLevelTitleLocalized(emp.role, emp.level, locale)
-    : localizedFurn && localizedRoom
-      ? `${localizedRoom.name} · ${t('drawer.furnitureOverview')}`
-      : room?.unlocked
-        ? t('rooms.levelLabel', { level: room.level })
-        : t('rooms.lockedLabel');
+  const headerSubtitle = emp ? (
+    getLevelTitleLocalized(emp.role, emp.level, locale)
+  ) : localizedFurn && localizedRoom ? (
+    <>
+      {onClearFurniture ? (
+        <button
+          type="button"
+          onClick={onClearFurniture}
+          className="underline hover:text-[#303B38] cursor-pointer text-left"
+        >
+          {localizedRoom.name}
+        </button>
+      ) : (
+        <span>{localizedRoom.name}</span>
+      )}
+      <span> · {t('drawer.furnitureOverview')}</span>
+    </>
+  ) : room?.unlocked ? (
+    t('rooms.levelLabel', { level: room.level })
+  ) : (
+    t('rooms.lockedLabel')
+  );
 
   const renderRoomActionsBody = (targetRoom: OfficeRoom, targetLocRoom: NonNullable<typeof localizedRoom>) => (
     <>
@@ -572,11 +588,9 @@ export const RoomActionDrawer: React.FC<RoomActionDrawerProps> = ({
         )}
 
         <details className="bg-[#FAF8F2] border border-[#303B38]/25 p-3">
-          <summary
-            onClick={() => onClearFurniture?.()}
-            className="cursor-pointer text-[13px] font-bold text-[#303B38] select-none"
-          >
-            {t('drawer.viewRoomActions', { room: localizedRoom.name })}
+          <summary className="min-h-[36px] cursor-pointer text-[13px] font-bold text-[#303B38] select-none flex items-center justify-between gap-2 list-none">
+            <span>{t('drawer.viewRoomActions', { room: localizedRoom.name })}</span>
+            <ChevronDown className="w-4 h-4 text-[#303B38]/75 shrink-0" aria-hidden="true" />
           </summary>
           <div className="mt-3 pt-3 border-t border-[#303B38]/15 space-y-3">
             {renderRoomActionsBody(room, localizedRoom)}
@@ -667,8 +681,9 @@ export const RoomActionDrawer: React.FC<RoomActionDrawerProps> = ({
               open={state.tutorial?.currentStep === 4}
               className="bg-[#FAF8F2] border border-[#303B38]/25 p-3"
             >
-              <summary className="cursor-pointer text-[14px] font-bold text-[#303B38] select-none">
-                {t('drawer.moreDetails')}
+              <summary className="min-h-[36px] cursor-pointer text-[14px] font-bold text-[#303B38] select-none flex items-center justify-between gap-2 list-none">
+                <span>{t('drawer.moreDetails')}</span>
+                <ChevronDown className="w-4 h-4 text-[#303B38]/75 shrink-0" aria-hidden="true" />
               </summary>
 
               <div className="mt-3 pt-3 border-t border-[#303B38]/15 space-y-3.5 text-[14px]">
@@ -857,7 +872,7 @@ export const RoomActionDrawer: React.FC<RoomActionDrawerProps> = ({
                               userInitiated: true,
                             })
                           }
-                          className="min-h-[34px] inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#78978A] hover:bg-[#6A897C] border border-[#303B38]/30 text-[13px] font-bold text-[#303B38] cursor-pointer"
+                          className="min-h-[38px] inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#78978A] hover:bg-[#6A897C] border border-[#303B38]/30 text-[13px] font-bold text-[#303B38] cursor-pointer"
                         >
                           <Volume2 className="w-3.5 h-3.5" aria-hidden="true" />
                           <span>{t('drawer.speakLineBtn')}</span>

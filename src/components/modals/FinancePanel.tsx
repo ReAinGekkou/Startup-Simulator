@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { ChevronDown } from 'lucide-react';
 import {
   calculateFounderSalary,
   calculateMonthlyMaintenance,
@@ -136,7 +137,7 @@ export const FinancePanel: React.FC<FinancePanelProps> = ({ state, onDispatch, o
                 {t('finance.founderSalaryDesc')}
               </p>
             </div>
-            <div className="text-right font-mono-num">
+            <div className="text-left sm:text-right font-mono-num">
               <div className="text-[22px] font-bold text-[#303B38]">
                 {formatCurrency(draftSalary)}
                 {t('common.perMonth')}
@@ -172,7 +173,7 @@ export const FinancePanel: React.FC<FinancePanelProps> = ({ state, onDispatch, o
                       setDraftSalary(val);
                       onDispatch({ type: 'SET_FOUNDER_SALARY', amount: val });
                     }}
-                    className={`min-h-[40px] px-3 py-1.5 text-[14px] font-bold border cursor-pointer whitespace-nowrap ${
+                    className={`min-h-[44px] px-3 py-1.5 text-[14px] font-bold border cursor-pointer whitespace-nowrap ${
                       founderSalary === val
                         ? 'bg-[#78978A] border-[#303B38] text-[#303B38]'
                         : 'bg-[#F3F0E7] hover:bg-[#EAE5D8] border-[#303B38]/30 text-[#303B38]'
@@ -229,8 +230,9 @@ export const FinancePanel: React.FC<FinancePanelProps> = ({ state, onDispatch, o
 
         {/* Progressive Disclosure: Detailed Ledger, Credit Line & P&L History */}
         <details className="bg-[#FAF8F2] border border-[#303B38]/25 p-4">
-          <summary className="cursor-pointer font-bold text-[15px] text-[#303B38] select-none">
-            {t('finance.detailsToggle')}
+          <summary className="min-h-[40px] cursor-pointer font-bold text-[15px] text-[#303B38] select-none flex items-center justify-between gap-2 list-none">
+            <span>{t('finance.detailsToggle')}</span>
+            <ChevronDown className="w-4 h-4 text-[#303B38]/75 shrink-0" aria-hidden="true" />
           </summary>
 
           <div className="mt-4 pt-4 border-t border-[#303B38]/20 space-y-6">

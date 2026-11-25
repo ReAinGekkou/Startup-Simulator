@@ -476,7 +476,7 @@ export const WorldActionDrawer: React.FC<WorldActionDrawerProps> = ({
                       type="button"
                       disabled={doneToday}
                       onClick={() => onDispatch({ type: 'WORLD_INTERACT_NPC', npcId: person.id })}
-                      className={`min-h-[36px] px-2.5 border text-[12px] font-bold shrink-0 ${
+                      className={`min-h-[40px] px-2.5 border text-[12px] font-bold shrink-0 ${
                         doneToday
                           ? 'bg-[#EAE5D8] border-[#303B38]/20 text-[#303B38]/55 cursor-not-allowed'
                           : 'bg-[#78978A] hover:bg-[#6A897C] border-[#303B38] text-[#303B38] cursor-pointer'

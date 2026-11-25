@@ -1,5 +1,5 @@
 import React from 'react';
-import { Building2, Check, Coffee, Cpu, DoorOpen, Lock, Move, ShoppingBag } from 'lucide-react';
+import { Building2, Check, ChevronDown, Coffee, Cpu, DoorOpen, Lock, Move, ShoppingBag } from 'lucide-react';
 import {
   FURNITURE_CATALOG,
   OFFICE_LEVELS,
@@ -180,23 +180,26 @@ export const OfficeUpgradePanel: React.FC<OfficeUpgradePanelProps> = ({
           </div>
         </section>
 
-        {/* Office Perks & Passive Amenities */}
-        <section className="border-t border-[#303B38]/20 pt-4">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3">
-            <h3 className="font-bold text-[20px] text-[#303B38] flex items-center gap-2">
-              <Coffee className="w-5 h-5" />
+        {/* Office Perks & Passive Amenities (Progressive Disclosure) */}
+        <details className="bg-[#FAF8F2] border border-[#303B38]/25 p-4">
+          <summary className="min-h-[44px] cursor-pointer select-none flex flex-wrap items-center justify-between gap-2 list-none">
+            <span className="font-bold text-[18px] text-[#303B38] flex items-center gap-2">
+              <Coffee className="w-5 h-5 shrink-0" aria-hidden="true" />
               {t('office.perksTitle', { owned: ownedPerks.size, total: OFFICE_PERKS.length })}
-            </h3>
-            <div className="text-[13px] font-mono-num text-[#303B38]">
-              {t('office.perksDailyBuff', {
-                morale: perkBonuses.moraleBonusPerDay.toFixed(1),
-                energy: perkBonuses.energyRecoveryPerDay,
-                stress: perkBonuses.stressReductionPerDay.toFixed(1),
-              })}
-            </div>
-          </div>
+            </span>
+            <span className="inline-flex items-center gap-2 text-[13px] font-mono-num text-[#303B38]/85">
+              <span>
+                {t('office.perksDailyBuff', {
+                  morale: perkBonuses.moraleBonusPerDay.toFixed(1),
+                  energy: perkBonuses.energyRecoveryPerDay,
+                  stress: perkBonuses.stressReductionPerDay.toFixed(1),
+                })}
+              </span>
+              <ChevronDown className="w-4 h-4 text-[#303B38]/75 shrink-0" aria-hidden="true" />
+            </span>
+          </summary>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          <div className="mt-3 pt-3 border-t border-[#303B38]/15 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {OFFICE_PERKS.map((perk) => {
               const owned = ownedPerks.has(perk.id);
               const lockedByHq = state.office.level < perk.minOfficeLevel;
@@ -270,15 +273,18 @@ export const OfficeUpgradePanel: React.FC<OfficeUpgradePanelProps> = ({
               );
             })}
           </div>
-        </section>
+        </details>
 
-        {/* Buy Furniture */}
-        <section className="border-t border-[#303B38]/20 pt-4">
-          <h3 className="font-bold text-[20px] text-[#303B38] flex items-center gap-2 mb-3">
-            <ShoppingBag className="w-5 h-5" />
-            {t('office.buyFurnitureTitle')}
-          </h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        {/* Buy Furniture (Progressive Disclosure) */}
+        <details className="bg-[#FAF8F2] border border-[#303B38]/25 p-4">
+          <summary className="min-h-[44px] cursor-pointer select-none flex items-center justify-between gap-2 list-none">
+            <span className="font-bold text-[18px] text-[#303B38] flex items-center gap-2">
+              <ShoppingBag className="w-5 h-5 shrink-0" aria-hidden="true" />
+              {t('office.buyFurnitureTitle')}
+            </span>
+            <ChevronDown className="w-4 h-4 text-[#303B38]/75 shrink-0" aria-hidden="true" />
+          </summary>
+          <div className="mt-3 pt-3 border-t border-[#303B38]/15 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {FURNITURE_CATALOG.map((item) => {
               const locItem = getFurnitureLocalized(
                 item.templateId,
@@ -320,14 +326,18 @@ export const OfficeUpgradePanel: React.FC<OfficeUpgradePanelProps> = ({
               );
             })}
           </div>
-        </section>
+        </details>
 
-        {/* Move Existing Furniture */}
-        <section className="border-t border-[#303B38]/20 pt-4">
-          <h3 className="font-bold text-[20px] text-[#303B38] mb-2">
-            {t('office.relocateTitle', { count: state.office.furniture.length })}
-          </h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5">
+        {/* Move Existing Furniture (Progressive Disclosure) */}
+        <details className="bg-[#FAF8F2] border border-[#303B38]/25 p-4">
+          <summary className="min-h-[44px] cursor-pointer select-none flex items-center justify-between gap-2 list-none">
+            <span className="font-bold text-[18px] text-[#303B38] flex items-center gap-2">
+              <Move className="w-5 h-5 shrink-0" aria-hidden="true" />
+              {t('office.relocateTitle', { count: state.office.furniture.length })}
+            </span>
+            <ChevronDown className="w-4 h-4 text-[#303B38]/75 shrink-0" aria-hidden="true" />
+          </summary>
+          <div className="mt-3 pt-3 border-t border-[#303B38]/15 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5">
             {state.office.furniture.map((f) => {
               const locFurn = getFurnitureLocalized(f.templateId, f.name, '', locale);
               const locRoom = getRoomLocalized(f.roomId, 0, locale);
@@ -355,7 +365,7 @@ export const OfficeUpgradePanel: React.FC<OfficeUpgradePanelProps> = ({
               );
             })}
           </div>
-        </section>
+        </details>
       </div>
     </ModalFrame>
   );

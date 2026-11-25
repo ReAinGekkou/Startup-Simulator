@@ -83,9 +83,10 @@ export default function App() {
   } = useGameEngine();
 
   const { locale, t, formatCurrency } = useLocalization();
-  const { speak } = useVoiceOver();
+  const { speak, subtitle } = useVoiceOver();
 
   const [activeModal, setActiveModal] = useState<ActiveModal>(null);
+  const [objectivesOpen, setObjectivesOpen] = useState(false);
   const [milestonesTab, setMilestonesTab] = useState<MilestonesTab>('MILESTONES');
   const [showTitleSaveModal, setShowTitleSaveModal] = useState(false);
   const [showEndingGallery, setShowEndingGallery] = useState(false);
@@ -917,9 +918,11 @@ export default function App() {
               setActiveModal(m);
             }}
             onDispatch={dispatch}
+            onObjectivesOpenChange={setObjectivesOpen}
           />
 
           {!activeModal &&
+            !objectivesOpen &&
             !gameState.activeEvent &&
             !gameState.pendingMonthlyReport &&
             !gameState.pendingDailyReport &&
@@ -928,6 +931,7 @@ export default function App() {
               gameState.tutorial?.skipped) && (
               <EmployeeChatterFeed
                 messages={gameState.chatterFeed}
+                hideOnCompactOverlay={Boolean(subtitle)}
                 hideOnMobile={Boolean(
                   selectedEmployeeId ||
                     selectedRoomId ||
